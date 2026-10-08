@@ -5,7 +5,8 @@ const { overLimit, LIMIT_REPLY, ip, codeOk } = require('../lib/guard');
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only.' });
   if (!codeOk(req.headers['x-demo-code'])) return res.status(401).json({ error: 'Wrong or missing access code.' });
-  const over = await overLimit('web:' + ip(req));
+  // Voice has its own limit; the message it becomes is counted when it is sent.
+  const over = await overLimit('voice:' + ip(req), { perHour: 150, global: false });
   if (over) return res.status(429).json({ error: LIMIT_REPLY[over] });
   try {
     const { audio, mime, lang } = req.body || {};

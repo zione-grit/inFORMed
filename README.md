@@ -57,8 +57,8 @@ Optional: `MODEL` (default `gpt-4.1`), `TRANSCRIBE_MODEL` (default `gpt-4o-trans
 
 ### Limits (when there is no access code)
 
-- `LIMIT_PER_HOUR` (default 40): messages one person can send in an hour (by internet address on the website, by chat on Telegram and WhatsApp).
-- `LIMIT_PER_DAY` (default 600): messages across everyone per day. When it is reached, the bot says so and still gives the emergency numbers.
+- `LIMIT_PER_HOUR` (default 150): messages one person can send in an hour (by internet address on the website, by chat on Telegram and WhatsApp).
+- `LIMIT_PER_DAY` (default 3000): messages across everyone per day. When it is reached, the bot says so and still gives the emergency numbers. Listening (read aloud) and voice recordings have their own separate limits and do not count as messages.
 - Connect **Upstash Redis** (see Telegram step 2) so these limits are shared across all of Vercel's servers. Without it, each server counts on its own and the limits are only rough.
 - Also set a **monthly budget limit** on the OpenAI key (platform.openai.com → Settings → Limits). That is the final safety net for cost.
 

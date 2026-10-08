@@ -88,10 +88,28 @@ a{color:var(--primary)}
 .fillcta{background:var(--primary);color:var(--primary-ink);border:0;border-radius:999px;padding:9px 16px;font-weight:700;font-size:14px;cursor:pointer}
 .app.ask #gen{display:none}
 .app:not(.ask) #fillCta{display:none}
-.tg{display:inline-flex;align-items:center;gap:7px;text-decoration:none;border-radius:999px;padding:7px 12px;font-size:14px;font-weight:700;color:#1E88C8;border:1px solid color-mix(in srgb,#229ED9 40%,var(--line));background:var(--surface)}
-.tg:hover{background:color-mix(in srgb,#229ED9 8%,var(--surface))}
-.tg svg{width:16px;height:16px}
-@media(max-width:719px){.top .tg{display:none}}
+.tg{display:inline-flex;align-items:center;gap:8px;text-decoration:none;border-radius:999px;padding:8px 14px;font-size:14px;font-weight:700;color:#fff;background:#229ED9;border:0;box-shadow:0 2px 8px rgba(34,158,217,.28)}
+.tg:hover{background:#1A8BC2}
+.tg svg{width:17px;height:17px}
+.tg.big{padding:13px 22px;font-size:16px}
+.tg.big svg{width:20px;height:20px}
+@media(max-width:719px){.top .tg{padding:8px}.top .tg .tgl{display:none}.top .sel{max-width:84px;padding-right:22px;background-position:right 8px center}.top .in{gap:6px}.mark img{height:30px!important}.word{font-size:19px!important}}
+@media(max-width:379px){.brand .word{display:none}}
+.starts{display:grid;gap:14px;margin:4px 0 18px}
+@media(min-width:560px){.starts{grid-template-columns:1fr 1fr}}
+.start-card{display:flex;flex-direction:column;align-items:flex-start;gap:8px;text-align:left;border-radius:20px;padding:20px 20px 18px;cursor:pointer;border:2px solid var(--primary);background:var(--surface);color:var(--ink);transition:transform .15s ease,box-shadow .15s ease;box-shadow:var(--shadow)}
+.start-card:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(20,36,63,.14)}
+.start-card .ic{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:var(--tint);color:var(--primary)}
+.start-card .ic svg{width:24px;height:24px}
+.start-card strong{font-size:19px;line-height:1.2}
+.start-card span.d{font-size:14.5px;color:var(--soft);line-height:1.45}
+.start-card .go{margin-top:4px;font-weight:700;color:var(--primary);font-size:15px}
+.start-card.primary{background:var(--primary);color:var(--primary-ink)}
+.start-card.primary .ic{background:rgba(255,255,255,.16);color:var(--primary-ink)}
+.start-card.primary span.d{color:color-mix(in srgb,var(--primary-ink) 85%,transparent)}
+.start-card.primary .go{color:var(--primary-ink)}
+.alt-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.linkbtn{background:none;border:0;color:var(--primary);font-weight:700;font-size:15px;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:8px 4px}
 .alsotg{margin-top:16px;font-size:15px;color:var(--soft);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .spacer{flex:1}
 .ghost{background:none;border:1px solid transparent;border-radius:999px;padding:7px 12px;color:var(--soft);cursor:pointer;font-size:14px}
@@ -314,7 +332,7 @@ body.in-app .app{height:calc(100dvh - var(--toph,58px))}
   <button class="brand" id="toHome" aria-label="inFORMed home"><picture class="mark"><source srcset="/grit-logo-white.png" media="(prefers-color-scheme: dark)"><img src="/grit-logo.png" alt="GRIT"></picture><span class="word">in<b>FORM</b>ed</span></button>
   <span class="spacer"></span>
   <button class="ghost hide-sm" id="openSources">What this is based on</button>
-  <a class="tg" href="https://t.me/inFORMed_grit_bot" target="_blank" rel="noopener" title="Chat with inFORMed on Telegram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.7 19.4c-.2 1-.9 1.3-1.7.8l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.5 13.2l-4.7-1.5c-1-.3-1-1 .2-1.5L20.5 3c.9-.3 1.6.2 1.4 1.3z"/></svg><span class="tgl">Telegram</span></a>
+  <a class="tg" href="https://t.me/inFORMed_grit_bot" target="_blank" rel="noopener" title="Chat with inFORMed on Telegram" aria-label="Chat with inFORMed on Telegram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.7 19.4c-.2 1-.9 1.3-1.7.8l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.5 13.2l-4.7-1.5c-1-.3-1-1 .2-1.5L20.5 3c.9-.3 1.6.2 1.4 1.3z"/></svg><span class="tgl">Telegram</span></a>
   <label class="sr" for="lang">Language</label>
   <select class="sel" id="lang" title="Language for replies"></select>
   <button class="exit" id="quickExit" title="Leave this site immediately">Quick exit</button>
@@ -326,13 +344,25 @@ body.in-app .app{height:calc(100dvh - var(--toph,58px))}
     <div>
       <span class="eyebrow">Protection order support · South Africa</span>
       <h1>Understand protection orders, and <em>tell your story</em> in your own words.</h1>
-      <p class="lede">inFORMed is your protection order support assistant. Ask it anything about protection orders, the court process or the legal words. When you are ready, it helps you prepare your application in a calm conversation. Type, or simply tell your story out loud.</p>
-      <div class="ctas">
-        <button class="btn primary" id="startAsk">Ask about protection orders</button>
-        <button class="btn secondary" id="startFill">Help me fill in my form</button>
-        <button class="btn secondary" id="startDemo">Watch a demo</button>
+      <p class="lede">Ask anything about protection orders, or get help preparing your application in a calm conversation. Type, or simply tell your story out loud.</p>
+      <div class="starts">
+        <button class="start-card primary" id="startAsk">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.8A8 8 0 1 1 21 12z"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5v.2M12 16.5h.01"/></svg></span>
+          <strong>Ask a question</strong>
+          <span class="d">Understand protection orders, the court process and the legal words.</span>
+          <span class="go">Start a conversation &rarr;</span>
+        </button>
+        <button class="start-card" id="startFill">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg></span>
+          <strong>Help me fill in my form</strong>
+          <span class="d">Tell your story by typing or speaking. Your application fills in as you talk.</span>
+          <span class="go">Start my application &rarr;</span>
+        </button>
       </div>
-      <p class="alsotg">Prefer to chat on your phone? <a class="tg" href="https://t.me/inFORMed_grit_bot" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.7 19.4c-.2 1-.9 1.3-1.7.8l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.5 13.2l-4.7-1.5c-1-.3-1-1 .2-1.5L20.5 3c.9-.3 1.6.2 1.4 1.3z"/></svg><span>Open inFORMed on Telegram</span></a></p>
+      <div class="alt-row">
+        <a class="tg big" href="https://t.me/inFORMed_grit_bot" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.7 19.4c-.2 1-.9 1.3-1.7.8l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.5 13.2l-4.7-1.5c-1-.3-1-1 .2-1.5L20.5 3c.9-.3 1.6.2 1.4 1.3z"/></svg><span>Chat on Telegram</span></a>
+        <button class="linkbtn" id="startDemo">Watch a demo</button>
+      </div>
       <ul class="reassure">
         <li>One gentle question at a time</li>
         <li>Pause whenever you need</li>
@@ -526,6 +556,7 @@ $('lang').onchange = e => { LANG = e.target.value; try{localStorage.setItem('inf
 let leaving = false;
 function quickExit(){
   leaving = true;
+  try { if (V.stream) V.stream.getTracks().forEach(t => t.stop()); if (AUDIO) AUDIO.pause(); } catch(e){}
   try { sessionStorage.clear(); } catch(e){}
   S = fresh(); document.body.innerHTML = '';
   window.location.replace('https://www.google.com/search?q=weather+today');
@@ -547,7 +578,7 @@ function show(view){
 }
 $('toHome').onclick = () => {
   if (S.mode === 'live' && S.msgs.length > 1 && !confirm('Leave this conversation? Nothing is saved, so it will be deleted.')) return;
-  stopDemo(); S = fresh(); show('home');
+  stopDemo(); stopAudio(); stopRecording(true); S = fresh(); show('home');
 };
 
 /* ---------- form panel ---------- */
@@ -693,11 +724,12 @@ function autosize(){ inp.style.height='auto'; inp.style.height = Math.min(inp.sc
 inp.addEventListener('input', autosize);
 inp.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && window.innerWidth >= 720){ e.preventDefault(); sendLive(); } });
 $('send').onclick = () => sendLive();
-function setBusy(b){ S.busy = b; $('send').disabled = b || S.mode !== 'live'; $('mic').disabled = b || S.mode !== 'live'; }
+function setBusy(b){ S.busy = b; $('send').disabled = b || S.mode !== 'live'; $('mic').disabled = S.mode !== 'live'; }
 
 async function sendLive(){
   if (S.mode !== 'live' || S.busy) return;
   const v = inp.value.trim(); if (!v) return;
+  if (V.state === 'recording' || V.state === 'starting') stopRecording(true);
   inp.value = ''; autosize(); voiceBar(false);
   addMsg('user', v); S.msgs.push({ role:'user', content:v });
   await callChat();
@@ -736,6 +768,7 @@ $('codeCancel').onclick = () => { $('codeDlg').close(); codeThen = null; if (S.m
 
 /* ---------- ask / fill modes ---------- */
 function setMode(cm, announce = true){
+  if (typeof V !== 'undefined' && V.state === 'recording') stopRecording(true);
   S.cm = cm;
   $('app').classList.toggle('ask', cm === 'ask');
   $('mAsk').classList.toggle('on', cm === 'ask'); $('mFill').classList.toggle('on', cm === 'fill');
@@ -757,76 +790,109 @@ $('mFill').onclick = () => { if (S.mode === 'live' && S.cm !== 'fill') setMode('
 $('fillCta').onclick = () => { if (S.mode === 'live') setMode('fill'); };
 
 /* ---------- voice: speak instead of typing ---------- */
-let REC = null;
+// One recording at a time. Tapping the mic, typing, sending, switching mode or leaving always stops it.
+const V = { state: 'idle', rec: null, stream: null, tick: null, discard: false, hideT: null };
 function pickMime(){
   const c = ['audio/webm;codecs=opus','audio/webm','audio/mp4','audio/ogg;codecs=opus'];
   for (const m of c) if (window.MediaRecorder && MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(m)) return m;
   return '';
 }
-function voiceBar(on, text){ $('voiceBar').classList.toggle('on', on); if (text) $('voiceTxt').textContent = text; }
+function voiceBar(on, text, hideAfter){
+  clearTimeout(V.hideT);
+  $('voiceBar').classList.toggle('on', on); if (text) $('voiceTxt').textContent = text;
+  if (on && hideAfter) V.hideT = setTimeout(() => { if (V.state === 'idle') voiceBar(false); }, hideAfter);
+}
+function releaseMic(){
+  clearInterval(V.tick); V.tick = null;
+  if (V.stream){ V.stream.getTracks().forEach(t => t.stop()); V.stream = null; }
+  $('mic').classList.remove('rec');
+}
+// Stop recording. discard=true throws the audio away (used when the person types or sends instead).
+function stopRecording(discard){
+  if (V.state === 'starting'){ V.discard = true; return; }
+  if (V.state !== 'recording') return;
+  V.discard = !!discard;
+  try { if (V.rec && V.rec.state !== 'inactive') V.rec.stop(); else finishRecording([]); } catch(e){ finishRecording([]); }
+}
+async function finishRecording(chunks, mime){
+  releaseMic();
+  const discard = V.discard; V.rec = null; V.discard = false;
+  if (discard || !chunks.length){ V.state = 'idle'; voiceBar(false); return; }
+  V.state = 'sending'; $('mic').classList.add('busy'); voiceBar(true, 'Writing down what you said…');
+  try {
+    const blob = new Blob(chunks, { type: mime || 'audio/webm' });
+    if (blob.size < 1200) throw new Error('short');
+    const b64 = await new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => res(String(fr.result).split(',')[1]); fr.onerror = rej; fr.readAsDataURL(blob); });
+    const r = await fetch('/api/transcribe', { method:'POST', headers:{ 'Content-Type':'application/json', 'x-demo-code': CODE }, body: JSON.stringify({ audio: b64, mime: blob.type, lang: LANG }) });
+    if (r.status === 401){ V.state = 'idle'; voiceBar(false); askCode('', () => {}); return; }
+    const j = await r.json();
+    if (j.error || !j.text) throw new Error(j.error || 'empty');
+    inp.value = (inp.value ? inp.value.trim() + ' ' : '') + j.text; autosize();
+    V.state = 'idle';
+    voiceBar(true, 'Check what I heard and change anything, then tap send.', 7000);
+    inp.focus();
+  } catch(e){
+    V.state = 'idle';
+    voiceBar(true, e.message && e.message.length > 10 ? e.message : 'Sorry, I could not hear that clearly. Please try again, or type instead.', 6000);
+  }
+  $('mic').classList.remove('busy');
+}
 async function toggleMic(){
-  if (S.mode !== 'live' || S.busy) return;
-  const mic = $('mic');
-  if (REC && REC.state === 'recording'){ REC.stop(); return; }
-  if (!navigator.mediaDevices || !window.MediaRecorder){ voiceBar(true, 'Sorry, voice is not supported in this browser. Please type instead.'); setTimeout(() => voiceBar(false), 4000); return; }
+  if (S.mode !== 'live') return;
+  if (V.state === 'recording' || V.state === 'starting'){ stopRecording(false); return; }
+  if (V.state === 'sending') return;
+  if (!navigator.mediaDevices || !window.MediaRecorder){ voiceBar(true, 'Sorry, voice is not supported in this browser. Please type instead.', 4000); return; }
+  stopAudio();
+  V.state = 'starting'; V.discard = false;
+  voiceBar(true, 'Starting the microphone…');
   let stream;
   try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
-  catch(e){ voiceBar(true, 'I need permission to use your microphone. You can allow it in your browser, or type instead.'); setTimeout(() => voiceBar(false), 5000); return; }
+  catch(e){ V.state = 'idle'; voiceBar(true, 'I need permission to use your microphone. You can allow it in your browser, or type instead.', 6000); return; }
+  if (V.discard || S.mode !== 'live'){ stream.getTracks().forEach(t => t.stop()); V.state = 'idle'; V.discard = false; voiceBar(false); return; }
   const mime = pickMime(); const chunks = []; const started = Date.now();
-  REC = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
-  REC.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
-  const tick = setInterval(() => {
+  let rec;
+  try { rec = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined); }
+  catch(e){ stream.getTracks().forEach(t => t.stop()); V.state = 'idle'; voiceBar(true, 'Sorry, voice is not supported in this browser. Please type instead.', 4000); return; }
+  V.rec = rec; V.stream = stream; V.state = 'recording';
+  rec.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+  rec.onstop = () => { if (V.rec === rec) finishRecording(chunks, rec.mimeType || mime); };
+  V.tick = setInterval(() => {
+    if (V.rec !== rec){ clearInterval(V.tick); return; }
     const s = Math.floor((Date.now() - started) / 1000);
-    voiceBar(true, `Listening… ${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}. Tap the microphone again when you are done.`);
-    if (s >= 180 && REC.state === 'recording') REC.stop();
+    voiceBar(true, `Listening… ${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}. Tap the red microphone when you are done.`);
+    if (s >= 180) stopRecording(false); // three minutes at most
   }, 500);
-  REC.onstop = async () => {
-    clearInterval(tick); stream.getTracks().forEach(t => t.stop());
-    mic.classList.remove('rec'); mic.classList.add('busy'); voiceBar(true, 'Writing down what you said…');
-    try {
-      const blob = new Blob(chunks, { type: REC.mimeType || mime || 'audio/webm' });
-      if (blob.size < 1200) throw new Error('short');
-      const b64 = await new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => res(String(fr.result).split(',')[1]); fr.onerror = rej; fr.readAsDataURL(blob); });
-      const r = await fetch('/api/transcribe', { method:'POST', headers:{ 'Content-Type':'application/json', 'x-demo-code': CODE }, body: JSON.stringify({ audio: b64, mime: blob.type, lang: LANG }) });
-      if (r.status === 401){ voiceBar(false); askCode('', () => {}); return; }
-      const j = await r.json();
-      if (j.error || !j.text) throw new Error(j.error || 'empty');
-      inp.value = (inp.value ? inp.value.trim() + ' ' : '') + j.text; autosize();
-      voiceBar(true, 'Check what I heard and change anything, then tap send.');
-      inp.focus();
-      setTimeout(() => voiceBar(false), 6000);
-    } catch(e){
-      voiceBar(true, e.message && e.message.length > 10 ? e.message : 'Sorry, I could not hear that clearly. Please try again, or type instead.');
-      setTimeout(() => voiceBar(false), 5000);
-    }
-    mic.classList.remove('busy'); REC = null;
-  };
-  REC.start(); mic.classList.add('rec'); voiceBar(true, 'Listening… tap the microphone again when you are done.');
+  rec.start(1000);
+  $('mic').classList.add('rec');
+  voiceBar(true, 'Listening… tap the red microphone when you are done.');
 }
 $('mic').onclick = toggleMic;
+// Typing while recording means they chose to type: stop and throw the recording away.
+inp.addEventListener('input', () => { if (V.state === 'recording' || V.state === 'starting') stopRecording(true); });
 
 /* ---------- listen: read a reply aloud (only when tapped, never automatically) ---------- */
+// Audio streams from the server, so it starts playing while the rest is still being made.
 let AUDIO = null, AUDIO_BTN = null;
-function stopAudio(){ if (AUDIO){ AUDIO.pause(); AUDIO = null; } if (AUDIO_BTN){ AUDIO_BTN.classList.remove('playing'); AUDIO_BTN.querySelector('span').textContent = 'Listen'; AUDIO_BTN = null; } }
-async function listen(text, btn){
+function stopAudio(){ if (AUDIO){ AUDIO.pause(); AUDIO.removeAttribute('src'); AUDIO = null; } if (AUDIO_BTN){ AUDIO_BTN.classList.remove('playing'); AUDIO_BTN.querySelector('span').textContent = 'Listen'; AUDIO_BTN = null; } }
+function b64url(str){ const bytes = new TextEncoder().encode(str); let bin = ''; bytes.forEach(b => bin += String.fromCharCode(b)); return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
+function listen(text, btn){
   if (AUDIO_BTN === btn){ stopAudio(); return; }
   stopAudio();
   if (S.mode !== 'live'){ btn.querySelector('span').textContent = 'Listen works in a live chat'; setTimeout(() => btn.querySelector('span').textContent = 'Listen', 2500); return; }
+  if (V.state === 'recording') stopRecording(true);
   AUDIO_BTN = btn; btn.classList.add('playing'); btn.querySelector('span').textContent = 'Loading…';
-  try {
-    const r = await fetch('/api/speak', { method:'POST', headers:{ 'Content-Type':'application/json', 'x-demo-code': CODE }, body: JSON.stringify({ text, lang: LANG }) });
-    if (!r.ok) throw new Error('speak');
-    const url = URL.createObjectURL(await r.blob());
-    if (AUDIO_BTN !== btn) return;
-    AUDIO = new Audio(url); btn.querySelector('span').textContent = 'Stop';
-    AUDIO.onended = () => { URL.revokeObjectURL(url); stopAudio(); };
-    await AUDIO.play();
-  } catch(e){ stopAudio(); btn.querySelector('span').textContent = 'Could not play'; setTimeout(() => btn.querySelector('span').textContent = 'Listen', 2500); }
+  const url = '/api/speak?t=' + b64url(String(text).slice(0, 2000)) + '&l=' + encodeURIComponent(LANG) + (CODE ? '&c=' + encodeURIComponent(CODE) : '');
+  const a = new Audio(); AUDIO = a; a.preload = 'auto';
+  a.onplaying = () => { if (AUDIO === a) btn.querySelector('span').textContent = 'Stop'; };
+  a.onended = () => { if (AUDIO === a) stopAudio(); };
+  a.onerror = () => { if (AUDIO !== a) return; stopAudio(); btn.querySelector('span').textContent = 'Could not play'; setTimeout(() => btn.querySelector('span').textContent = 'Listen', 2500); };
+  a.src = url;
+  a.play().catch(() => {});
 }
 
 /* ---------- start ---------- */
 function startApp(mode, cm = 'ask'){
-  stopDemo(); stopAudio(); S = fresh(); S.mode = mode; LASTF = null;
+  stopDemo(); stopAudio(); stopRecording(true); S = fresh(); S.mode = mode; LASTF = null;
   log.innerHTML = ''; buildPanel(); renderForm();
   $('demoBar').classList.toggle('on', mode === 'demo');
   $('gen').classList.remove('pulse');
