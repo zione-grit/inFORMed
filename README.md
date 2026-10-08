@@ -71,7 +71,7 @@ Optional: `MODEL` (default `gpt-4.1`), `TRANSCRIBE_MODEL` (default `gpt-4o-trans
    - `TELEGRAM_WEBHOOK_SECRET`: any random string of letters and numbers
 4. Redeploy, then open once in your browser:
    `https://YOUR-SITE.vercel.app/api/setup-telegram?code=YOUR_TELEGRAM_WEBHOOK_SECRET`
-5. Open your bot in Telegram and send `/start` (and the access code, if you set one).
+5. Open your bot in Telegram (https://t.me/inFORMed_grit_bot) and send `/start` (and the access code, if you set one). The website links to this bot from the header, the home page and the help section.
 
 ## 3. WhatsApp (about 30 to 45 minutes, needs a Meta developer account)
 
