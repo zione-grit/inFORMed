@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>inFORMed · Protection order support</title>
+<meta name="description" content="inFORMed helps you prepare a protection order application through a calm, private conversation. Powered by GRIT (Gender Rights in Tech).">
+<meta name="theme-color" content="#1D5E6B">
+<link rel="icon" type="image/png" href="/grit-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Brand tokens, taken from the GRIT logo: navy, teal and indigo */
+  --bg:#F4F5F2; --surface:#FFFFFF; --surface-2:#FAFBFA; --ink:#14243F; --soft:#56627A; --faint:#8790A0;
+  --line:#DFE3E6; --primary:#1D5E6B; --primary-2:#257382; --primary-ink:#FFFFFF; --tint:#E1EDEF; --tint-2:#EFF5F6;
+  --accent:#4B4296; --accent-tint:#ECEAF6; --warm:#C9805F; --warm-tint:#F8EDE6;
+  --danger:#A8322A; --danger-tint:#FBEDEB; --ok:#3F8A5F;
+  --shadow:0 1px 2px rgba(30,42,43,.05),0 8px 24px rgba(30,42,43,.06);
+  --r:16px; --r-sm:10px;
+  --serif:'Fraunces',Georgia,'Times New Roman',serif;
+  --sans:'Nunito Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#141B1C; --surface:#1B2425; --surface-2:#18201F; --ink:#E8EEEC; --soft:#A7B4B2; --faint:#7D8B89;
+    --line:#2B3738; --primary:#5FB3A9; --primary-2:#7CC5BC; --primary-ink:#0E1716; --tint:#1F3331; --tint-2:#1A2928;
+    --accent:#ABA4EA; --accent-tint:#24223A; --warm:#E0A487; --warm-tint:#33251F;
+    --danger:#F08A80; --danger-tint:#3A1E1B; --ok:#7CC79A; --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#141B1C; --surface:#1B2425; --surface-2:#18201F; --ink:#E8EEEC; --soft:#A7B4B2; --faint:#7D8B89;
+  --line:#2B3738; --primary:#5FB3A9; --primary-2:#7CC5BC; --primary-ink:#0E1716; --tint:#1F3331; --tint-2:#1A2928;
+  --accent:#ABA4EA; --accent-tint:#24223A; --warm:#E0A487; --warm-tint:#33251F;
+  --danger:#F08A80; --danger-tint:#3A1E1B; --ok:#7CC79A; --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--primary)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+:focus-visible{outline:3px solid color-mix(in srgb,var(--primary) 45%,transparent);outline-offset:2px;border-radius:8px}
+
+/* Top bar */
+.top{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top .in{max-width:1240px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:10px}
+.brand{display:flex;align-items:baseline;gap:8px;text-decoration:none;color:var(--ink);background:none;border:0;padding:0;cursor:pointer}
+.word{font-family:var(--serif);font-size:24px;font-weight:500;letter-spacing:-.01em}
+.word b{font-weight:600;color:var(--primary);letter-spacing:.02em}
+.by{font-size:12px;color:var(--faint);display:none}
+@media(min-width:720px){.by{display:inline}}
+.brand{align-items:center}
+.mark img{height:40px;width:auto;display:block}
+.flogo img{height:72px;width:auto;display:block;margin:0 auto 10px}
+.card.grit{position:relative}
+.glogo{float:right;height:92px;width:auto;margin:-6px -4px 6px 14px;opacity:.95}
+:root[data-theme="dark"] .mark img,:root[data-theme="dark"] .flogo img{content:url(/grit-logo-white.png)}
+:root[data-theme="light"] .mark img,:root[data-theme="light"] .flogo img{content:url(/grit-logo.png)}
+@media(max-width:719px){.mark img{height:34px}}
+/* chat header (kept from the original tool) + mode switch */
+.c-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 18px;border-bottom:1px solid var(--line)}
+.c-title{flex:1;min-width:180px}
+.c-title strong{font-family:var(--serif);font-size:20px;font-weight:600;display:block;line-height:1.2}
+.c-title span{font-size:13.5px;color:var(--primary);font-weight:600}
+.seg{display:inline-flex;background:var(--tint-2);border:1px solid var(--line);border-radius:999px;padding:3px}
+.seg button{border:0;background:none;border-radius:999px;padding:7px 14px;font-weight:700;font-size:14px;color:var(--soft);cursor:pointer;white-space:nowrap}
+.seg button.on{background:var(--surface);color:var(--primary);box-shadow:0 1px 3px rgba(20,36,63,.12)}
+@media(max-width:719px){.c-head{padding:8px 12px;flex-wrap:nowrap}.c-title{min-width:0}.c-title strong{font-size:16px}.c-title span{display:none}.seg button{padding:6px 10px;font-size:12.5px}}
+.app.ask{grid-template-columns:minmax(0,860px)!important;justify-content:center}
+.app.ask .panel,.app.ask .formpill{display:none!important}
+.suggest{display:flex;flex-wrap:wrap;gap:8px;padding-left:2px}
+.suggest button{border:1px solid color-mix(in srgb,var(--primary) 35%,var(--line));background:var(--surface);color:var(--primary);border-radius:999px;padding:7px 13px;font-size:14px;font-weight:600;cursor:pointer}
+.suggest button:hover{background:var(--tint-2)}
+.chip.gen-info{border-color:color-mix(in srgb,var(--warm) 45%,transparent);color:var(--ink);background:var(--warm-tint);cursor:default}
+.chip.listen{color:var(--primary)}
+.chip.listen.playing{background:var(--tint);border-color:var(--primary)}
+.mic{flex:none;width:48px;height:48px;border-radius:50%;background:var(--tint);color:var(--primary);border:1px solid color-mix(in srgb,var(--primary) 30%,var(--line));cursor:pointer;display:grid;place-items:center}
+.mic svg{width:21px;height:21px}
+.mic.rec{background:var(--danger);color:#fff;border-color:var(--danger);animation:recp 1.4s infinite}
+.mic.busy{opacity:.6;cursor:wait}
+.mic:disabled{opacity:.45;cursor:not-allowed}
+@keyframes recp{50%{box-shadow:0 0 0 7px color-mix(in srgb,var(--danger) 22%,transparent)}}
+.voicebar{display:none;align-items:center;gap:10px;font-size:14px;color:var(--soft);padding:0 4px}
+.voicebar.on{display:flex}
+.voicebar .dot{width:9px;height:9px;border-radius:50%;background:var(--danger);animation:bl 1.2s infinite}
+.fillcta{background:var(--primary);color:var(--primary-ink);border:0;border-radius:999px;padding:9px 16px;font-weight:700;font-size:14px;cursor:pointer}
+.app.ask #gen{display:none}
+.app:not(.ask) #fillCta{display:none}
+.spacer{flex:1}
+.ghost{background:none;border:1px solid transparent;border-radius:999px;padding:7px 12px;color:var(--soft);cursor:pointer;font-size:14px}
+.ghost:hover{background:var(--tint-2);color:var(--ink)}
+.sel{appearance:none;background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%235D6B6C' fill='none' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 10px center;border:1px solid var(--line);border-radius:999px;padding:6px 28px 6px 12px;font-size:14px;cursor:pointer;max-width:150px}
+.exit{background:var(--danger);color:#fff;border:0;border-radius:999px;padding:8px 14px;font-weight:700;font-size:14px;cursor:pointer;white-space:nowrap}
+.exit:hover{filter:brightness(1.08)}
+.hide-sm{display:none}
+@media(min-width:720px){.hide-sm{display:inline-flex}}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;padding:12px 22px;font-weight:700;border:1px solid transparent;cursor:pointer;text-decoration:none;font-size:16px;transition:transform .15s ease,background .15s}
+.btn:active{transform:scale(.98)}
+.btn.primary{background:var(--primary);color:var(--primary-ink)}
+.btn.primary:hover{background:var(--primary-2)}
+.btn.secondary{background:var(--surface);border-color:var(--line);color:var(--ink)}
+.btn.secondary:hover{border-color:var(--primary)}
+.btn.small{padding:8px 14px;font-size:14px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* Home */
+.home{max-width:1140px;margin:0 auto;padding:0 16px}
+.hero{display:grid;gap:40px;padding:56px 0 48px;align-items:center}
+@media(min-width:920px){.hero{grid-template-columns:1.05fr .95fr;padding:80px 0 72px}}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--primary);background:var(--tint);padding:5px 12px;border-radius:999px;letter-spacing:.02em}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(32px,5vw,52px);line-height:1.08;letter-spacing:-.02em;margin:18px 0 18px}
+h1 em{font-style:normal;color:var(--primary)}
+.lede{font-size:18px;color:var(--soft);max-width:560px;margin:0 0 28px}
+.ctas{display:flex;flex-wrap:wrap;gap:12px}
+.reassure{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:22px;color:var(--soft);font-size:14px;padding:0;list-style:none}
+.reassure li::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--primary);margin-right:8px;vertical-align:middle;opacity:.7}
+
+.preview{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:22px;display:grid;gap:12px}
+.pv-b{max-width:82%;padding:10px 14px;border-radius:16px;font-size:14.5px;line-height:1.45}
+.pv-a{background:var(--tint-2);border:1px solid var(--line);border-bottom-left-radius:5px}
+.pv-u{justify-self:end;background:var(--primary);color:var(--primary-ink);border-bottom-right-radius:5px}
+.pv-form{margin-top:6px;border:1px dashed color-mix(in srgb,var(--primary) 40%,var(--line));border-radius:14px;padding:12px 14px;background:var(--surface-2)}
+.pv-form .h{font-size:12px;font-weight:700;color:var(--primary);letter-spacing:.04em;text-transform:uppercase}
+.pv-form p{margin:6px 0 0;font-size:13.5px;color:var(--ink)}
+.pv-form mark{background:var(--warm-tint);color:inherit;padding:0 3px;border-radius:4px}
+
+section.band{padding:56px 0;border-top:1px solid var(--line)}
+h2{font-family:var(--serif);font-weight:500;font-size:clamp(26px,3.4vw,36px);letter-spacing:-.015em;margin:0 0 10px;line-height:1.15}
+.sub{color:var(--soft);max-width:640px;margin:0 0 30px}
+.steps{display:grid;gap:16px}
+@media(min-width:820px){.steps{grid-template-columns:repeat(3,1fr)}}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px}
+.step .n{font-family:var(--serif);font-size:28px;color:var(--primary);line-height:1}
+.step h3{margin:12px 0 6px;font-size:18px}
+.step p{margin:0;color:var(--soft);font-size:15px}
+.facts{display:grid;gap:12px}
+@media(min-width:720px){.facts{grid-template-columns:repeat(2,1fr)}}
+.fact{display:flex;gap:14px;padding:16px 18px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+.fact .dot{flex:none;width:30px;height:30px;border-radius:50%;background:var(--tint);color:var(--primary);display:grid;place-items:center;font-weight:700;font-size:14px}
+.fact p{margin:0;font-size:15px}
+.fact small{display:block;color:var(--faint);font-size:12.5px;margin-top:4px}
+.about{display:grid;gap:20px}
+@media(min-width:920px){.about{grid-template-columns:1fr 1fr}}
+.about .card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:26px}
+.about .card.grit{background:var(--primary);color:var(--primary-ink);border:0}
+.about .card.grit p,.about .card.grit li{color:color-mix(in srgb,var(--primary-ink) 86%,transparent)}
+.about h3{font-family:var(--serif);font-weight:500;font-size:24px;margin:0 0 10px}
+.about p{margin:0 0 12px;color:var(--soft)}
+.about ul{margin:0;padding-left:18px;color:var(--soft)}
+.about li{margin:4px 0}
+.help{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.help a{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;color:var(--ink)}
+.help a:hover{border-color:var(--primary)}
+.help strong{display:block;font-size:20px;font-family:var(--serif);font-weight:600;color:var(--primary)}
+.help span{font-size:13.5px;color:var(--soft)}
+footer.foot{border-top:1px solid var(--line);padding:28px 16px 40px;text-align:center;color:var(--soft);font-size:14px}
+footer.foot .pw{font-size:15px;color:var(--ink)}
+footer.foot .pw b{color:var(--primary)}
+footer.foot p{margin:6px auto;max-width:720px}
+
+/* Chat app */
+.app{display:none;max-width:1240px;margin:0 auto;height:calc(100dvh - 57px);padding:0 16px;gap:20px}
+.app.on{display:grid}
+@media(min-width:1000px){.app{grid-template-columns:minmax(0,1fr) 420px;padding:16px}}
+.chat{display:flex;flex-direction:column;min-height:0;background:var(--surface);border:1px solid var(--line);border-radius:0;margin:0 -16px}
+@media(min-width:1000px){.chat{border-radius:22px;margin:0;box-shadow:var(--shadow)}}
+.demo-bar{display:none;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 14px;background:var(--accent-tint);border-bottom:1px solid var(--line);font-size:14px}
+.demo-bar.on{display:flex}
+.demo-bar .tag{font-weight:700;color:var(--accent)}
+.demo-bar .grow{flex:1;min-width:120px;color:var(--soft)}
+.log{flex:1;overflow-y:auto;padding:22px 16px 12px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth}
+@media(min-width:720px){.log{padding:28px 28px 12px}}
+.msg{max-width:min(82%,620px);display:flex;flex-direction:column;gap:6px;animation:rise .35s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.msg .b{padding:12px 16px;border-radius:18px;white-space:pre-wrap;word-wrap:break-word;font-size:16px;line-height:1.55}
+.msg.a{align-self:flex-start}
+.msg.a .b{background:var(--tint-2);border:1px solid var(--line);border-bottom-left-radius:6px}
+.msg.u{align-self:flex-end}
+.msg.u .b{background:var(--primary);color:var(--primary-ink);border-bottom-right-radius:6px}
+.msg .who{font-size:12px;color:var(--faint);padding-left:4px}
+.srcs{display:flex;flex-wrap:wrap;gap:6px;padding-left:2px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;border:1px solid var(--line);background:var(--surface);color:var(--soft);border-radius:999px;padding:3px 10px;cursor:pointer}
+.chip:hover{border-color:var(--primary);color:var(--primary)}
+.chip svg{width:12px;height:12px}
+.msg.crisis .b{background:var(--danger-tint);border:1px solid color-mix(in srgb,var(--danger) 35%,transparent);color:var(--ink)}
+.calls{display:flex;flex-wrap:wrap;gap:8px}
+.calls a{display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-weight:700;font-size:14px;padding:8px 14px;border-radius:999px;background:var(--danger);color:#fff}
+.calls a.alt{background:var(--surface);color:var(--danger);border:1px solid color-mix(in srgb,var(--danger) 40%,transparent)}
+.typing .b{display:flex;gap:5px;align-items:center;padding:16px 18px}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--faint);animation:bl 1.2s infinite ease-in-out}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes bl{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+.ready{align-self:center;font-size:14px;background:var(--tint);color:var(--primary);border-radius:999px;padding:8px 14px;font-weight:600;display:flex;gap:8px;align-items:center;cursor:pointer;border:0}
+.composer{border-top:1px solid var(--line);padding:12px 12px calc(12px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px;background:var(--surface)}
+@media(min-width:1000px){.composer{border-radius:0 0 22px 22px;padding:14px 18px 16px}}
+.row{display:flex;gap:8px;align-items:flex-end}
+.row textarea{flex:1;resize:none;border:1px solid var(--line);background:var(--surface-2);border-radius:18px;padding:12px 16px;max-height:160px;min-height:48px;line-height:1.45;font-size:16px}
+.row textarea:focus{outline:none;border-color:var(--primary);background:var(--surface)}
+.send{flex:none;width:48px;height:48px;border-radius:50%;background:var(--primary);color:var(--primary-ink);border:0;cursor:pointer;display:grid;place-items:center}
+.send:disabled{opacity:.45;cursor:not-allowed}
+.send svg{width:20px;height:20px}
+.under{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--faint)}
+.under .grow{flex:1;min-width:160px}
+.gen{background:var(--warm-tint);color:var(--ink);border:1px solid color-mix(in srgb,var(--warm) 40%,transparent);border-radius:999px;padding:8px 14px;font-weight:700;font-size:14px;cursor:pointer}
+.gen.pulse{animation:pulse 1.6s ease 3}
+@keyframes pulse{50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--warm) 25%,transparent)}}
+.formpill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;padding:7px 12px;background:var(--surface);font-weight:700;font-size:14px;cursor:pointer}
+.formpill .pct{color:var(--primary)}
+.formpill.bump{animation:bump .5s ease}
+@keyframes bump{40%{transform:scale(1.06);border-color:var(--primary)}}
+@media(min-width:1000px){.formpill{display:none}}
+
+/* Form panel */
+.panel{display:flex;flex-direction:column;min-height:0;background:var(--surface);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);overflow:hidden}
+@media(max-width:999px){
+  .panel{position:fixed;inset:auto 0 0 0;height:88dvh;border-radius:22px 22px 0 0;z-index:40;transform:translateY(102%);transition:transform .3s ease}
+  .panel.open{transform:none}
+}
+.scrim{position:fixed;inset:0;background:rgba(15,22,23,.38);z-index:35;display:none}
+.scrim.on{display:block}
+.p-head{padding:18px 20px 14px;border-bottom:1px solid var(--line);display:grid;gap:10px}
+.p-title{display:flex;align-items:center;gap:10px}
+.p-title h2{font-size:22px;margin:0;flex:1}
+.p-close{display:none}
+@media(max-width:999px){.p-close{display:inline-flex}}
+.bar{height:8px;background:var(--tint-2);border-radius:999px;overflow:hidden;border:1px solid var(--line)}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--primary-2));border-radius:999px;transition:width .6s ease}
+.p-meta{display:flex;justify-content:space-between;font-size:13px;color:var(--soft)}
+.types{display:flex;flex-wrap:wrap;gap:6px}
+.types .t{font-size:12.5px;padding:3px 10px;border-radius:999px;background:var(--accent-tint);color:var(--accent);font-weight:700;animation:rise .4s ease both}
+.types .none{font-size:13px;color:var(--faint)}
+.p-body{flex:1;overflow-y:auto;padding:8px 12px 12px}
+details.sec{border:1px solid transparent;border-radius:14px;margin:4px 0}
+details.sec[open]{border-color:var(--line);background:var(--surface-2)}
+details.sec summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:11px 10px;border-radius:12px;font-weight:700;font-size:15px}
+details.sec summary::-webkit-details-marker{display:none}
+details.sec summary:hover{background:var(--tint-2)}
+.st{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-size:11px;color:var(--faint);font-weight:700}
+.st.part{border-color:var(--warm);color:var(--warm)}
+.st.done{border-color:var(--ok);background:var(--ok);color:#fff}
+.sn{color:var(--faint);font-weight:600;font-size:13px}
+summary .key{font-size:11px;color:var(--warm);font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-left:auto}
+.fields{padding:2px 12px 14px;display:grid;gap:10px}
+.f label{display:block;font-size:12.5px;color:var(--soft);font-weight:600;margin-bottom:4px}
+.f input[type=text],.f textarea{width:100%;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 10px;font-size:14.5px;line-height:1.45;resize:vertical}
+.f textarea{min-height:64px}
+.f textarea.big{min-height:150px}
+.f input:focus,.f textarea:focus{outline:none;border-color:var(--primary)}
+.f.flash input,.f.flash textarea{animation:flash 2.2s ease}
+@keyframes flash{0%,40%{background:var(--warm-tint);border-color:var(--warm)}}
+.chk{display:flex;gap:10px;align-items:flex-start}
+.chk input[type=checkbox]{margin-top:4px;width:18px;height:18px;accent-color:var(--primary);flex:none}
+.chk .c{flex:1}
+.chk label{color:var(--ink);font-weight:600;font-size:13.5px}
+.p-foot{border-top:1px solid var(--line);padding:12px 16px calc(12px + env(safe-area-inset-bottom));display:grid;gap:8px}
+.p-foot .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.p-foot small{color:var(--faint);font-size:12.5px;text-align:center}
+
+/* Drawers and dialogs */
+dialog{border:0;border-radius:22px;padding:0;max-width:min(560px,calc(100vw - 24px));width:100%;background:var(--surface);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.25)}
+dialog::backdrop{background:rgba(15,22,23,.45)}
+.dlg{padding:24px}
+.dlg h2{font-size:24px}
+.dlg p{color:var(--soft)}
+.dlg input{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:16px;background:var(--surface-2)}
+.dlg .acts{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
+.err{color:var(--danger);font-size:14px;min-height:20px;margin:8px 0 0}
+.check{list-style:none;padding:0;margin:14px 0;display:grid;gap:8px}
+.check li{display:flex;gap:10px;align-items:flex-start;font-size:15px}
+.check .ic{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700}
+.check .y{background:var(--ok);color:#fff}.check .n{border:2px solid var(--warm);color:var(--warm)}
+.next{background:var(--tint-2);border:1px solid var(--line);border-radius:14px;padding:12px 16px;font-size:14.5px}
+.next ol{margin:6px 0 0;padding-left:20px}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(560px,100vw);background:var(--surface);z-index:60;box-shadow:-10px 0 40px rgba(0,0,0,.18);transform:translateX(102%);transition:transform .3s ease;display:flex;flex-direction:column}
+.drawer.open{transform:none}
+.d-head{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+.d-head h2{margin:0;font-size:22px;flex:1}
+.d-body{overflow-y:auto;padding:16px 20px 30px;display:grid;gap:12px}
+.doc{border:1px solid var(--line);border-radius:14px;background:var(--surface-2)}
+.doc summary{cursor:pointer;padding:14px 16px;list-style:none}
+.doc summary::-webkit-details-marker{display:none}
+.doc summary strong{display:block;font-size:16px}
+.doc summary span{font-size:13.5px;color:var(--soft)}
+.doc .why{margin:0 16px 10px;padding:10px 12px;border-radius:10px;background:var(--warm-tint);font-size:14px}
+.doc pre{white-space:pre-wrap;font-family:var(--sans);font-size:13.5px;line-height:1.55;margin:0;padding:0 16px 16px;color:var(--ink);max-height:52vh;overflow:auto}
+.note{font-size:13.5px;color:var(--soft);background:var(--tint-2);border-radius:12px;padding:12px 14px}
+body.in-app{overflow:hidden}
+body.in-app .app{height:calc(100dvh - var(--toph,58px))}
+@media(max-width:719px){
+  .top .in{gap:8px;padding:10px 12px}
+  .word{font-size:21px}
+  .sel{max-width:112px;font-size:13px;padding:6px 24px 6px 10px}
+  .exit{padding:7px 11px;font-size:13px}
+  .demo-bar .grow{display:none}
+  .demo-bar{padding:8px 12px}
+  #underNote{display:none}
+  .under{justify-content:space-between}
+}
+@media(min-width:720px){.sel{max-width:190px}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<header class="top"><div class="in">
+  <button class="brand" id="toHome" aria-label="inFORMed home"><picture class="mark"><source srcset="/grit-logo-white.png" media="(prefers-color-scheme: dark)"><img src="/grit-logo.png" alt="GRIT"></picture><span class="word">in<b>FORM</b>ed</span></button>
+  <span class="spacer"></span>
+  <button class="ghost hide-sm" id="openSources">What this is based on</button>
+  <label class="sr" for="lang">Language</label>
+  <select class="sel" id="lang" title="Language for replies"></select>
+  <button class="exit" id="quickExit" title="Leave this site immediately">Quick exit</button>
+</div></header>
+
+<!-- HOME -->
+<main class="home" id="home">
+  <div class="hero">
+    <div>
+      <span class="eyebrow">Protection order support · South Africa</span>
+      <h1>Understand protection orders, and <em>tell your story</em> in your own words.</h1>
+      <p class="lede">inFORMed is your protection order support assistant. Ask it anything about protection orders, the court process or the legal words. When you are ready, it helps you prepare your application in a calm conversation. Type, or simply tell your story out loud.</p>
+      <div class="ctas">
+        <button class="btn primary" id="startAsk">Ask about protection orders</button>
+        <button class="btn secondary" id="startFill">Help me fill in my form</button>
+        <button class="btn secondary" id="startDemo">Watch a demo</button>
+      </div>
+      <ul class="reassure">
+        <li>One gentle question at a time</li>
+        <li>Pause whenever you need</li>
+        <li>You decide what happens next</li>
+      </ul>
+    </div>
+    <div class="preview" aria-hidden="true">
+      <div class="pv-b pv-a">Thank you for sharing that. When did this happen, if you remember?</div>
+      <div class="pv-b pv-u">Friday night, the 2nd. Around 11.</div>
+      <div class="pv-b pv-a">Thank you, that detail really helps the court. Were you hurt?</div>
+      <div class="pv-form">
+        <div class="h">Section 5 · What happened</div>
+        <p><mark>On Friday 2 October 2026 at approximately 11pm</mark>, at our shared flat, the respondent grabbed me by the neck and pushed me against the fridge…</p>
+      </div>
+    </div>
+  </div>
+
+  <section class="band">
+    <h2>How it works</h2>
+    <p class="sub">Magistrates need specific, clear details to grant a protection order. inFORMed helps you give them, without the conversation ever feeling like a form.</p>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><h3>Talk at your own pace</h3><p>Share what happened in your own words and your own language. inFORMed asks one gentle question at a time, and you can stop whenever you like.</p></div>
+      <div class="step"><div class="n">2</div><h3>Watch your form take shape</h3><p>Each detail goes into the right section of the court form, written the way magistrates need to read it: dates, places, what was said, and how things have got worse.</p></div>
+      <div class="step"><div class="n">3</div><h3>Take it to court</h3><p>Download your draft as a PDF or Word document and take it to the clerk at a Magistrates' Court. You can check and change anything first.</p></div>
+    </div>
+  </section>
+
+  <section class="band">
+    <h2>Good to know</h2>
+    <p class="sub">From the guides inFORMed is built on.</p>
+    <div class="facts">
+      <div class="fact"><div class="dot">1</div><p>You can apply for a protection order yourself, for free, without a lawyer and without opening a police case first.</p></div>
+      <div class="fact"><div class="dot">2</div><p>You apply at a Magistrates' Court where you live, work or study, where the other person lives or works, or where the abuse happened.<small>Court hours are usually 9am to 3:30pm on weekdays. If you are in danger you can apply after hours.</small></p></div>
+      <div class="fact"><div class="dot">3</div><p>Domestic violence is more than physical harm. It includes emotional, economic and sexual abuse, harassment, intimidation and controlling behaviour.</p></div>
+      <div class="fact"><div class="dot">4</div><p>Photos, doctors' notes or witnesses can help, but you can still apply without them. A child of any age can apply too.</p></div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="about">
+      <div class="card">
+        <h3>About inFORMed</h3>
+        <p>inFORMed is GRIT's AI legal navigation tool. It speaks like a caring community member, never rushes or judges, and helps people experiencing domestic violence put their experience into an application a court can act on.</p>
+        <p>Its guidance comes from four sources: the protection order application form, a guide to effective application language, a guide to domestic violence rights and referral pathways, and MOSAIC's research on what magistrates look for.</p>
+        <p style="margin:0"><button class="btn secondary small" id="openSources2">See what it is based on</button></p>
+      </div>
+      <div class="card grit">
+        <img class="glogo" src="/grit-logo-white.png" alt="GRIT, Gender Rights in Tech">
+        <h3>About GRIT</h3>
+        <p>GRIT (Gender Rights in Tech) is a South African organisation that builds feminist technology to support survivors of violence, and to help people find care and information about their rights, their bodies, and things they may be afraid to raise with another person.</p>
+        <ul>
+          <li>Survivor-centred care and trauma-informed practice in everything it builds</li>
+          <li>Tools co-created with the young women, survivors and communities who use them</li>
+          <li>Zuzi, a multilingual WhatsApp companion, and the GRIT app with its panic button</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <h2>Need help right now?</h2>
+    <p class="sub">These numbers are free. You do not need airtime.</p>
+    <div class="help">
+      <a href="tel:10111"><strong>10111</strong><span>Police emergency</span></a>
+      <a href="tel:10177"><strong>10177</strong><span>Ambulance</span></a>
+      <a href="tel:0800428428"><strong>0800 428 428</strong><span>GBV Command Centre, 24 hours</span></a>
+      <a href="tel:0800567567"><strong>0800 567 567</strong><span>SADAG suicide crisis line, 24 hours</span></a>
+      <a href="https://wa.me/27727378819" target="_blank" rel="noopener"><strong>072 737 8819</strong><span>GRIT on WhatsApp</span></a>
+    </div>
+  </section>
+</main>
+
+<!-- CHAT APP -->
+<div class="app" id="app">
+  <section class="chat" aria-label="Conversation">
+    <div class="c-head">
+      <div class="c-title"><strong>inFORMed</strong><span>Your protection order support assistant</span></div>
+      <div class="seg" role="tablist" aria-label="What would you like to do?">
+        <button type="button" role="tab" id="mAsk" class="on">Ask a question</button>
+        <button type="button" role="tab" id="mFill">Fill in my form</button>
+      </div>
+    </div>
+    <div class="demo-bar" id="demoBar">
+      <span class="tag">Demo</span>
+      <span class="grow">A scripted conversation. Naledi is an invented person.</span>
+      <button class="btn secondary small" id="dPlay">Pause</button>
+      <button class="btn secondary small" id="dNext">Next</button>
+      <button class="btn secondary small" id="dSafety" title="Show how inFORMed answers when someone is in danger">Safety reply</button>
+    </div>
+    <div class="log" id="log" aria-live="polite"></div>
+    <div class="composer">
+      <div class="row">
+        <label class="sr" for="inp">Your message</label>
+        <textarea id="inp" rows="1" placeholder="Type your message…" autocomplete="off"></textarea>
+        <button class="mic" id="mic" type="button" aria-label="Speak instead of typing" title="Speak instead of typing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+        <button class="send" id="send" aria-label="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </div>
+      <div class="voicebar" id="voiceBar"><span class="dot"></span><span id="voiceTxt">Listening… tap the microphone again when you are done.</span></div>
+      <div class="under">
+        <button class="formpill" id="formPill">Your application · <span class="pct" id="pillPct">0%</span></button>
+        <span class="grow" id="underNote">Your conversation is private. Nothing is saved when you close this page.</span>
+        <button class="fillcta" id="fillCta">Help me fill in my protection order</button>
+        <button class="gen" id="gen">Generate Protection Order</button>
+      </div>
+    </div>
+  </section>
+
+  <aside class="panel" id="panel" aria-label="Your application">
+    <div class="p-head">
+      <div class="p-title"><h2>Your application</h2><button class="ghost p-close" id="pClose">Close</button></div>
+      <div class="bar"><i id="barFill"></i></div>
+      <div class="p-meta"><span id="pDone">0 of 10 sections started</span><span>Fills in as you talk · edit anything</span></div>
+      <div class="types" id="types"><span class="none">Types of abuse will appear here as they come up.</span></div>
+    </div>
+    <div class="p-body" id="pBody"></div>
+    <div class="p-foot">
+      <button class="btn primary" id="gen2">Generate Protection Order</button>
+      <small>A draft to take to the clerk at a Magistrates' Court. Not legal advice.</small>
+    </div>
+  </aside>
+</div>
+<div class="scrim" id="scrim"></div>
+
+<footer class="foot" id="foot">
+  <picture class="flogo"><source srcset="/grit-logo-white.png" media="(prefers-color-scheme: dark)"><img src="/grit-logo.png" alt="GRIT, Gender Rights in Tech"></picture>
+  <p class="pw">Powered by <b>GRIT</b> · Gender Rights in Tech</p>
+  <p>Demo prototype. inFORMed helps you prepare a draft application. It is not legal advice and does not replace the court clerk or a lawyer.</p>
+</footer>
+
+<!-- Access code -->
+<dialog id="codeDlg"><form class="dlg" method="dialog" id="codeForm">
+  <h2>Access code</h2>
+  <p>This demo is private. Please enter the access code you were given.</p>
+  <label class="sr" for="codeIn">Access code</label>
+  <input id="codeIn" type="password" autocomplete="off" placeholder="Access code">
+  <p class="err" id="codeErr"></p>
+  <div class="acts"><button class="btn secondary" value="cancel" type="button" id="codeCancel">Cancel</button><button class="btn primary" type="submit">Continue</button></div>
+</form></dialog>
+
+<!-- Review and download -->
+<dialog id="genDlg"><div class="dlg">
+  <h2>Review your application</h2>
+  <p style="margin-top:0">Magistrates look for specific details. Here is what your draft has so far.</p>
+  <ul class="check" id="checklist"></ul>
+  <div class="next"><strong>What happens next</strong>
+    <ol>
+      <li>Take your draft to the clerk at a Magistrates' Court during court hours (usually 9am to 3:30pm on weekdays).</li>
+      <li>The clerk helps you complete the official form. You sign it in front of a commissioner of oaths.</li>
+      <li>If the court grants an interim order, it is served on the respondent and you are given a date to return to court.</li>
+    </ol>
+  </div>
+  <p class="err" id="genErr"></p>
+  <div class="acts">
+    <button class="btn secondary" id="genClose">Keep talking</button>
+    <button class="btn secondary" id="dlDocx">Download Word</button>
+    <button class="btn primary" id="dlPdf">Download PDF</button>
+  </div>
+</div></dialog>
+
+<!-- Sources drawer -->
+<aside class="drawer" id="drawer" aria-label="What this is based on">
+  <div class="d-head"><h2>What this is based on</h2><button class="ghost" id="dClose">Close</button></div>
+  <div class="d-body" id="dBody">
+    <p class="note">inFORMed's guidance and the wording of your application come from these four documents. When a reply draws on one, you will see it under that message.</p>
+  </div>
+</aside>
+
+<script src="/fields.js"></script>
+<script>
+(function(){
+const { SECTIONS, FIELDS, ABUSE_TYPES, DOCS, LANGS } = window.INFORMED;
+const $ = id => document.getElementById(id);
+// FILL_OPENING is the original inFORMed opening, word for word.
+const FILL_OPENING = "Hello, my purpose here is to support you in filling out a protection order form. I'm here to listen and help you share your story in a way that will be understood by the court. Everything we discuss is for your support\u2014you're in control of what happens next.\n\nWhenever you're ready, can you tell me a little about what brings you here today? You can type, or tap the microphone and tell me in your own words.";
+const ASK_OPENING = "Hello, I'm inFORMed, your protection order support assistant. I can explain how protection orders work, what the legal words mean, and what to expect at court. When you're ready, I can also help you fill in your application. What would you like to know?";
+const SUGGESTED = ["What is a protection order?", "Do I need a lawyer?", "What happens after I apply?", "What does \u2018respondent\u2019 mean?", "What is an interim order?"];
+
+/* ---------- state (memory only, never stored) ---------- */
+let S = fresh();
+function fresh(){ return { mode:null, cm:'ask', msgs:[], form:{}, abuse:[], busy:false, ready:false, shown:{} }; }
+let CODE = ''; try { CODE = sessionStorage.getItem('informed_code') || ''; } catch(e){}
+let LANG = 'auto'; try { LANG = localStorage.getItem('informed_lang') || 'auto'; } catch(e){}
+
+/* ---------- language ---------- */
+LANGS.forEach(l => { const o=document.createElement('option'); o.value=l.id; o.textContent=l.label; $('lang').appendChild(o); });
+$('lang').value = LANG;
+$('lang').onchange = e => { LANG = e.target.value; try{localStorage.setItem('informed_lang',LANG)}catch(_){} };
+
+/* ---------- quick exit ---------- */
+let leaving = false;
+function quickExit(){
+  leaving = true;
+  try { sessionStorage.clear(); } catch(e){}
+  S = fresh(); document.body.innerHTML = '';
+  window.location.replace('https://www.google.com/search?q=weather+today');
+}
+$('quickExit').onclick = quickExit;
+window.addEventListener('beforeunload', e => {
+  if (!leaving && S.mode === 'live' && Object.values(S.form).some(Boolean)) { e.preventDefault(); e.returnValue = ''; }
+});
+
+/* ---------- views ---------- */
+function show(view){
+  const home = view === 'home';
+  $('home').style.display = home ? '' : 'none';
+  $('foot').style.display = home ? '' : 'none';
+  $('app').classList.toggle('on', !home);
+  document.body.classList.toggle('in-app', !home);
+  document.documentElement.style.setProperty('--toph', document.querySelector('.top').offsetHeight + 'px');
+  window.scrollTo(0,0);
+}
+$('toHome').onclick = () => {
+  if (S.mode === 'live' && S.msgs.length > 1 && !confirm('Leave this conversation? Nothing is saved, so it will be deleted.')) return;
+  stopDemo(); S = fresh(); show('home');
+};
+
+/* ---------- form panel ---------- */
+function buildPanel(){
+  const body = $('pBody'); body.innerHTML = '';
+  SECTIONS.forEach(sec => {
+    const d = document.createElement('details'); d.className='sec'; d.id='sec'+sec.n;
+    if (sec.n === 5) d.open = true;
+    d.innerHTML = `<summary><span class="st" id="st${sec.n}">${sec.n}</span><span>${sec.title}</span>${sec.key?'<span class="key">Key</span>':''}${sec.optional?'<span class="sn" style="margin-left:auto">Optional</span>':''}</summary><div class="fields"></div>`;
+    const wrap = d.querySelector('.fields');
+    FIELDS.filter(f => f.s === sec.n).forEach(f => {
+      const el = document.createElement('div'); el.className='f'; el.id='f_'+f.id;
+      if (f.type === 'check'){
+        el.innerHTML = `<div class="chk"><input type="checkbox" id="cb_${f.id}"><div class="c"><label for="cb_${f.id}"></label><input type="text" id="in_${f.id}" placeholder="Details, if any"></div></div>`;
+        el.querySelector('label').textContent = f.label;
+        const cb = el.querySelector('input[type=checkbox]'), tx = el.querySelector('input[type=text]');
+        cb.onchange = () => { S.form[f.id] = cb.checked ? (tx.value.trim() || 'Requested') : ''; if(!cb.checked) tx.value=''; refreshProgress(); };
+        tx.oninput = () => { S.form[f.id] = tx.value.trim() ? tx.value : (cb.checked ? 'Requested' : ''); if (tx.value.trim()) cb.checked = true; refreshProgress(); };
+      } else {
+        const big = f.id === 'acts' || f.id === 'urgency';
+        el.innerHTML = `<label for="in_${f.id}"></label>` + (f.type === 'long' ? `<textarea id="in_${f.id}" class="${big?'big':''}"></textarea>` : `<input type="text" id="in_${f.id}">`);
+        el.querySelector('label').textContent = f.label;
+        el.querySelector('#in_'+f.id).oninput = e => { S.form[f.id] = e.target.value; refreshProgress(); };
+      }
+      wrap.appendChild(el);
+    });
+    body.appendChild(d);
+  });
+}
+function setField(id, value, flash){
+  S.form[id] = value;
+  const f = FIELDS.find(x => x.id === id); if (!f) return;
+  const tx = $('in_'+id);
+  if (f.type === 'check'){ const cb = $('cb_'+id); cb.checked = !!value; tx.value = (value && value.toLowerCase() !== 'requested') ? value : ''; }
+  else tx.value = value;
+  if (flash){
+    LASTF = id;
+    const el = $('f_'+id); el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+    const sec = $('sec'+f.s); if (!sec.open) sec.open = true;
+    const pb = $('pBody'); const top = el.offsetTop - pb.offsetTop - 40;
+    if (window.innerWidth >= 1000) pb.scrollTo({ top, behavior: 'smooth' });
+  }
+}
+let LASTF = null;
+function renderForm(){ FIELDS.forEach(f => setField(f.id, S.form[f.id] || '', false)); renderTypes(); refreshProgress(); }
+function renderTypes(){
+  const box = $('types'); box.innerHTML = '';
+  if (!S.abuse.length){ box.innerHTML = '<span class="none">Types of abuse will appear here as they come up.</span>'; return; }
+  S.abuse.forEach(id => { const t = ABUSE_TYPES.find(a => a.id === id); if (!t) return; const s=document.createElement('span'); s.className='t'; s.textContent=t.label; box.appendChild(s); });
+}
+function sectionState(n){
+  const fs = FIELDS.filter(f => f.s === n); const filled = fs.filter(f => (S.form[f.id]||'').trim()).length;
+  if (!filled) return 'empty';
+  if (n === 7 || n === 8 || n === 4 || n === 5 || n === 9 || n === 10 || n === 6 || n === 2) return 'done';
+  return filled >= Math.min(3, fs.length) ? 'done' : 'part';
+}
+function refreshProgress(){
+  let started = 0, score = 0;
+  const weights = {1:1,3:1,4:.5,5:3,6:2,7:1.5,8:.5,9:.25,10:.5};
+  let total = 0; for (const k in weights) total += weights[k];
+  SECTIONS.forEach(sec => {
+    const st = sectionState(sec.n), el = $('st'+sec.n);
+    el.className = 'st' + (st==='done'?' done':st==='part'?' part':'');
+    el.textContent = st==='done' ? '✓' : sec.n;
+    if (st !== 'empty' && !sec.optional) started++;
+    if (weights[sec.n]) score += weights[sec.n] * (st==='done'?1:st==='part'?.5:0);
+  });
+  const pct = Math.round(100*score/total);
+  $('barFill').style.width = pct + '%';
+  $('pillPct').textContent = pct + '%';
+  $('pDone').textContent = `${started} of 9 sections started`;
+}
+function openPanel(){ $('panel').classList.add('open'); $('scrim').classList.add('on');
+  if (LASTF){ const el = $('f_'+LASTF), pb = $('pBody'); setTimeout(() => pb.scrollTo({ top: el.offsetTop - pb.offsetTop - 60, behavior:'smooth' }), 320); }
+}
+function closePanel(){ $('panel').classList.remove('open'); if(!$('drawer').classList.contains('open')) $('scrim').classList.remove('on'); }
+$('formPill').onclick = openPanel; $('pClose').onclick = closePanel;
+$('scrim').onclick = () => { closePanel(); closeDrawer(); };
+
+/* ---------- messages ---------- */
+const log = $('log');
+function scrollDown(){ log.scrollTop = log.scrollHeight; }
+function addMsg(role, text, opts = {}){
+  const m = document.createElement('div');
+  m.className = 'msg ' + (role === 'user' ? 'u' : 'a') + (opts.crisis ? ' crisis' : '');
+  if (role !== 'user') { const w=document.createElement('div'); w.className='who'; w.textContent='inFORMed'; m.appendChild(w); }
+  const b = document.createElement('div'); b.className='b'; b.textContent = text; m.appendChild(b);
+  if (opts.crisis){
+    const c = document.createElement('div'); c.className='calls';
+    c.innerHTML = '<a href="tel:10111">Call police · 10111</a><a href="tel:10177">Ambulance · 10177</a><a class="alt" href="tel:0800428428">GBV Command Centre · 0800 428 428</a>';
+    m.appendChild(c);
+  }
+  if (opts.sources && opts.sources.length){
+    const sr = document.createElement('div'); sr.className='srcs';
+    const seen = new Set();
+    opts.sources.forEach(s => {
+      if (seen.has(s.doc)) return; seen.add(s.doc);
+      const d = DOCS.find(x => x.id === s.doc); if (!d) return;
+      const c = document.createElement('button'); c.className='chip'; c.type='button';
+      c.innerHTML = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 1.5h5.5L13 5v9.5H4z"/><path d="M9 1.5V5h4"/></svg><span></span>';
+      c.querySelector('span').textContent = 'Based on · ' + d.short;
+      c.title = s.note || '';
+      c.onclick = () => openDrawer(s.doc, s.note);
+      sr.appendChild(c);
+    });
+    m.appendChild(sr);
+  }
+  if (role !== 'user' && (opts.general || opts.listen !== false)){
+    let sr = m.querySelector('.srcs'); if (!sr){ sr = document.createElement('div'); sr.className='srcs'; m.appendChild(sr); }
+    if (opts.general){ const g=document.createElement('span'); g.className='chip gen-info'; g.textContent='General information, not from GRIT\u2019s guides. Please check with the court clerk.'; sr.appendChild(g); }
+    if (opts.listen !== false){
+      const l=document.createElement('button'); l.type='button'; l.className='chip listen';
+      l.innerHTML='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2.5 6v4h2.5l3.5 3V3L5 6z"/><path d="M11 5.5a3.5 3.5 0 0 1 0 5"/></svg><span>Listen</span>';
+      l.onclick = () => listen(text, l); sr.appendChild(l);
+    }
+  }
+  log.appendChild(m); scrollDown(); return m;
+}
+function suggest(){
+  const w = document.createElement('div'); w.className='suggest';
+  SUGGESTED.forEach(q => { const b=document.createElement('button'); b.type='button'; b.textContent=q;
+    b.onclick = () => { if (S.mode !== 'live' || S.busy) return; w.remove(); inp.value = q; sendLive(); }; w.appendChild(b); });
+  log.appendChild(w); scrollDown();
+}
+function typing(){ const m=document.createElement('div'); m.className='msg a typing'; m.innerHTML='<div class="b"><i></i><i></i><i></i></div>'; log.appendChild(m); scrollDown(); return m; }
+function readyNote(){
+  if (S.ready) return; S.ready = true;
+  const r = document.createElement('button'); r.className='ready'; r.type='button'; r.textContent='Your application is ready to review →';
+  r.onclick = openGen; log.appendChild(r); scrollDown();
+  $('gen').classList.add('pulse');
+}
+function applyResult(j, flash = true){
+  (j.updates || []).forEach((u, i) => setTimeout(() => setField(u.field, u.value, flash), i * 180));
+  if (Array.isArray(j.abuse_types)) { S.abuse = j.abuse_types; renderTypes(); }
+  if ((j.updates || []).length){ const p=$('formPill'); p.classList.remove('bump'); void p.offsetWidth; p.classList.add('bump'); }
+  setTimeout(refreshProgress, ((j.updates||[]).length) * 180 + 50);
+  if (j.ready) setTimeout(readyNote, 600);
+}
+
+/* ---------- composer ---------- */
+const inp = $('inp');
+function autosize(){ inp.style.height='auto'; inp.style.height = Math.min(inp.scrollHeight, 160) + 'px'; }
+inp.addEventListener('input', autosize);
+inp.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && window.innerWidth >= 720){ e.preventDefault(); sendLive(); } });
+$('send').onclick = () => sendLive();
+function setBusy(b){ S.busy = b; $('send').disabled = b || S.mode !== 'live'; $('mic').disabled = b || S.mode !== 'live'; }
+
+async function sendLive(){
+  if (S.mode !== 'live' || S.busy) return;
+  const v = inp.value.trim(); if (!v) return;
+  inp.value = ''; autosize(); voiceBar(false);
+  addMsg('user', v); S.msgs.push({ role:'user', content:v });
+  await callChat();
+}
+async function callChat(){
+  setBusy(true);
+  const t = typing();
+  try {
+    const r = await fetch('/api/chat', { method:'POST', headers:{ 'Content-Type':'application/json', 'x-demo-code': CODE },
+      body: JSON.stringify({ messages: S.msgs, form: S.form, abuse: S.abuse, lang: LANG, mode: S.cm }) });
+    if (r.status === 401){ t.remove(); setBusy(false); askCode(CODE ? 'That access code did not work. Please try again.' : '', () => callChat()); return; }
+    const j = await r.json();
+    t.remove();
+    addMsg('assistant', j.reply, { crisis: j.crisis, sources: (j.fixed || j.grounding === 'general') ? [] : j.sources, general: !j.fixed && j.grounding === 'general' });
+    S.msgs.push({ role:'assistant', content:j.reply });
+    if (S.cm === 'fill') applyResult(j);
+  } catch(e){
+    t.remove();
+    addMsg('assistant', "Sorry, I could not reach the server just now. Please try again. If you are in danger, call 10111 or the GBV Command Centre on 0800 428 428.");
+  }
+  setBusy(false); if (window.innerWidth >= 720) inp.focus();
+}
+
+/* ---------- access code ---------- */
+let codeThen = null;
+function askCode(msg, then){
+  codeThen = then; $('codeErr').textContent = msg || ''; $('codeIn').value = '';
+  $('codeDlg').showModal(); setTimeout(() => $('codeIn').focus(), 50);
+}
+$('codeForm').onsubmit = e => {
+  e.preventDefault(); const v = $('codeIn').value.trim(); if (!v) { $('codeErr').textContent='Please enter the code.'; return; }
+  CODE = v; try{ sessionStorage.setItem('informed_code', v); }catch(_){}
+  $('codeDlg').close(); const f = codeThen; codeThen = null; f && f();
+};
+$('codeCancel').onclick = () => { $('codeDlg').close(); codeThen = null; if (S.mode==='live' && S.msgs.length<=1){ S=fresh(); show('home'); } };
+
+/* ---------- ask / fill modes ---------- */
+function setMode(cm, announce = true){
+  S.cm = cm;
+  $('app').classList.toggle('ask', cm === 'ask');
+  $('mAsk').classList.toggle('on', cm === 'ask'); $('mFill').classList.toggle('on', cm === 'fill');
+  $('mAsk').setAttribute('aria-selected', cm === 'ask'); $('mFill').setAttribute('aria-selected', cm === 'fill');
+  if (!announce) return;
+  if (!S.shown[cm]){
+    S.shown[cm] = true;
+    const o = cm === 'fill' ? FILL_OPENING : ASK_OPENING;
+    addMsg('assistant', o); S.msgs.push({ role:'assistant', content:o });
+    if (cm === 'ask' && S.mode === 'live') suggest();
+  } else {
+    const note = cm === 'fill' ? "Let's carry on with your application. Your form is kept on the right." : "Ask me anything about protection orders. Your form is kept, and you can go back to it any time.";
+    addMsg('assistant', note, { listen:false }); S.msgs.push({ role:'assistant', content:note });
+  }
+  if (S.mode === 'live' && window.innerWidth >= 720) inp.focus();
+}
+$('mAsk').onclick = () => { if (S.mode === 'live' && S.cm !== 'ask') setMode('ask'); };
+$('mFill').onclick = () => { if (S.mode === 'live' && S.cm !== 'fill') setMode('fill'); };
+$('fillCta').onclick = () => { if (S.mode === 'live') setMode('fill'); };
+
+/* ---------- voice: speak instead of typing ---------- */
+let REC = null;
+function pickMime(){
+  const c = ['audio/webm;codecs=opus','audio/webm','audio/mp4','audio/ogg;codecs=opus'];
+  for (const m of c) if (window.MediaRecorder && MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(m)) return m;
+  return '';
+}
+function voiceBar(on, text){ $('voiceBar').classList.toggle('on', on); if (text) $('voiceTxt').textContent = text; }
+async function toggleMic(){
+  if (S.mode !== 'live' || S.busy) return;
+  const mic = $('mic');
+  if (REC && REC.state === 'recording'){ REC.stop(); return; }
+  if (!navigator.mediaDevices || !window.MediaRecorder){ voiceBar(true, 'Sorry, voice is not supported in this browser. Please type instead.'); setTimeout(() => voiceBar(false), 4000); return; }
+  let stream;
+  try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+  catch(e){ voiceBar(true, 'I need permission to use your microphone. You can allow it in your browser, or type instead.'); setTimeout(() => voiceBar(false), 5000); return; }
+  const mime = pickMime(); const chunks = []; const started = Date.now();
+  REC = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
+  REC.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+  const tick = setInterval(() => {
+    const s = Math.floor((Date.now() - started) / 1000);
+    voiceBar(true, `Listening… ${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}. Tap the microphone again when you are done.`);
+    if (s >= 180 && REC.state === 'recording') REC.stop();
+  }, 500);
+  REC.onstop = async () => {
+    clearInterval(tick); stream.getTracks().forEach(t => t.stop());
+    mic.classList.remove('rec'); mic.classList.add('busy'); voiceBar(true, 'Writing down what you said…');
+    try {
+      const blob = new Blob(chunks, { type: REC.mimeType || mime || 'audio/webm' });
+      if (blob.size < 1200) throw new Error('short');
+      const b64 = await new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => res(String(fr.result).split(',')[1]); fr.onerror = rej; fr.readAsDataURL(blob); });
+      const r = await fetch('/api/transcribe', { method:'POST', headers:{ 'Content-Type':'application/json', 'x-demo-code': CODE }, body: JSON.stringify({ audio: b64, mime: blob.type, lang: LANG }) });
+      if (r.status === 401){ voiceBar(false); askCode('', () => {}); return; }
+      const j = await r.json();
+      if (j.error || !j.text) throw new Error(j.error || 'empty');
+      inp.value = (inp.value ? inp.value.trim() + ' ' : '') + j.text; autosize();
+      voiceBar(true, 'Check what I heard and change anything, then tap send.');
+      inp.focus();
+      setTimeout(() => voiceBar(false), 6000);
+    } catch(e){
+      voiceBar(true, e.message && e.message.length > 10 ? e.message : 'Sorry, I could not hear that clearly. Please try again, or type instead.');
+      setTimeout(() => voiceBar(false), 5000);
+    }
+    mic.classList.remove('busy'); REC = null;
+  };
+  REC.start(); mic.classList.add('rec'); voiceBar(true, 'Listening… tap the microphone again when you are done.');
+}
+$('mic').onclick = toggleMic;
+
+/* ---------- listen: read a reply aloud (only when tapped, never automatically) ---------- */
+let AUDIO = null, AUDIO_BTN = null;
+function stopAudio(){ if (AUDIO){ AUDIO.pause(); AUDIO = null; } if (AUDIO_BTN){ AUDIO_BTN.classList.remove('playing'); AUDIO_BTN.querySelector('span').textContent = 'Listen'; AUDIO_BTN = null; } }
+async function listen(text, btn){
+  if (AUDIO_BTN === btn){ stopAudio(); return; }
+  stopAudio();
+  if (S.mode !== 'live'){ btn.querySelector('span').textContent = 'Listen works in a live chat'; setTimeout(() => btn.querySelector('span').textContent = 'Listen', 2500); return; }
+  AUDIO_BTN = btn; btn.classList.add('playing'); btn.querySelector('span').textContent = 'Loading…';
+  try {
+    const r = await fetch('/api/speak', { method:'POST', headers:{ 'Content-Type':'application/json', 'x-demo-code': CODE }, body: JSON.stringify({ text, lang: LANG }) });
+    if (!r.ok) throw new Error('speak');
+    const url = URL.createObjectURL(await r.blob());
+    if (AUDIO_BTN !== btn) return;
+    AUDIO = new Audio(url); btn.querySelector('span').textContent = 'Stop';
+    AUDIO.onended = () => { URL.revokeObjectURL(url); stopAudio(); };
+    await AUDIO.play();
+  } catch(e){ stopAudio(); btn.querySelector('span').textContent = 'Could not play'; setTimeout(() => btn.querySelector('span').textContent = 'Listen', 2500); }
+}
+
+/* ---------- start ---------- */
+function startApp(mode, cm = 'ask'){
+  stopDemo(); stopAudio(); S = fresh(); S.mode = mode; LASTF = null;
+  log.innerHTML = ''; buildPanel(); renderForm();
+  $('demoBar').classList.toggle('on', mode === 'demo');
+  $('gen').classList.remove('pulse');
+  inp.disabled = mode !== 'live';
+  inp.placeholder = mode === 'live' ? 'Type your message…' : 'Demo is playing…';
+  $('underNote').textContent = mode === 'live' ? 'Your conversation is private. Nothing is saved when you close this page.' : 'Demo: an invented person and a scripted conversation.';
+  setBusy(false);
+  show('app');
+  setMode(mode === 'demo' ? 'ask' : cm);
+  if (mode === 'demo') playDemo();
+}
+// An access code is asked for only if the server requires one.
+$('startAsk').onclick = () => startApp('live', 'ask');
+$('startFill').onclick = () => startApp('live', 'fill');
+$('startDemo').onclick = () => startApp('demo');
+
+/* ---------- review and download ---------- */
+function has(id){ return !!(S.form[id]||'').trim(); }
+function openGen(){
+  const acts = S.form.acts || '';
+  const incidents = (acts.match(/^\s*\d+[.)]/gm) || []).length || (acts.trim() ? 1 : 0);
+  const items = [
+    [has('c_names') || has('c_surname'), 'Your name and details (Section 1)'],
+    [has('r_names') || has('r_surname'), 'Details of the person harming you (Section 3)'],
+    [incidents >= 3, incidents >= 3 ? `${incidents} incidents described, with dates where known (Section 5)` : 'At least three incidents, with dates where you can (Section 5)'],
+    [has('urgency'), 'Why the court must act urgently (Section 6)'],
+    [FIELDS.some(f => f.s === 7 && has(f.id)), 'What you want the order to stop (Section 7)'],
+    [has('police_station'), 'The police station you would report to (Section 10)'],
+  ];
+  $('checklist').innerHTML = '';
+  items.forEach(([ok, label]) => { const li=document.createElement('li'); li.innerHTML = `<span class="ic ${ok?'y':'n'}">${ok?'✓':'!'}</span><span></span>`; li.lastChild.textContent = label + (ok ? '' : ' — you can add this, or leave it for the clerk'); $('checklist').appendChild(li); });
+  $('genErr').textContent = '';
+  $('genDlg').showModal();
+}
+$('gen').onclick = openGen; $('gen2').onclick = () => { closePanel(); openGen(); };
+$('genClose').onclick = () => $('genDlg').close();
+async function download(format){
+  const btn = format === 'pdf' ? $('dlPdf') : $('dlDocx'); const label = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Preparing…'; $('genErr').textContent = '';
+  try {
+    const r = await fetch('/api/document', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ form:S.form, abuse:S.abuse, format, demo:S.mode==='demo' }) });
+    if (!r.ok) throw new Error(await r.text());
+    const blob = await r.blob(); const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'protection-order-draft.' + (format === 'pdf' ? 'pdf' : 'docx');
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000);
+  } catch(e){ $('genErr').textContent = 'Sorry, the document could not be prepared. Please try again.'; }
+  btn.disabled = false; btn.textContent = label;
+}
+$('dlPdf').onclick = () => download('pdf'); $('dlDocx').onclick = () => download('docx');
+
+/* ---------- sources drawer ---------- */
+let DOCTEXT = null;
+async function openDrawer(focusId, note){
+  $('drawer').classList.add('open'); $('scrim').classList.add('on');
+  if (!DOCTEXT){ try { DOCTEXT = await (await fetch('/docs.json')).json(); } catch(e){ DOCTEXT = []; } }
+  const body = $('dBody'); body.querySelectorAll('.doc').forEach(n => n.remove());
+  DOCTEXT.forEach(d => {
+    const el = document.createElement('details'); el.className='doc'; if (d.id === focusId) el.open = true;
+    el.innerHTML = '<summary><strong></strong><span></span></summary>' + (d.id === focusId && note ? '<div class="why"></div>' : '') + '<pre></pre>';
+    el.querySelector('strong').textContent = d.title; el.querySelector('span').textContent = d.about;
+    if (d.id === focusId && note) el.querySelector('.why').textContent = 'Used here: ' + note;
+    el.querySelector('pre').textContent = d.text;
+    body.appendChild(el);
+    if (d.id === focusId) setTimeout(() => el.scrollIntoView({ block:'start', behavior:'smooth' }), 320);
+  });
+}
+function closeDrawer(){ $('drawer').classList.remove('open'); if(!$('panel').classList.contains('open')) $('scrim').classList.remove('on'); }
+$('openSources').onclick = () => openDrawer(); $('openSources2').onclick = () => openDrawer(); $('dClose').onclick = closeDrawer;
+document.addEventListener('keydown', e => { if (e.key === 'Escape'){ closeDrawer(); closePanel(); } });
+
+/* ---------- demo ---------- */
+const SAFETY_DEMO = { user: "He's outside the door right now and he's shouting. I am in danger.", bot: "I'm a chatbot, and this sounds like a human emergency. If you have time to plan how to get out of danger, ask me about a safety plan. If this is an emergency and you need help right now, call the ambulance on 10177 or the police on 10111. These numbers are free so you don't need airtime. You can also download the GRIT app which will connect you to help using this link: Android - https://play.google.com/store/apps/details?id=com.ads.apps.kwanele or iOS - https://apps.apple.com/us/app/kwanele/id1616602924." };
+const ACTS1 = "1. On Friday 2 October 2026 at approximately 11pm, at our shared flat in Delft, the respondent came home drunk and accused me of cheating. He grabbed me by the neck and pushed me against the fridge. I could not breathe for a few seconds.";
+const ACTS2 = "1. In 2025 the respondent began shouting at me.\n2. In June 2026 the respondent slapped me after a party.\n3. Since August 2026 the abuse has happened almost every weekend. The respondent checks my phone all the time.\n4. On Friday 2 October 2026 at approximately 11pm, at our shared flat in Delft, the respondent came home drunk and accused me of cheating. He grabbed me by the neck and pushed me against the fridge. I could not breathe for a few seconds.";
+const ACTS3 = "1. In 2025 the respondent began shouting at me.\n2. In June 2026, after a party at his cousin's house in Khayelitsha, the respondent slapped me on the way to the car. His cousin saw this.\n3. Since August 2026 the abuse has happened almost every weekend. The respondent checks my phone all the time.\n4. On Friday 2 October 2026 at approximately 11pm, at our shared flat in Delft, the respondent came home drunk and accused me of cheating. He grabbed me by the neck and pushed me against the fridge. I could not breathe for a few seconds. My son Lwazi (5) was in the room.\n5. On Sunday 4 October 2026 the respondent showed me a knife that he keeps in his car. He has told me: \"If you ever leave me, I will kill you and nobody will find you.\"";
+const DEMO = [
+  { u: "What is a protection order?",
+    b: "A protection order is an order from a Magistrates' Court that tells the person harming you (the court calls him the \u201Crespondent\u201D) to stop the abuse and to follow certain rules, like not contacting you or staying away from your home or work. Breaking it is a crime, so the police can arrest him. Is there anything else you'd like to know?",
+    up: {}, ab: null, src: [{ doc:'guide', note:'What a protection order is and what it can include' }] },
+  { u: "Do I have to pay to apply? I don't have money.",
+    b: "As far as I know, you do not pay a fee to apply for a protection order at a Magistrates' Court, and you don't need a lawyer. This isn't covered in GRIT's guides, so please confirm with the court clerk. Whenever you're ready, I can help you fill in your application.",
+    up: {}, ab: null, src: [], general: true },
+  { sw: 'fill' },
+  { u: "Hi. I don't really know where to start. My boyfriend has been hurting me and I think I need a protection order.",
+    b: "Thank you for reaching out. That takes real courage, and you don't need to know where to start. We'll go at your pace, and you can stop at any time. Can you tell me what happened most recently that made you want to get help?",
+    up: { c_relationship: 'Boyfriend (dating relationship)' }, ab: [], src: [{ doc:'rights', note:'A dating relationship is a domestic relationship under the Act' }] },
+  { u: "Last Friday night he came home drunk and accused me of cheating. He grabbed me by the neck and pushed me against the fridge. I couldn't breathe for a few seconds.",
+    b: "I'm so sorry. That sounds terrifying, and being grabbed by the neck is very serious. You were right to reach out. Do you remember the date of that Friday, and roughly what time it was?",
+    up: { acts: "1. On a Friday night, the respondent came home drunk and accused me of cheating. He grabbed me by the neck and pushed me against the fridge. I could not breathe for a few seconds." }, ab: ['physical','emotional'],
+    src: [{ doc:'magistrates', note:'Concrete actions, like grabbing the throat, show the court the risk' }] },
+  { u: "It was Friday the 2nd of October, around 11pm. At our flat in Delft.",
+    b: "Thank you, that detail really helps the court. Were you hurt, for example marks, bruises or pain afterwards?",
+    up: { acts: ACTS1 }, ab: ['physical','emotional'],
+    src: [{ doc:'language', note:'Exact date, time and place make an incident strong' }] },
+  { u: "My neck had red marks and it was sore to swallow for two days. I didn't go to the clinic. My sister took photos.",
+    b: "That must have been so painful, and it's good that your sister took photos. They can support your application, but you can still apply without medical records. Has anything like this happened before?",
+    up: { injuries: "After the incident on 2 October 2026 I had red marks on my neck and it was painful to swallow for two days. I did not get medical treatment. My sister took photos of the marks." }, ab: ['physical','emotional'],
+    src: [{ doc:'rights', note:'Photos and witnesses help, but are not required to apply' }] },
+  { u: "Yes. It started with shouting last year. In June he slapped me after a party. Since August it's almost every weekend, and he checks my phone all the time.",
+    b: "It sounds like things have been getting worse over time, and checking your phone is a form of abuse too. When he slapped you in June, do you remember where you were?",
+    up: { acts: ACTS2 }, ab: ['physical','emotional','harassment','controlling'],
+    src: [{ doc:'language', note:'Showing escalation over time strengthens Section 5' }, { doc:'rights', note:'Monitoring your phone without consent is harassment' }] },
+  { u: "At his cousin's house in Khayelitsha, on the way to the car. His cousin saw it.",
+    b: "Thank you. A person who saw it can really help your application. Has he ever threatened you, or said what he would do if you left?",
+    up: { acts: ACTS3.replace(/ My son Lwazi \(5\) was in the room\./,'').replace(/\n5\..*$/s,'') }, ab: ['physical','emotional','harassment','controlling'],
+    src: [{ doc:'magistrates', note:'Witnesses add credibility to an incident' }] },
+  { u: "He says if I ever leave him he'll kill me and nobody will find me. He has a knife he keeps in the car. He showed it to me on Sunday the 4th.",
+    b: "That is a serious threat, and you are not overreacting by being afraid. I'll make sure the court understands the danger. Does anyone else live with you, like children?",
+    up: { acts: ACTS3.replace(/ My son Lwazi \(5\) was in the room\./,''), weapons: "The respondent keeps a knife in his car. He showed it to me on Sunday 4 October 2026.",
+      urgency: "The respondent has threatened to kill me if I leave him, saying \"nobody will find you\". He has a knife and showed it to me on 4 October 2026, two days after he grabbed me by the neck and I could not breathe. The abuse has escalated from shouting in 2025, to a slap in June 2026, to abuse almost every weekend since August 2026, and now strangulation. I live with him, and I fear he will seriously hurt or kill me if the court does not act now." },
+    ab: ['physical','emotional','harassment','controlling','intimidation'],
+    src: [{ doc:'magistrates', note:'Death threats and access to weapons show urgency' }, { doc:'language', note:'Quote threats in the exact words used' }] },
+  { u: "My son Lwazi, he's 5. He was in the room on Friday. Now he wakes up at night crying.",
+    b: "Thank you for telling me about Lwazi. Courts take children's safety very seriously. What would you like the protection order to stop him from doing?",
+    up: { acts: ACTS3, p_people: "Lwazi, age 5, my son", p_how: "My son Lwazi (5) was in the room when the respondent grabbed me by the neck on 2 October 2026. Since then he wakes up crying at night." },
+    ab: ['physical','emotional','harassment','controlling','intimidation','child_exposure'],
+    src: [{ doc:'magistrates', note:'Children exposed to violence get heightened attention' }] },
+  { u: "I want him to stop hurting me, stop coming to the flat, and stop messaging me. And they must take the knife.",
+    b: "That's clear, and each of those matches what you've told me. Which police station is closest to you, where you would report it if he breaks the order?",
+    up: { t_a:'Requested', t_b:'Requested', t_c:'Our shared flat in Delft (full address to be added)', t_h:'Not to contact me by phone, SMS, WhatsApp, social media or through other people.', o_b:'The knife the respondent keeps in his car.' },
+    ab: ['physical','emotional','harassment','controlling','intimidation','child_exposure'],
+    src: [{ doc:'form', note:'Sections 7 and 8 list the protections you can ask for' }, { doc:'language', note:'Name every way he must not contact you' }] },
+  { u: "Delft police station.",
+    b: "Thank you. Before we finish, I need a few details for the first part of the form. What is your full name, and what is his?",
+    up: { police_station:'Delft Police Station' }, ab: null, src: [] },
+  { u: "I'm Naledi Mokoena. He is Themba Nkosi.",
+    b: "Thank you, Naledi. Thank you for sharing your story with me. I believe I have enough information to help prepare your protection order application. When you're ready, you can click the 'Generate Protection Order' button below to create your form.",
+    up: { c_names:'Naledi', c_surname:'Mokoena', r_names:'Themba', r_surname:'Nkosi' }, ab: null, src: [], ready: true },
+];
+let D = { i:0, playing:false, gen:0, cur:null, cancel:null };
+function stopDemo(){ D.gen++; D.playing = false; if (D.cancel) D.cancel(); }
+function pause(ms){ return new Promise(res => { const t = setTimeout(() => { D.cancel = null; res(true); }, ms); D.cancel = () => { clearTimeout(t); D.cancel = null; res(false); }; }); }
+async function demoStep(){
+  if (D.i >= DEMO.length) return false;
+  const g = D.gen, st = DEMO[D.i++];
+  if (st.sw){ await new Promise(r => setTimeout(r, 600)); if (g === D.gen) setMode(st.sw); return g === D.gen; }
+  addMsg('user', st.u);
+  const t = typing();
+  await new Promise(r => setTimeout(r, 1300));
+  t.remove();
+  if (g !== D.gen) return false;
+  addMsg('assistant', st.b, { sources: st.src, general: st.general });
+  applyResult({ updates: Object.entries(st.up).map(([field,value]) => ({ field, value })), abuse_types: st.ab || undefined, ready: st.ready });
+  return true;
+}
+function setPlayLabel(){ $('dPlay').textContent = D.i >= DEMO.length ? 'Replay' : D.playing ? 'Pause' : 'Play'; }
+async function loop(){
+  const g = D.gen;
+  while (D.playing && g === D.gen && D.i < DEMO.length){
+    D.cur = demoStep(); await D.cur; D.cur = null;
+    if (!D.playing || g !== D.gen || D.i >= DEMO.length) break;
+    const st = DEMO[D.i-1];
+    if (!(await pause(Math.min(7000, Math.max(3200, (st.b || FILL_OPENING).length * 38))))) break;
+  }
+  if (g === D.gen && D.i >= DEMO.length) D.playing = false;
+  setPlayLabel();
+}
+async function playDemo(){
+  D.i = 0; D.playing = true; setPlayLabel();
+  const g = D.gen;
+  if (!(await pause(1800)) || g !== D.gen) return;
+  loop();
+}
+async function halt(){ D.playing = false; if (D.cancel) D.cancel(); if (D.cur) await D.cur; }
+$('dPlay').onclick = async () => {
+  if (D.i >= DEMO.length){ startApp('demo'); return; }
+  if (D.playing){ await halt(); setPlayLabel(); }
+  else { D.playing = true; setPlayLabel(); loop(); }
+};
+$('dNext').onclick = async () => {
+  const was = D.playing; await halt();
+  D.cur = demoStep(); await D.cur; D.cur = null;
+  if (was && D.i < DEMO.length){ D.playing = true; setPlayLabel(); if (await pause(2500)) loop(); else setPlayLabel(); }
+  else setPlayLabel();
+};
+$('dSafety').onclick = async () => {
+  await halt(); setPlayLabel();
+  addMsg('user', SAFETY_DEMO.user); const t = typing(); await new Promise(r => setTimeout(r, 900)); t.remove();
+  addMsg('assistant', SAFETY_DEMO.bot, { crisis: true });
+};
+
+show('home');
+})();
+</script>
+</body>
+</html>
