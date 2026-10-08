@@ -112,7 +112,7 @@ a{color:var(--primary)}
 .linkbtn{background:none;border:0;color:var(--primary);font-weight:700;font-size:15px;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:8px 4px}
 .alsotg{margin-top:16px;font-size:15px;color:var(--soft);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .pv-open{display:inline-flex;align-items:center;gap:6px}
-.p-actions{display:grid;grid-template-columns:auto 1fr;gap:8px}
+.p-actions{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:stretch}
 dialog.pv{max-width:min(860px,calc(100vw - 16px));width:100%;height:min(92dvh,1100px);display:flex;flex-direction:column;background:var(--bg)}
 dialog.pv:not([open]){display:none}
 .pv-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--surface)}
@@ -142,6 +142,14 @@ dialog.pv:not([open]){display:none}
 .paper .sig{margin-top:26px;display:grid;gap:18px;font-size:13px}
 .paper .foot{margin-top:26px;color:#8a949b;font-size:11.5px;text-align:center}
 .pv-sum{max-width:760px;margin:0 auto 12px;font-size:14px;color:var(--soft)}
+.f6a{margin:0;font-size:12.5px;color:var(--primary);background:var(--tint-2);border-radius:8px;padding:7px 10px}
+.p-save{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.p-save .st-txt{flex:1 1 100%;font-size:12.5px;color:var(--soft)}
+.p-save .btn.small{padding:6px 12px;font-size:13px}
+.p-actions .btn{padding:11px 14px;font-size:15px}
+.p-save .st-txt.ok{color:var(--ok)}
+.pinrow{display:grid;gap:10px;margin-top:6px}
+.dlg .small{font-size:13.5px;color:var(--soft)}
 .spacer{flex:1}
 .ghost{background:none;border:1px solid transparent;border-radius:999px;padding:7px 12px;color:var(--soft);cursor:pointer;font-size:14px}
 .ghost:hover{background:var(--tint-2);color:var(--ink)}
@@ -393,6 +401,7 @@ body.in-app .app{height:calc(100dvh - var(--toph,58px))}
       </div>
       <div class="alt-row">
         <a class="tg big" href="https://t.me/inFORMed_grit_bot" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.7 19.4c-.2 1-.9 1.3-1.7.8l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.5 13.2l-4.7-1.5c-1-.3-1-1 .2-1.5L20.5 3c.9-.3 1.6.2 1.4 1.3z"/></svg><span>Chat on Telegram</span></a>
+        <button class="linkbtn" id="openSaved">Continue a saved application</button>
         <button class="linkbtn" id="startDemo">Watch a demo</button>
       </div>
       <ul class="reassure">
@@ -498,7 +507,7 @@ body.in-app .app{height:calc(100dvh - var(--toph,58px))}
       <div class="voicebar" id="voiceBar"><span class="dot"></span><span id="voiceTxt">Listening… tap the microphone again when you are done.</span></div>
       <div class="under">
         <button class="formpill" id="formPill">Your application · <span class="pct" id="pillPct">0%</span></button>
-        <span class="grow" id="underNote">Your conversation is private. Nothing is saved when you close this page.</span>
+        <span class="grow" id="underNote">Your conversation is private. The chat is not saved, but your form is kept if the page reloads.</span>
         <button class="fillcta" id="fillCta">Help me fill in my protection order</button>
         <button class="linkbtn" id="pvOpen1" type="button" style="font-size:14px">Preview form</button>
         <button class="gen" id="gen">Generate Protection Order</button>
@@ -515,6 +524,7 @@ body.in-app .app{height:calc(100dvh - var(--toph,58px))}
     </div>
     <div class="p-body" id="pBody"></div>
     <div class="p-foot">
+      <div class="p-save"><span class="st-txt" id="saveState">Your form is kept if the page reloads.</span><button class="btn secondary small" id="saveLater" type="button">Save to finish later</button><button class="btn secondary small" id="startOver" type="button">Start over</button></div>
       <div class="p-actions"><button class="btn secondary pv-open" id="pvOpen2" type="button">Preview form</button><button class="btn primary" id="gen2">Generate Protection Order</button></div>
       <small>A draft to take to the clerk at a Magistrates' Court. Not legal advice.</small>
     </div>
@@ -559,6 +569,32 @@ body.in-app .app{height:calc(100dvh - var(--toph,58px))}
   </div>
 </div></dialog>
 
+<!-- Save with a PIN -->
+<dialog id="saveDlg"><form class="dlg" id="saveForm">
+  <h2>Save to finish later</h2>
+  <p>Your application will be locked with a PIN and kept on this device only. Nobody can open it without the PIN, and it is never sent to GRIT. The conversation itself is not saved.</p>
+  <div class="pinrow">
+    <label class="sr" for="pin1">Choose a PIN</label><input id="pin1" type="password" inputmode="numeric" autocomplete="off" placeholder="Choose a PIN (at least 6 numbers or letters)">
+    <label class="sr" for="pin2">Repeat the PIN</label><input id="pin2" type="password" inputmode="numeric" autocomplete="off" placeholder="Repeat the PIN">
+  </div>
+  <p class="small">If you forget the PIN, the saved application cannot be opened. Choose something someone close to you would not guess.</p>
+  <p class="err" id="saveErr"></p>
+  <div class="acts"><button class="btn secondary" type="button" id="saveCancel">Cancel</button><button class="btn primary" type="submit">Save</button></div>
+</form></dialog>
+
+<!-- Open a saved application -->
+<dialog id="openDlg"><form class="dlg" id="openForm">
+  <h2>Continue a saved application</h2>
+  <p>Enter the PIN you chose when you saved it on this device.</p>
+  <label class="sr" for="pinOpen">PIN</label><input id="pinOpen" type="password" inputmode="numeric" autocomplete="off" placeholder="Your PIN">
+  <p class="err" id="openErr"></p>
+  <div class="acts">
+    <button class="btn secondary" type="button" id="openCancel">Cancel</button>
+    <button class="btn secondary" type="button" id="openDelete">Delete it</button>
+    <button class="btn primary" type="submit">Open</button>
+  </div>
+</form></dialog>
+
 <!-- Form preview -->
 <dialog class="pv" id="pvDlg" aria-label="Preview of your application">
   <div class="pv-bar">
@@ -582,7 +618,7 @@ body.in-app .app{height:calc(100dvh - var(--toph,58px))}
 <script src="/fields.js"></script>
 <script>
 (function(){
-const { SECTIONS, FIELDS, ABUSE_TYPES, DOCS, LANGS } = window.INFORMED;
+const { SECTIONS, OFFICIAL, FIELDS, ABUSE_TYPES, DOCS, LANGS, FORM_VERSION } = window.INFORMED;
 const $ = id => document.getElementById(id);
 // FILL_OPENING is the original inFORMed opening, word for word.
 const FILL_OPENING = "Hello, my purpose here is to support you in filling out a protection order form. I'm here to listen and help you share your story in a way that will be understood by the court. Everything we discuss is for your support\u2014you're in control of what happens next.\n\nWhenever you're ready, can you tell me a little about what brings you here today? You can type, or tap the microphone and tell me in your own words.";
@@ -610,9 +646,7 @@ function quickExit(){
   window.location.replace('https://www.google.com/search?q=weather+today');
 }
 $('quickExit').onclick = quickExit;
-window.addEventListener('beforeunload', e => {
-  if (!leaving && S.mode === 'live' && Object.values(S.form).some(Boolean)) { e.preventDefault(); e.returnValue = ''; }
-});
+// No 'leave this page?' warning: the form is kept in this tab and restored after a reload.
 
 /* ---------- views ---------- */
 function show(view){
@@ -625,7 +659,8 @@ function show(view){
   window.scrollTo(0,0);
 }
 $('toHome').onclick = () => {
-  if (S.mode === 'live' && S.msgs.length > 1 && !confirm('Leave this conversation? Nothing is saved, so it will be deleted.')) return;
+  if (S.mode === 'live' && hasForm() && !confirm('Go back to the home page? Your form will be cleared from this page' + (PIN_KEY ? ' (your PIN-saved copy is kept).' : '. To keep it, choose "Save to finish later" first.'))) return;
+  try { sessionStorage.removeItem(DRAFT_KEY); } catch(e){}
   stopDemo(); stopAudio(); stopRecording(true); S = fresh(); show('home');
 };
 
@@ -637,6 +672,7 @@ function buildPanel(){
     if (sec.n === 5) d.open = true;
     d.innerHTML = `<summary><span class="st" id="st${sec.n}">${sec.n}</span><span>${sec.title}</span>${sec.key?'<span class="key">Key</span>':''}${sec.optional?'<span class="sn" style="margin-left:auto">Optional</span>':''}</summary><div class="fields"></div>`;
     const wrap = d.querySelector('.fields');
+    if (sec.n === 1){ const n=document.createElement('p'); n.className='f6a'; n.textContent='Your address and contact details go on Form 6A, a separate page that is not given to the respondent.'; wrap.appendChild(n); }
     FIELDS.filter(f => f.s === sec.n).forEach(f => {
       const el = document.createElement('div'); el.className='f'; el.id='f_'+f.id;
       if (f.type === 'check'){
@@ -646,7 +682,7 @@ function buildPanel(){
         cb.onchange = () => { S.form[f.id] = cb.checked ? (tx.value.trim() || 'Requested') : ''; if(!cb.checked) tx.value=''; refreshProgress(); };
         tx.oninput = () => { S.form[f.id] = tx.value.trim() ? tx.value : (cb.checked ? 'Requested' : ''); if (tx.value.trim()) cb.checked = true; refreshProgress(); };
       } else {
-        const big = f.id === 'acts' || f.id === 'urgency';
+        const big = ['history','inc1_details','inc2_details','urg_why'].includes(f.id);
         el.innerHTML = `<label for="in_${f.id}"></label>` + (f.type === 'long' ? `<textarea id="in_${f.id}" class="${big?'big':''}"></textarea>` : `<input type="text" id="in_${f.id}">`);
         el.querySelector('label').textContent = f.label;
         el.querySelector('#in_'+f.id).oninput = e => { S.form[f.id] = e.target.value; refreshProgress(); };
@@ -698,6 +734,7 @@ function refreshProgress(){
   $('barFill').style.width = pct + '%';
   $('pillPct').textContent = pct + '%';
   $('pDone').textContent = `${started} of 9 sections started`;
+  if (typeof scheduleSave === 'function') scheduleSave();
 }
 function openPanel(){ $('panel').classList.add('open'); $('scrim').classList.add('on');
   if (LASTF){ const el = $('f_'+LASTF), pb = $('pBody'); setTimeout(() => pb.scrollTo({ top: el.offsetTop - pb.offsetTop - 60, behavior:'smooth' }), 320); }
@@ -938,17 +975,119 @@ function listen(text, btn){
   a.play().catch(() => {});
 }
 
+/* ---------- keeping the form (not the chat) ---------- */
+// 1. In this tab: the form is kept in sessionStorage, so a reload or a dropped connection loses nothing.
+//    Closing the tab or Quick exit clears it.
+// 2. Optional "Save to finish later": the form is encrypted with the person's PIN (AES-GCM, key from PBKDF2)
+//    and kept in localStorage on this device only. Without the PIN it cannot be read.
+const DRAFT_KEY = 'informed_draft', VAULT_KEY = 'informed_saved';
+let SAVE_T = null, PIN_KEY = null, PIN_SALT = null;
+function hasForm(){ return Object.values(S.form || {}).some(v => String(v || '').trim()); }
+function saveState(text, ok){ const el = $('saveState'); if (!el) return; el.textContent = text; el.classList.toggle('ok', !!ok); }
+function scheduleSave(){
+  if (S.mode !== 'live') return;
+  clearTimeout(SAVE_T);
+  SAVE_T = setTimeout(async () => {
+    try {
+      if (hasForm()) sessionStorage.setItem(DRAFT_KEY, JSON.stringify({ form: S.form, abuse: S.abuse, pinned: !!PIN_KEY, t: Date.now() }));
+      else sessionStorage.removeItem(DRAFT_KEY);
+    } catch(e){}
+    if (PIN_KEY && hasForm()){ try { await writeVault(PIN_KEY, PIN_SALT); saveState('Saved on this device with your PIN.', true); } catch(e){} }
+  }, 400);
+}
+const b64e = buf => btoa(String.fromCharCode(...new Uint8Array(buf)));
+const b64d = str => Uint8Array.from(atob(str), c => c.charCodeAt(0));
+async function deriveKey(pin, salt){
+  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pin), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({ name:'PBKDF2', salt, iterations: 250000, hash:'SHA-256' }, base, { name:'AES-GCM', length:256 }, false, ['encrypt','decrypt']);
+}
+async function writeVault(key, salt){
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const data = new TextEncoder().encode(JSON.stringify({ form: S.form, abuse: S.abuse, t: Date.now() }));
+  const ct = await crypto.subtle.encrypt({ name:'AES-GCM', iv }, key, data);
+  localStorage.setItem(VAULT_KEY, JSON.stringify({ v:1, salt: b64e(salt), iv: b64e(iv), ct: b64e(ct) }));
+}
+async function readVault(pin){
+  const raw = localStorage.getItem(VAULT_KEY); if (!raw) return null;
+  const box = JSON.parse(raw); const salt = b64d(box.salt);
+  const key = await deriveKey(pin, salt);
+  const pt = await crypto.subtle.decrypt({ name:'AES-GCM', iv: b64d(box.iv) }, key, b64d(box.ct));
+  return { data: JSON.parse(new TextDecoder().decode(pt)), key, salt };
+}
+$('saveLater').onclick = () => {
+  if (S.mode !== 'live'){ saveState('Saving works in a live conversation, not the demo.'); return; }
+  if (!window.crypto || !crypto.subtle){ saveState('Saving is not available in this browser.'); return; }
+  if (!hasForm()){ saveState('There is nothing to save yet.'); return; }
+  $('pin1').value = ''; $('pin2').value = ''; $('saveErr').textContent = ''; $('saveDlg').showModal(); setTimeout(() => $('pin1').focus(), 50);
+};
+$('saveCancel').onclick = () => $('saveDlg').close();
+$('saveForm').onsubmit = async e => {
+  e.preventDefault();
+  const a = $('pin1').value.trim(), b = $('pin2').value.trim();
+  if (a.length < 6){ $('saveErr').textContent = 'Please use at least 6 numbers or letters.'; return; }
+  if (a !== b){ $('saveErr').textContent = 'The two PINs are not the same. Please try again.'; return; }
+  try {
+    PIN_SALT = crypto.getRandomValues(new Uint8Array(16)); PIN_KEY = await deriveKey(a, PIN_SALT);
+    await writeVault(PIN_KEY, PIN_SALT); scheduleSave();
+    $('saveDlg').close(); saveState('Saved on this device with your PIN. Changes are saved as you go.', true);
+  } catch(err){ $('saveErr').textContent = 'Sorry, it could not be saved on this device.'; PIN_KEY = null; }
+};
+$('openSaved').onclick = () => { $('pinOpen').value = ''; $('openErr').textContent = ''; $('openDlg').showModal(); setTimeout(() => $('pinOpen').focus(), 50); };
+$('openCancel').onclick = () => $('openDlg').close();
+let OPEN_TRIES = 0;
+async function tryOpen(){
+  const pin = $('pinOpen').value.trim();
+  if (!pin){ $('openErr').textContent = 'Please enter your PIN.'; return null; }
+  if (!window.crypto || !crypto.subtle){ $('openErr').textContent = 'This browser cannot open saved applications.'; return null; }
+  try { const r = await readVault(pin); if (r) return r; } catch(e){}
+  OPEN_TRIES++;
+  await new Promise(r => setTimeout(r, Math.min(8000, 600 * OPEN_TRIES)));
+  $('openErr').textContent = 'That PIN did not open anything. Check the PIN, or there may be no application saved on this device.';
+  return null;
+}
+$('openForm').onsubmit = async e => {
+  e.preventDefault();
+  const r = await tryOpen(); if (!r) return;
+  OPEN_TRIES = 0; $('openDlg').close();
+  PIN_KEY = r.key; PIN_SALT = r.salt;
+  startApp('live', 'fill', { form: r.data.form, abuse: r.data.abuse, pinned: true });
+  PIN_KEY = r.key; PIN_SALT = r.salt;
+};
+$('openDelete').onclick = async () => {
+  const r = await tryOpen(); if (!r) return;
+  if (!confirm('Delete the saved application from this device? This cannot be undone.')) return;
+  try { localStorage.removeItem(VAULT_KEY); } catch(e){}
+  $('openErr').textContent = 'The saved application has been deleted from this device.';
+};
+$('startOver').onclick = () => {
+  if (S.mode !== 'live') return;
+  if (!confirm('Start over? This clears the form on this page.' + (PIN_KEY ? ' Your PIN-saved copy will also be deleted.' : ''))) return;
+  try { sessionStorage.removeItem(DRAFT_KEY); if (PIN_KEY) localStorage.removeItem(VAULT_KEY); } catch(e){}
+  PIN_KEY = null; PIN_SALT = null;
+  startApp('live', 'fill');
+};
+
 /* ---------- start ---------- */
-function startApp(mode, cm = 'ask'){
+function startApp(mode, cm = 'ask', restore = null){
   stopDemo(); stopAudio(); stopRecording(true); S = fresh(); S.mode = mode; LASTF = null;
+  if (!restore || !restore.pinned){ PIN_KEY = null; PIN_SALT = null; }
+  saveState('Your form is kept if the page reloads.');
   log.innerHTML = ''; buildPanel(); renderForm();
   $('demoBar').classList.toggle('on', mode === 'demo');
   $('gen').classList.remove('pulse');
   inp.disabled = mode !== 'live';
   inp.placeholder = mode === 'live' ? 'Type your message…' : 'Demo is playing…';
-  $('underNote').textContent = mode === 'live' ? 'Your conversation is private. Nothing is saved when you close this page.' : 'Demo: an invented person and a scripted conversation.';
+  $('underNote').textContent = mode === 'live' ? 'Your conversation is private. The chat is not saved, but your form is kept if the page reloads.' : 'Demo: an invented person and a scripted conversation.';
   setBusy(false);
   show('app');
+  if (restore){
+    S.form = restore.form || {}; S.abuse = restore.abuse || []; renderForm();
+    S.shown.fill = true; setMode('fill', false);
+    const o = "Welcome back. Your application is just as you left it, and you can see it on the right. Shall we carry on? You can tell me anything you would like to add or change.";
+    addMsg('assistant', o); S.msgs.push({ role:'assistant', content:o });
+    saveState(restore.pinned ? 'Saved on this device with your PIN.' : 'Your form is kept if the page reloads.', !!restore.pinned);
+    return;
+  }
   setMode(mode === 'demo' ? 'ask' : cm);
   if (mode === 'demo') playDemo();
 }
@@ -960,15 +1099,15 @@ $('startDemo').onclick = () => startApp('demo');
 /* ---------- review and download ---------- */
 function has(id){ return !!(S.form[id]||'').trim(); }
 function openGen(){
-  const acts = S.form.acts || '';
-  const incidents = (acts.match(/^\s*\d+[.)]/gm) || []).length || (acts.trim() ? 1 : 0);
+  const hist = S.form.history || '';
+  const incidents = (has('inc1_details') ? 1 : 0) + (has('inc2_details') ? 1 : 0) + ((hist.match(/^\s*\d+[.)]/gm) || []).length || (hist.trim() ? 1 : 0));
   const items = [
-    [has('c_names') || has('c_surname'), 'Your name and details (Section 1)'],
-    [has('r_names') || has('r_surname'), 'Details of the person harming you (Section 3)'],
-    [incidents >= 3, incidents >= 3 ? `${incidents} incidents described, with dates where known (Section 5)` : 'At least three incidents, with dates where you can (Section 5)'],
-    [has('urgency'), 'Why the court must act urgently (Section 6)'],
-    [FIELDS.some(f => f.s === 7 && has(f.id)), 'What you want the order to stop (Section 7)'],
-    [has('police_station'), 'The police station you would report to (Section 10)'],
+    [has('c_names') || has('c_surname'), 'Your name and details (Form 6 section 1, Form 6A)'],
+    [has('r_names') || has('r_surname'), 'Details of the person harming you (section 3)'],
+    [incidents >= 3, incidents >= 3 ? `${incidents} incidents described, with dates where known (section 4)` : 'At least three incidents, with dates where you can (section 4)'],
+    [has('urg_why') || has('urg_fear'), 'Why the court must act urgently (section 5)'],
+    [FIELDS.some(f => f.s === 7 && has(f.id)), 'What you want the order to stop (section 6)'],
+    [has('police_station'), 'The police station you would report to (section 9)'],
   ];
   $('checklist').innerHTML = '';
   items.forEach(([ok, label]) => { const li=document.createElement('li'); li.innerHTML = `<span class="ic ${ok?'y':'n'}">${ok?'✓':'!'}</span><span></span>`; li.lastChild.textContent = label + (ok ? '' : ' — you can add this, or leave it for the clerk'); $('checklist').appendChild(li); });
@@ -980,17 +1119,23 @@ function esc(t){ return String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt
 function renderPaper(){
   const v = id => (S.form[id] || '').trim();
   let filled = 0, total = 0;
-  let h = `<div class="ph"><div><h1>APPLICATION FOR PROTECTION ORDER</h1><p class="sub">Section 4(1) of the Domestic Violence Act, 1998 (Act No. 116 of 1998)</p></div><img src="/grit-logo.png" alt="GRIT"></div>
-  <div class="note">DRAFT prepared with inFORMed. Not yet sworn. Take this draft to the clerk at a Magistrates\u2019 Court. The clerk will help you complete the official form, and you will sign it in front of a commissioner of oaths.</div>`;
+  const head = (t, sub) => `<div class="ph"><div><h1>${t}</h1><p class="sub">${sub}</p></div><img src="/grit-logo.png" alt="GRIT"></div>`;
+  let h = head('FORM 6: APPLICATION FOR PROTECTION ORDER', '[Regulation 7(1)] Section 4(1) of the Domestic Violence Act, 1998 (Act No. 116 of 1998)') +
+  `<div class="note">DRAFT prepared with inFORMed, following ${esc(FORM_VERSION)}. Not yet sworn. Take this draft to the clerk at a Magistrates\u2019 Court. The clerk will help you complete the official form, and you will sign it in front of a commissioner of oaths.</div>`;
   if (S.mode === 'demo') h += '<p class="demo">DEMO: this application is about an invented person.</p>';
-  SECTIONS.forEach(sec => {
-    const fs = FIELDS.filter(f => f.s === sec.n);
+  h += '<p><strong>PART A: APPLICATION</strong></p>';
+  const sig = `<div class="sig"><div>Signature of complainant / person applying on behalf of complainant: ______________________</div><div>Date: ______________</div><div class="lab">PART B: CERTIFICATE \u2014 completed by the Commissioner of Oaths or Justice of the Peace when the application is sworn or affirmed.</div></div>`;
+  let cur = '6';
+  OFFICIAL.forEach(sec => {
+    const fs = FIELDS.filter(f => f.doc === sec.doc && f.ds === sec.n);
     if (sec.optional && !fs.some(f => v(f.id))) return;
-    h += `<h3>Section ${sec.n}: ${esc(sec.formTitle)}</h3>`;
-    if (sec.n === 5 && S.abuse.length){
-      const names = S.abuse.map(a => (ABUSE_TYPES.find(x => x.id === a) || {}).label).filter(Boolean);
-      h += `<p class="types">Types of domestic violence described: ${esc(names.join(', '))}</p>`;
+    if (sec.doc !== cur){
+      cur = sec.doc;
+      h += sig + '<hr style="margin:34px 0 26px;border:0;border-top:2px dashed #c9d3d6">' + head('FORM 6A: PERSONAL INFORMATION FOR OFFICE USE AND NOT FOR SERVICE ON RESPONDENT', '[Regulation 7(1A)] Keep this page separate. It is not given to the respondent.');
     }
+    h += `<h3>${sec.n}. ${esc(sec.title)}</h3>`;
+    if (sec.intro) h += `<p>${esc(sec.intro)}</p>`;
+    if (sec.note) h += `<p class="types">${esc(sec.note)}</p>`;
     fs.forEach(f => {
       const val = v(f.id); total++; if (val) filled++;
       if (f.type === 'check'){
@@ -1001,8 +1146,7 @@ function renderPaper(){
       }
     });
   });
-  h += `<div class="sig"><div>Deponent (person applying): ______________________________</div><div>Date: ______________</div></div>
-  <p class="foot">Prepared with inFORMed \u00b7 Powered by GRIT (Gender Rights in Tech)</p>`;
+  h += sig + `<p class="foot">Prepared with inFORMed \u00b7 Powered by GRIT (Gender Rights in Tech)</p>`;
   $('paper').innerHTML = h;
   $('pvSum').textContent = filled ? `${filled} of ${total} parts filled in. You can change anything in the form panel, or keep talking to add more.` : 'Nothing has been filled in yet. Tell inFORMed what happened, and your application will fill in as you talk.';
 }
@@ -1054,12 +1198,13 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape'){ closeDrawer
 
 /* ---------- demo ---------- */
 const SAFETY_DEMO = { user: "He's outside the door right now and he's shouting. I am in danger.", bot: "I'm a chatbot, and this sounds like a human emergency. If you have time to plan how to get out of danger, ask me about a safety plan. If this is an emergency and you need help right now, call the ambulance on 10177 or the police on 10111. These numbers are free so you don't need airtime. You can also download the GRIT app which will connect you to help using this link: Android - https://play.google.com/store/apps/details?id=com.ads.apps.kwanele or iOS - https://apps.apple.com/us/app/kwanele/id1616602924." };
-const ACTS1 = "1. On Friday 2 October 2026 at approximately 11pm, at our shared flat in Delft, the respondent came home drunk and accused me of cheating. He grabbed me by the neck and pushed me against the fridge. I could not breathe for a few seconds.";
-const ACTS2 = "1. In 2025 the respondent began shouting at me.\n2. In June 2026 the respondent slapped me after a party.\n3. Since August 2026 the abuse has happened almost every weekend. The respondent checks my phone all the time.\n4. On Friday 2 October 2026 at approximately 11pm, at our shared flat in Delft, the respondent came home drunk and accused me of cheating. He grabbed me by the neck and pushed me against the fridge. I could not breathe for a few seconds.";
-const ACTS3 = "1. In 2025 the respondent began shouting at me.\n2. In June 2026, after a party at his cousin's house in Khayelitsha, the respondent slapped me on the way to the car. His cousin saw this.\n3. Since August 2026 the abuse has happened almost every weekend. The respondent checks my phone all the time.\n4. On Friday 2 October 2026 at approximately 11pm, at our shared flat in Delft, the respondent came home drunk and accused me of cheating. He grabbed me by the neck and pushed me against the fridge. I could not breathe for a few seconds. My son Lwazi (5) was in the room.\n5. On Sunday 4 October 2026 the respondent showed me a knife that he keeps in his car. He has told me: \"If you ever leave me, I will kill you and nobody will find you.\"";
+const INC_NECK = "The respondent came home drunk and accused me of cheating. He grabbed me by the neck and pushed me against the fridge. I could not breathe for a few seconds.";
+const HIST1 = "1. In 2025 the respondent began shouting at me.\n2. In June 2026 the respondent slapped me after a party.\n3. Since August 2026 the abuse has happened almost every weekend. The respondent checks my phone all the time.";
+const HIST2 = "1. In 2025 the respondent began shouting at me.\n2. In June 2026, after a party at his cousin's house in Khayelitsha, the respondent slapped me on the way to the car. His cousin saw this.\n3. Since August 2026 the abuse has happened almost every weekend. The respondent checks my phone all the time.";
+const TYPES = 'Physical abuse, Emotional, verbal or psychological abuse, Harassment, Controlling behaviour, Threatening behaviour, Exposure of a child to domestic violence';
 const DEMO = [
   { u: "What is a protection order?",
-    b: "A protection order is an order from a Magistrates' Court that tells the person harming you (the court calls him the \u201Crespondent\u201D) to stop the abuse and to follow certain rules, like not contacting you or staying away from your home or work. Breaking it is a crime, so the police can arrest him. Is there anything else you'd like to know?",
+    b: "A protection order is an order from a Magistrates' Court that tells the person harming you (the court calls him the “respondent”) to stop the abuse and to follow certain rules, like not contacting you or staying away from your home or work. Breaking it is a crime, so the police can arrest him. Is there anything else you'd like to know?",
     up: {}, ab: null, src: [{ doc:'guide', note:'What a protection order is and what it can include' }] },
   { u: "Do I have to pay to apply? I don't have money.",
     b: "As far as I know, you do not pay a fee to apply for a protection order at a Magistrates' Court, and you don't need a lawyer. This isn't covered in GRIT's guides, so please confirm with the court clerk. Whenever you're ready, I can help you fill in your application.",
@@ -1067,46 +1212,49 @@ const DEMO = [
   { sw: 'fill' },
   { u: "Hi. I don't really know where to start. My boyfriend has been hurting me and I think I need a protection order.",
     b: "Thank you for reaching out. That takes real courage, and you don't need to know where to start. We'll go at your pace, and you can stop at any time. Can you tell me what happened most recently that made you want to get help?",
-    up: { c_relationship: 'Boyfriend (dating relationship)' }, ab: [], src: [{ doc:'rights', note:'A dating relationship is a domestic relationship under the Act' }] },
+    up: { c_relationship: 'Dating relationship (boyfriend)', r_relationship: 'Boyfriend' }, ab: [], src: [{ doc:'rights', note:'A dating relationship is a domestic relationship under the Act' }] },
   { u: "Last Friday night he came home drunk and accused me of cheating. He grabbed me by the neck and pushed me against the fridge. I couldn't breathe for a few seconds.",
     b: "I'm so sorry. That sounds terrifying, and being grabbed by the neck is very serious. You were right to reach out. Do you remember the date of that Friday, and roughly what time it was?",
-    up: { acts: "1. On a Friday night, the respondent came home drunk and accused me of cheating. He grabbed me by the neck and pushed me against the fridge. I could not breathe for a few seconds." }, ab: ['physical','emotional'],
+    up: { inc1_date: 'A Friday night (date to confirm)', inc1_details: INC_NECK }, ab: ['physical','emotional'],
     src: [{ doc:'magistrates', note:'Concrete actions, like grabbing the throat, show the court the risk' }] },
   { u: "It was Friday the 2nd of October, around 11pm. At our flat in Delft.",
     b: "Thank you, that detail really helps the court. Were you hurt, for example marks, bruises or pain afterwards?",
-    up: { acts: ACTS1 }, ab: ['physical','emotional'],
+    up: { inc1_date: 'Friday 2 October 2026, at approximately 11pm', inc1_place: 'Our shared flat in Delft' }, ab: ['physical','emotional'],
     src: [{ doc:'language', note:'Exact date, time and place make an incident strong' }] },
   { u: "My neck had red marks and it was sore to swallow for two days. I didn't go to the clinic. My sister took photos.",
     b: "That must have been so painful, and it's good that your sister took photos. They can support your application, but you can still apply without medical records. Has anything like this happened before?",
-    up: { injuries: "After the incident on 2 October 2026 I had red marks on my neck and it was painful to swallow for two days. I did not get medical treatment. My sister took photos of the marks." }, ab: ['physical','emotional'],
+    up: { inc1_injuries: 'Red marks on my neck. It was painful to swallow for two days.', inc1_treatment: 'No medical treatment. My sister took photos of the marks.', annexures: 'Photos of the marks on my neck, taken by my sister' }, ab: ['physical','emotional'],
     src: [{ doc:'rights', note:'Photos and witnesses help, but are not required to apply' }] },
   { u: "Yes. It started with shouting last year. In June he slapped me after a party. Since August it's almost every weekend, and he checks my phone all the time.",
     b: "It sounds like things have been getting worse over time, and checking your phone is a form of abuse too. When he slapped you in June, do you remember where you were?",
-    up: { acts: ACTS2 }, ab: ['physical','emotional','harassment','controlling'],
-    src: [{ doc:'language', note:'Showing escalation over time strengthens Section 5' }, { doc:'rights', note:'Monitoring your phone without consent is harassment' }] },
+    up: { history: HIST1 }, ab: ['physical','emotional','harassment','controlling'],
+    src: [{ doc:'language', note:'Showing escalation over time strengthens the application' }, { doc:'rights', note:'Monitoring your phone without consent is harassment' }] },
   { u: "At his cousin's house in Khayelitsha, on the way to the car. His cousin saw it.",
     b: "Thank you. A person who saw it can really help your application. Has he ever threatened you, or said what he would do if you left?",
-    up: { acts: ACTS3.replace(/ My son Lwazi \(5\) was in the room\./,'').replace(/\n5\..*$/s,'') }, ab: ['physical','emotional','harassment','controlling'],
+    up: { history: HIST2, p_witnesses: "The respondent's cousin saw the slap in June 2026 (name and contact details to be added)." }, ab: ['physical','emotional','harassment','controlling'],
     src: [{ doc:'magistrates', note:'Witnesses add credibility to an incident' }] },
   { u: "He says if I ever leave him he'll kill me and nobody will find me. He has a knife he keeps in the car. He showed it to me on Sunday the 4th.",
     b: "That is a serious threat, and you are not overreacting by being afraid. I'll make sure the court understands the danger. Does anyone else live with you, like children?",
-    up: { acts: ACTS3.replace(/ My son Lwazi \(5\) was in the room\./,''), weapons: "The respondent keeps a knife in his car. He showed it to me on Sunday 4 October 2026.",
-      urgency: "The respondent has threatened to kill me if I leave him, saying \"nobody will find you\". He has a knife and showed it to me on 4 October 2026, two days after he grabbed me by the neck and I could not breathe. The abuse has escalated from shouting in 2025, to a slap in June 2026, to abuse almost every weekend since August 2026, and now strangulation. I live with him, and I fear he will seriously hurt or kill me if the court does not act now." },
-    ab: ['physical','emotional','harassment','controlling','intimidation'],
-    src: [{ doc:'magistrates', note:'Death threats and access to weapons show urgency' }, { doc:'language', note:'Quote threats in the exact words used' }] },
+    up: { inc1_date: 'Sunday 4 October 2026', inc1_place: '', inc1_details: 'The respondent showed me a knife that he keeps in his car. He has told me: "If you ever leave me, I will kill you and nobody will find you."', inc1_injuries: '', inc1_treatment: '',
+      inc2_date: 'Friday 2 October 2026, at approximately 11pm', inc2_place: 'Our shared flat in Delft', inc2_details: INC_NECK, inc2_injuries: 'Red marks on my neck. It was painful to swallow for two days.', inc2_treatment: 'No medical treatment. My sister took photos of the marks.',
+      urg_why: 'The abuse has escalated from shouting in 2025, to a slap in June 2026, to abuse almost every weekend since August 2026. On 2 October 2026 he grabbed me by the neck and I could not breathe, and two days later he showed me his knife. I fear he will seriously hurt or kill me if the court does not act now.',
+      urg_same_place: 'Yes. We live together in a flat in Delft.', urg_weapons: 'The respondent keeps a knife in his car. He showed it to me on 4 October 2026.',
+      urg_fear: 'Yes. The respondent has said: "If you ever leave me, I will kill you and nobody will find you."' },
+    ab: ['physical','emotional','harassment','controlling','threatening'],
+    src: [{ doc:'magistrates', note:'Death threats and access to weapons show urgency' }, { doc:'form', note:'Form 6 asks for the most recent incident first' }] },
   { u: "My son Lwazi, he's 5. He was in the room on Friday. Now he wakes up at night crying.",
     b: "Thank you for telling me about Lwazi. Courts take children's safety very seriously. What would you like the protection order to stop him from doing?",
-    up: { acts: ACTS3, p_people: "Lwazi, age 5, my son", p_how: "My son Lwazi (5) was in the room when the respondent grabbed me by the neck on 2 October 2026. Since then he wakes up crying at night." },
-    ab: ['physical','emotional','harassment','controlling','intimidation','child_exposure'],
+    up: { inc2_details: INC_NECK + ' My son Lwazi (5) was in the room.', p_people: 'Lwazi, age 5, my son', p_how: 'My son Lwazi (5) was in the room when the respondent grabbed me by the neck on 2 October 2026. Since then he wakes up crying at night.', urg_fear: 'Yes, for myself and my son Lwazi (5). The respondent has said: "If you ever leave me, I will kill you and nobody will find you."' },
+    ab: ['physical','emotional','harassment','controlling','threatening','child_exposure'],
     src: [{ doc:'magistrates', note:'Children exposed to violence get heightened attention' }] },
   { u: "I want him to stop hurting me, stop coming to the flat, and stop messaging me. And they must take the knife.",
     b: "That's clear, and each of those matches what you've told me. Which police station is closest to you, where you would report it if he breaks the order?",
-    up: { t_a:'Requested', t_b:'Requested', t_c:'Our shared flat in Delft (full address to be added)', t_h:'Not to contact me by phone, SMS, WhatsApp, social media or through other people.', o_b:'The knife the respondent keeps in his car.' },
-    ab: ['physical','emotional','harassment','controlling','intimidation','child_exposure'],
-    src: [{ doc:'form', note:'Sections 7 and 8 list the protections you can ask for' }, { doc:'language', note:'Name every way he must not contact you' }] },
+    up: { t_a: TYPES, t_b:'Requested', t_c:'Our shared flat in Delft (full address to be added)', t_i:'Not to contact me by phone, SMS, WhatsApp, social media or through other people.', o_b:'The knife the respondent keeps in his car.' },
+    ab: ['physical','emotional','harassment','controlling','threatening','child_exposure'],
+    src: [{ doc:'form', note:'Form 6 sections 6 and 7 list the protections you can ask for' }, { doc:'language', note:'Name every way he must not contact you' }] },
   { u: "Delft police station.",
     b: "Thank you. Before we finish, I need a few details for the first part of the form. What is your full name, and what is his?",
-    up: { police_station:'Delft Police Station' }, ab: null, src: [] },
+    up: { police_station:'Delft' }, ab: null, src: [] },
   { u: "I'm Naledi Mokoena. He is Themba Nkosi.",
     b: "Thank you, Naledi. Thank you for sharing your story with me. I believe I have enough information to help prepare your protection order application. When you're ready, you can click the 'Generate Protection Order' button below to create your form.",
     up: { c_names:'Naledi', c_surname:'Mokoena', r_names:'Themba', r_surname:'Nkosi' }, ab: null, src: [], ready: true },
@@ -1164,6 +1312,13 @@ $('dSafety').onclick = async () => {
 };
 
 show('home');
+try {
+  const d = JSON.parse(sessionStorage.getItem(DRAFT_KEY) || 'null');
+  if (d && d.form && Object.values(d.form).some(v => String(v || '').trim())){
+    startApp('live', 'fill', { form: d.form, abuse: d.abuse, pinned: false });
+    if (d.pinned) saveState('Restored. To keep updating your PIN-saved copy, choose "Save to finish later" again.');
+  }
+} catch(e){}
 })();
 </script>
 </body>

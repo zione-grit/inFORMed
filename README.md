@@ -93,6 +93,18 @@ Optional: `MODEL` (default `gpt-4.1`), `TRANSCRIBE_MODEL` (default `gpt-4o-trans
 
 Words the WhatsApp bot understands: `ASK`, `FILL`, `FORM`, `PDF`, `WORD`, `LANGUAGE`, `DELETE`, `HELP`. Telegram uses the same as commands (`/ask`, `/fill`, ...). Voice notes work on both.
 
+## The form
+
+The draft follows the current official application: **Form 6** (Application for protection order) and **Form 6A** (Personal information for office use, not served on the respondent), Domestic Violence Regulations 2022 (published 14 April 2023), court form J480 as updated on 7 March 2025: https://www.justice.gov.za/forms/dva/dv-Form06-J480.pdf
+
+GRIT's original reference document and system prompt describe the older "Form 2" from the 1999 regulations, which were repealed. The model is told to use the Form 6/6A fields, and the reference document in `lib/knowledge.js` now describes Form 6/6A. Re-check the form on the Justice website before going live, because it can change again.
+
+## Keeping the form
+
+- The chat is never saved.
+- The form is kept in the open browser tab (sessionStorage), so a reload or a dropped connection loses nothing. Closing the tab, Quick exit or Start over clears it.
+- "Save to finish later" locks the form with a PIN the person chooses (AES-GCM encryption, key derived with PBKDF2) and keeps it on that device only (localStorage). It is never sent to the server. "Continue a saved application" on the home page is always shown, so it does not reveal whether anything is saved. A forgotten PIN cannot be recovered.
+
 ## Safety design
 
 - GRIT's trigger phrases are checked **before** the model is called, and answered word for word.
