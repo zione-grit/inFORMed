@@ -150,6 +150,7 @@ dialog.pv:not([open]){display:none}
 .p-save .st-txt.ok{color:var(--ok)}
 .pinrow{display:grid;gap:10px;margin-top:6px}
 .dlg .small{font-size:13.5px;color:var(--soft)}
+[hidden]{display:none!important}
 .spacer{flex:1}
 .ghost{background:none;border:1px solid transparent;border-radius:999px;padding:7px 12px;color:var(--soft);cursor:pointer;font-size:14px}
 .ghost:hover{background:var(--tint-2);color:var(--ink)}
@@ -371,7 +372,7 @@ body.in-app .app{height:calc(100dvh - var(--toph,58px))}
 <header class="top"><div class="in">
   <button class="brand" id="toHome" aria-label="inFORMed home"><picture class="mark"><source srcset="/grit-logo-white.png" media="(prefers-color-scheme: dark)"><img src="/grit-logo.png" alt="GRIT"></picture><span class="word">in<b>FORM</b>ed</span></button>
   <span class="spacer"></span>
-  <button class="ghost hide-sm" id="openSources">What this is based on</button>
+  <button class="ghost hide-sm" id="openSources" hidden>Sources (developer view)</button>
   <a class="tg" href="https://t.me/inFORMed_grit_bot" target="_blank" rel="noopener" title="Chat with inFORMed on Telegram" aria-label="Chat with inFORMed on Telegram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.7 19.4c-.2 1-.9 1.3-1.7.8l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.5 13.2l-4.7-1.5c-1-.3-1-1 .2-1.5L20.5 3c.9-.3 1.6.2 1.4 1.3z"/></svg><span class="tgl">Telegram</span></a>
   <label class="sr" for="lang">Language</label>
   <select class="sel" id="lang" title="Language for replies"></select>
@@ -447,8 +448,7 @@ body.in-app .app{height:calc(100dvh - var(--toph,58px))}
       <div class="card">
         <h3>About inFORMed</h3>
         <p>inFORMed is GRIT's AI legal navigation tool. It speaks like a caring community member, never rushes or judges, and helps people experiencing domestic violence put their experience into an application a court can act on.</p>
-        <p>Its guidance comes from four sources: the protection order application form, a guide to effective application language, a guide to domestic violence rights and referral pathways, and MOSAIC's research on what magistrates look for.</p>
-        <p style="margin:0"><button class="btn secondary small" id="openSources2">See what it is based on</button></p>
+        <p style="margin:0">Its guidance is grounded in the official protection order application form, guides on domestic violence rights and on writing a strong application, MOSAIC's research on what magistrates look for, and GRIT's own protection order guide.</p>
       </div>
       <div class="card grit">
         <img class="glogo" src="/grit-logo-white.png" alt="GRIT, Gender Rights in Tech">
@@ -619,6 +619,10 @@ body.in-app .app{height:calc(100dvh - var(--toph,58px))}
 <script>
 (function(){
 const { SECTIONS, OFFICIAL, FIELDS, ABUSE_TYPES, DOCS, LANGS, FORM_VERSION } = window.INFORMED;
+// Developer view: open the site with ?sources at the end of the address to see which document each answer used.
+let SHOW_SOURCES = false;
+try { SHOW_SOURCES = new URLSearchParams(location.search).has('sources') || sessionStorage.getItem('informed_sources') === '1'; if (SHOW_SOURCES) sessionStorage.setItem('informed_sources', '1'); } catch(e){}
+if (SHOW_SOURCES) document.getElementById('openSources').hidden = false;
 const $ = id => document.getElementById(id);
 // FILL_OPENING is the original inFORMed opening, word for word.
 const FILL_OPENING = "Hello, my purpose here is to support you in filling out a protection order form. I'm here to listen and help you share your story in a way that will be understood by the court. Everything we discuss is for your support\u2014you're in control of what happens next.\n\nWhenever you're ready, can you tell me a little about what brings you here today? You can type, or tap the microphone and tell me in your own words.";
@@ -756,7 +760,7 @@ function addMsg(role, text, opts = {}){
     c.innerHTML = '<a href="tel:10111">Call police · 10111</a><a href="tel:10177">Ambulance · 10177</a><a class="alt" href="tel:0800428428">GBV Command Centre · 0800 428 428</a>';
     m.appendChild(c);
   }
-  if (opts.sources && opts.sources.length){
+  if (SHOW_SOURCES && opts.sources && opts.sources.length){
     const sr = document.createElement('div'); sr.className='srcs';
     const seen = new Set();
     opts.sources.forEach(s => {
@@ -1193,7 +1197,7 @@ async function openDrawer(focusId, note){
   });
 }
 function closeDrawer(){ $('drawer').classList.remove('open'); if(!$('panel').classList.contains('open')) $('scrim').classList.remove('on'); }
-$('openSources').onclick = () => openDrawer(); $('openSources2').onclick = () => openDrawer(); $('dClose').onclick = closeDrawer;
+$('openSources').onclick = () => openDrawer(); $('dClose').onclick = closeDrawer;
 document.addEventListener('keydown', e => { if (e.key === 'Escape'){ closeDrawer(); closePanel(); } });
 
 /* ---------- demo ---------- */

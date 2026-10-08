@@ -105,6 +105,10 @@ GRIT's original reference document and system prompt describe the older "Form 2"
 - The form is kept in the open browser tab (sessionStorage), so a reload or a dropped connection loses nothing. Closing the tab, Quick exit or Start over clears it.
 - "Save to finish later" locks the form with a PIN the person chooses (AES-GCM encryption, key derived with PBKDF2) and keeps it on that device only (localStorage). It is never sent to the server. "Continue a saved application" on the home page is always shown, so it does not reveal whether anything is saved. A forgotten PIN cannot be recovered.
 
+## Sources (developer view)
+
+Users do not see which document each answer came from. To see it, open the site with `?sources` at the end of the address (for example `https://YOUR-SITE.vercel.app/?sources`). The "Based on" labels and a "Sources (developer view)" button then appear for that browser tab. For Telegram and WhatsApp, set `SHOW_SOURCES=1` in Vercel. The "General information, not from GRIT's guides" label stays visible to everyone, because it tells people to check that answer with the court clerk.
+
 ## Safety design
 
 - GRIT's trigger phrases are checked **before** the model is called, and answered word for word.
