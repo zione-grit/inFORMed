@@ -491,7 +491,7 @@ body.in-app .app{height:calc(100dvh - var(--toph,58px))}
     </div>
     <div class="demo-bar" id="demoBar">
       <span class="tag">Demo</span>
-      <span class="grow">A scripted conversation. Naledi is an invented person.</span>
+      <span class="grow">A scripted conversation in English. Naledi is an invented person.</span>
       <button class="btn secondary small" id="dPlay">Pause</button>
       <button class="btn secondary small" id="dNext">Next</button>
       <button class="btn secondary small" id="dSafety" title="Show how inFORMed answers when someone is in danger">Safety reply</button>
@@ -616,6 +616,7 @@ body.in-app .app{height:calc(100dvh - var(--toph,58px))}
 </aside>
 
 <script src="/fields.js"></script>
+<script src="/i18n.js"></script>
 <script>
 (function(){
 const { SECTIONS, OFFICIAL, FIELDS, ABUSE_TYPES, DOCS, LANGS, FORM_VERSION } = window.INFORMED;
@@ -624,10 +625,12 @@ let SHOW_SOURCES = false;
 try { SHOW_SOURCES = new URLSearchParams(location.search).has('sources') || sessionStorage.getItem('informed_sources') === '1'; if (SHOW_SOURCES) sessionStorage.setItem('informed_sources', '1'); } catch(e){}
 if (SHOW_SOURCES) document.getElementById('openSources').hidden = false;
 const $ = id => document.getElementById(id);
-// FILL_OPENING is the original inFORMed opening, word for word.
-const FILL_OPENING = "Hello, my purpose here is to support you in filling out a protection order form. I'm here to listen and help you share your story in a way that will be understood by the court. Everything we discuss is for your support\u2014you're in control of what happens next.\n\nWhenever you're ready, can you tell me a little about what brings you here today? You can type, or tap the microphone and tell me in your own words.";
-const ASK_OPENING = "Hello, I'm inFORMed, your protection order support assistant. I can explain how protection orders work, what the legal words mean, and what to expect at court. When you're ready, I can also help you fill in your application. What would you like to know?";
-const SUGGESTED = ["What is a protection order?", "Do I need a lawyer?", "What happens after I apply?", "What does \u2018respondent\u2019 mean?", "What is an interim order?"];
+// Interface language. The fill opening is GRIT's original opening (translated for isiZulu and Afrikaans).
+const FILL_OPENING_EN = I18N.en.fillOpening;
+let UI = 'en';
+function t(k, vars){ let v = (I18N[UI] && I18N[UI][k] != null) ? I18N[UI][k] : (I18N.en[k] != null ? I18N.en[k] : k); if (vars) for (const x in vars) v = v.split('{' + x + '}').join(vars[x]); return v; }
+const opening = cm => cm === 'fill' ? t('fillOpening') : t('askOpening');
+const suggested = () => ['sug1','sug2','sug3','sug4','sug5'].map(k => t(k));
 
 /* ---------- state (memory only, never stored) ---------- */
 let S = fresh();
@@ -636,9 +639,49 @@ let CODE = ''; try { CODE = sessionStorage.getItem('informed_code') || ''; } cat
 let LANG = 'auto'; try { LANG = localStorage.getItem('informed_lang') || 'auto'; } catch(e){}
 
 /* ---------- language ---------- */
-LANGS.forEach(l => { const o=document.createElement('option'); o.value=l.id; o.textContent=l.label; $('lang').appendChild(o); });
+LANGS.forEach(l => { const o=document.createElement('option'); o.value=l.id; o.textContent=l.id === 'auto' ? t('langAuto') : l.label; $('lang').appendChild(o); });
 $('lang').value = LANG;
-$('lang').onchange = e => { LANG = e.target.value; try{localStorage.setItem('informed_lang',LANG)}catch(_){} };
+/* ---------- page language (the form itself stays in English) ---------- */
+const I18N_NODES = [];
+(function scanPage(){
+  const byText = new Map(); for (const k in I18N.en) if (k[0] !== '_') byText.set(String(I18N.en[k]).trim(), k);
+  const roots = [document.querySelector('header.top'), $('home'), $('app'), $('foot'), ...document.querySelectorAll('dialog')];
+  const htmlEls = [];
+  roots.forEach(root => {
+    root.querySelectorAll('h1, li, p.pw').forEach(el => { const k = byText.get(el.innerHTML.trim()); if (k){ I18N_NODES.push([el, k, 'html']); htmlEls.push(el); } });
+    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n;
+    while ((n = w.nextNode())){
+      const raw = n.nodeValue, tx = raw.trim(); if (!tx) continue;
+      if (n.parentElement.closest('.pv-form, #pBody, #paper, #log, .drawer') || htmlEls.some(h => h.contains(n))) continue;
+      const k = byText.get(tx); if (k) I18N_NODES.push([n, k, 'text', raw.match(/^\s*/)[0], raw.match(/\s*$/)[0]]);
+    }
+    root.querySelectorAll('[placeholder],[title],[aria-label]').forEach(el => ['placeholder','title','aria-label'].forEach(a => { const v = el.getAttribute(a); const k = v && byText.get(v.trim()); if (k) I18N_NODES.push([el, k, 'attr:' + a]); }));
+  });
+})();
+let DETECTED = null;
+function autoUi(){
+  if (DETECTED) return DETECTED;
+  const list = (navigator.languages || [navigator.language || 'en']).map(x => String(x).toLowerCase().slice(0, 2));
+  return list.find(x => x === 'zu' || x === 'af') || 'en';
+}
+function setUi(lang){
+  UI = I18N[lang] ? lang : 'en';
+  document.documentElement.lang = UI;
+  I18N_NODES.forEach(([n, k, kind, lead, trail]) => {
+    if (kind === 'text') n.nodeValue = (lead || '') + t(k) + (trail || '');
+    else if (kind === 'html') n.innerHTML = t(k);
+    else n.setAttribute(kind.slice(5), t(k));
+  });
+  const opt = $('lang').querySelector('option[value="auto"]'); if (opt) opt.textContent = t('langAuto');
+  const fp = $('formPill'); if (fp && fp.firstChild) fp.firstChild.nodeValue = t('formPill') + ' · ';
+  document.querySelectorAll('.chip.listen:not(.playing) span').forEach(x => x.textContent = t('listen'));
+  document.querySelectorAll('.chip.gen-info').forEach(x => x.textContent = t('generalInfo'));
+  document.querySelectorAll('.f6a').forEach(x => x.textContent = t('f6a'));
+  if (S.mode){ inp.placeholder = S.mode === 'live' ? t('ph') : t('phDemo'); $('underNote').textContent = S.mode === 'live' ? t('underLive') : t('underDemo'); }
+  if ($('st1')) refreshProgress();
+  renderTypes(); setPlayLabel();
+}
+$('lang').onchange = e => { LANG = e.target.value; try{localStorage.setItem('informed_lang',LANG)}catch(_){} setUi(LANG === 'auto' ? autoUi() : LANG); };
 
 /* ---------- quick exit ---------- */
 let leaving = false;
@@ -663,7 +706,7 @@ function show(view){
   window.scrollTo(0,0);
 }
 $('toHome').onclick = () => {
-  if (S.mode === 'live' && hasForm() && !confirm('Go back to the home page? Your form will be cleared from this page' + (PIN_KEY ? ' (your PIN-saved copy is kept).' : '. To keep it, choose "Save to finish later" first.'))) return;
+  if (S.mode === 'live' && hasForm() && !confirm(t('cHome') + (PIN_KEY ? t('cHomePin') : t('cHomeNoPin')))) return;
   try { sessionStorage.removeItem(DRAFT_KEY); } catch(e){}
   stopDemo(); stopAudio(); stopRecording(true); S = fresh(); show('home');
 };
@@ -676,7 +719,7 @@ function buildPanel(){
     if (sec.n === 5) d.open = true;
     d.innerHTML = `<summary><span class="st" id="st${sec.n}">${sec.n}</span><span>${sec.title}</span>${sec.key?'<span class="key">Key</span>':''}${sec.optional?'<span class="sn" style="margin-left:auto">Optional</span>':''}</summary><div class="fields"></div>`;
     const wrap = d.querySelector('.fields');
-    if (sec.n === 1){ const n=document.createElement('p'); n.className='f6a'; n.textContent='Your address and contact details go on Form 6A, a separate page that is not given to the respondent.'; wrap.appendChild(n); }
+    if (sec.n === 1){ const n=document.createElement('p'); n.className='f6a'; n.textContent=t('f6a'); wrap.appendChild(n); }
     FIELDS.filter(f => f.s === sec.n).forEach(f => {
       const el = document.createElement('div'); el.className='f'; el.id='f_'+f.id;
       if (f.type === 'check'){
@@ -714,7 +757,7 @@ let LASTF = null;
 function renderForm(){ FIELDS.forEach(f => setField(f.id, S.form[f.id] || '', false)); renderTypes(); refreshProgress(); }
 function renderTypes(){
   const box = $('types'); box.innerHTML = '';
-  if (!S.abuse.length){ box.innerHTML = '<span class="none">Types of abuse will appear here as they come up.</span>'; return; }
+  if (!S.abuse.length){ box.innerHTML = '<span class="none"></span>'; box.firstChild.textContent = t('typesNone'); return; }
   S.abuse.forEach(id => { const t = ABUSE_TYPES.find(a => a.id === id); if (!t) return; const s=document.createElement('span'); s.className='t'; s.textContent=t.label; box.appendChild(s); });
 }
 function sectionState(n){
@@ -737,7 +780,7 @@ function refreshProgress(){
   const pct = Math.round(100*score/total);
   $('barFill').style.width = pct + '%';
   $('pillPct').textContent = pct + '%';
-  $('pDone').textContent = `${started} of 9 sections started`;
+  $('pDone').textContent = t('started', { n: started });
   if (typeof scheduleSave === 'function') scheduleSave();
 }
 function openPanel(){ $('panel').classList.add('open'); $('scrim').classList.add('on');
@@ -757,7 +800,7 @@ function addMsg(role, text, opts = {}){
   const b = document.createElement('div'); b.className='b'; b.textContent = text; m.appendChild(b);
   if (opts.crisis){
     const c = document.createElement('div'); c.className='calls';
-    c.innerHTML = '<a href="tel:10111">Call police · 10111</a><a href="tel:10177">Ambulance · 10177</a><a class="alt" href="tel:0800428428">GBV Command Centre · 0800 428 428</a>';
+    c.innerHTML = '<a href="tel:10111"></a><a href="tel:10177"></a><a class="alt" href="tel:0800428428"></a>'; const cl = c.querySelectorAll('a'); cl[0].textContent = t('callPolice'); cl[1].textContent = t('callAmb'); cl[2].textContent = t('callGbv');
     m.appendChild(c);
   }
   if (SHOW_SOURCES && opts.sources && opts.sources.length){
@@ -777,10 +820,10 @@ function addMsg(role, text, opts = {}){
   }
   if (role !== 'user' && (opts.general || opts.listen !== false)){
     let sr = m.querySelector('.srcs'); if (!sr){ sr = document.createElement('div'); sr.className='srcs'; m.appendChild(sr); }
-    if (opts.general){ const g=document.createElement('span'); g.className='chip gen-info'; g.textContent='General information, not from GRIT\u2019s guides. Please check with the court clerk.'; sr.appendChild(g); }
+    if (opts.general){ const g=document.createElement('span'); g.className='chip gen-info'; g.textContent=t('generalInfo'); sr.appendChild(g); }
     if (opts.listen !== false){
       const l=document.createElement('button'); l.type='button'; l.className='chip listen';
-      l.innerHTML='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2.5 6v4h2.5l3.5 3V3L5 6z"/><path d="M11 5.5a3.5 3.5 0 0 1 0 5"/></svg><span>Listen</span>';
+      l.innerHTML='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2.5 6v4h2.5l3.5 3V3L5 6z"/><path d="M11 5.5a3.5 3.5 0 0 1 0 5"/></svg><span></span>'; l.querySelector('span').textContent = t('listen');
       l.onclick = () => listen(text, l); sr.appendChild(l);
     }
   }
@@ -788,14 +831,14 @@ function addMsg(role, text, opts = {}){
 }
 function suggest(){
   const w = document.createElement('div'); w.className='suggest';
-  SUGGESTED.forEach(q => { const b=document.createElement('button'); b.type='button'; b.textContent=q;
+  suggested().forEach(q => { const b=document.createElement('button'); b.type='button'; b.textContent=q;
     b.onclick = () => { if (S.mode !== 'live' || S.busy) return; w.remove(); inp.value = q; sendLive(); }; w.appendChild(b); });
   log.appendChild(w); scrollDown();
 }
 function typing(){ const m=document.createElement('div'); m.className='msg a typing'; m.innerHTML='<div class="b"><i></i><i></i><i></i></div>'; log.appendChild(m); scrollDown(); return m; }
 function readyNote(){
   if (S.ready) return; S.ready = true;
-  const r = document.createElement('button'); r.className='ready'; r.type='button'; r.textContent='Your application is ready to review →';
+  const r = document.createElement('button'); r.className='ready'; r.type='button'; r.textContent=t('ready');
   r.onclick = openGen; log.appendChild(r); scrollDown();
   $('gen').classList.add('pulse');
 }
@@ -829,15 +872,16 @@ async function callChat(){
   try {
     const r = await fetch('/api/chat', { method:'POST', headers:{ 'Content-Type':'application/json', 'x-demo-code': CODE },
       body: JSON.stringify({ messages: S.msgs, form: S.form, abuse: S.abuse, lang: LANG, mode: S.cm }) });
-    if (r.status === 401){ t.remove(); setBusy(false); askCode(CODE ? 'That access code did not work. Please try again.' : '', () => callChat()); return; }
+    if (r.status === 401){ t.remove(); setBusy(false); askCode(CODE ? t('codeWrong') : '', () => callChat()); return; }
     const j = await r.json();
     t.remove();
     addMsg('assistant', j.reply, { crisis: j.crisis, sources: (j.fixed || j.grounding === 'general') ? [] : j.sources, general: !j.fixed && j.grounding === 'general' });
     S.msgs.push({ role:'assistant', content:j.reply });
     if (S.cm === 'fill') applyResult(j);
+    if (LANG === 'auto' && ['en','zu','af'].includes(j.language) && j.language !== UI){ DETECTED = j.language; setUi(j.language); }
   } catch(e){
     t.remove();
-    addMsg('assistant', "Sorry, I could not reach the server just now. Please try again. If you are in danger, call 10111 or the GBV Command Centre on 0800 428 428.");
+    addMsg('assistant', t('serverErr'));
   }
   setBusy(false); if (window.innerWidth >= 720) inp.focus();
 }
@@ -849,7 +893,7 @@ function askCode(msg, then){
   $('codeDlg').showModal(); setTimeout(() => $('codeIn').focus(), 50);
 }
 $('codeForm').onsubmit = e => {
-  e.preventDefault(); const v = $('codeIn').value.trim(); if (!v) { $('codeErr').textContent='Please enter the code.'; return; }
+  e.preventDefault(); const v = $('codeIn').value.trim(); if (!v) { $('codeErr').textContent=t('codeEmpty'); return; }
   CODE = v; try{ sessionStorage.setItem('informed_code', v); }catch(_){}
   $('codeDlg').close(); const f = codeThen; codeThen = null; f && f();
 };
@@ -865,11 +909,11 @@ function setMode(cm, announce = true){
   if (!announce) return;
   if (!S.shown[cm]){
     S.shown[cm] = true;
-    const o = cm === 'fill' ? FILL_OPENING : ASK_OPENING;
+    const o = opening(cm);
     addMsg('assistant', o); S.msgs.push({ role:'assistant', content:o });
     if (cm === 'ask' && S.mode === 'live') suggest();
   } else {
-    const note = cm === 'fill' ? "Let's carry on with your application. Your form is kept on the right." : "Ask me anything about protection orders. Your form is kept, and you can go back to it any time.";
+    const note = cm === 'fill' ? t('toFill') : t('toAsk');
     addMsg('assistant', note, { listen:false }); S.msgs.push({ role:'assistant', content:note });
   }
   if (S.mode === 'live' && window.innerWidth >= 720) inp.focus();
@@ -907,7 +951,7 @@ async function finishRecording(chunks, mime){
   releaseMic();
   const discard = V.discard; V.rec = null; V.discard = false;
   if (discard || !chunks.length){ V.state = 'idle'; voiceBar(false); return; }
-  V.state = 'sending'; $('mic').classList.add('busy'); voiceBar(true, 'Writing down what you said…');
+  V.state = 'sending'; $('mic').classList.add('busy'); voiceBar(true, t('vWrite'));
   try {
     const blob = new Blob(chunks, { type: mime || 'audio/webm' });
     if (blob.size < 1200) throw new Error('short');
@@ -918,11 +962,11 @@ async function finishRecording(chunks, mime){
     if (j.error || !j.text) throw new Error(j.error || 'empty');
     inp.value = (inp.value ? inp.value.trim() + ' ' : '') + j.text; autosize();
     V.state = 'idle';
-    voiceBar(true, 'Check what I heard and change anything, then tap send.', 7000);
+    voiceBar(true, t('vCheck'), 7000);
     inp.focus();
   } catch(e){
     V.state = 'idle';
-    voiceBar(true, e.message && e.message.length > 10 ? e.message : 'Sorry, I could not hear that clearly. Please try again, or type instead.', 6000);
+    voiceBar(true, e.message && e.message.length > 10 ? e.message : t('vFail'), 6000);
   }
   $('mic').classList.remove('busy');
 }
@@ -930,30 +974,30 @@ async function toggleMic(){
   if (S.mode !== 'live') return;
   if (V.state === 'recording' || V.state === 'starting'){ stopRecording(false); return; }
   if (V.state === 'sending') return;
-  if (!navigator.mediaDevices || !window.MediaRecorder){ voiceBar(true, 'Sorry, voice is not supported in this browser. Please type instead.', 4000); return; }
+  if (!navigator.mediaDevices || !window.MediaRecorder){ voiceBar(true, t('vNoSupport'), 4000); return; }
   stopAudio();
   V.state = 'starting'; V.discard = false;
-  voiceBar(true, 'Starting the microphone…');
+  voiceBar(true, t('vStart'));
   let stream;
   try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
-  catch(e){ V.state = 'idle'; voiceBar(true, 'I need permission to use your microphone. You can allow it in your browser, or type instead.', 6000); return; }
+  catch(e){ V.state = 'idle'; voiceBar(true, t('vPerm'), 6000); return; }
   if (V.discard || S.mode !== 'live'){ stream.getTracks().forEach(t => t.stop()); V.state = 'idle'; V.discard = false; voiceBar(false); return; }
   const mime = pickMime(); const chunks = []; const started = Date.now();
   let rec;
   try { rec = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined); }
-  catch(e){ stream.getTracks().forEach(t => t.stop()); V.state = 'idle'; voiceBar(true, 'Sorry, voice is not supported in this browser. Please type instead.', 4000); return; }
+  catch(e){ stream.getTracks().forEach(t => t.stop()); V.state = 'idle'; voiceBar(true, t('vNoSupport'), 4000); return; }
   V.rec = rec; V.stream = stream; V.state = 'recording';
   rec.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
   rec.onstop = () => { if (V.rec === rec) finishRecording(chunks, rec.mimeType || mime); };
   V.tick = setInterval(() => {
     if (V.rec !== rec){ clearInterval(V.tick); return; }
     const s = Math.floor((Date.now() - started) / 1000);
-    voiceBar(true, `Listening… ${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}. Tap the red microphone when you are done.`);
+    voiceBar(true, t('vListenT', { t: `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}` }));
     if (s >= 180) stopRecording(false); // three minutes at most
   }, 500);
   rec.start(1000);
   $('mic').classList.add('rec');
-  voiceBar(true, 'Listening… tap the red microphone when you are done.');
+  voiceBar(true, t('vListen'));
 }
 $('mic').onclick = toggleMic;
 // Typing while recording means they chose to type: stop and throw the recording away.
@@ -962,19 +1006,19 @@ inp.addEventListener('input', () => { if (V.state === 'recording' || V.state ===
 /* ---------- listen: read a reply aloud (only when tapped, never automatically) ---------- */
 // Audio streams from the server, so it starts playing while the rest is still being made.
 let AUDIO = null, AUDIO_BTN = null;
-function stopAudio(){ if (AUDIO){ AUDIO.pause(); AUDIO.removeAttribute('src'); AUDIO = null; } if (AUDIO_BTN){ AUDIO_BTN.classList.remove('playing'); AUDIO_BTN.querySelector('span').textContent = 'Listen'; AUDIO_BTN = null; } }
+function stopAudio(){ if (AUDIO){ AUDIO.pause(); AUDIO.removeAttribute('src'); AUDIO = null; } if (AUDIO_BTN){ AUDIO_BTN.classList.remove('playing'); AUDIO_BTN.querySelector('span').textContent = t('listen'); AUDIO_BTN = null; } }
 function b64url(str){ const bytes = new TextEncoder().encode(str); let bin = ''; bytes.forEach(b => bin += String.fromCharCode(b)); return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
 function listen(text, btn){
   if (AUDIO_BTN === btn){ stopAudio(); return; }
   stopAudio();
-  if (S.mode !== 'live'){ btn.querySelector('span').textContent = 'Listen works in a live chat'; setTimeout(() => btn.querySelector('span').textContent = 'Listen', 2500); return; }
+  if (S.mode !== 'live'){ btn.querySelector('span').textContent = t('listenDemo'); setTimeout(() => btn.querySelector('span').textContent = t('listen'), 2500); return; }
   if (V.state === 'recording') stopRecording(true);
-  AUDIO_BTN = btn; btn.classList.add('playing'); btn.querySelector('span').textContent = 'Loading…';
+  AUDIO_BTN = btn; btn.classList.add('playing'); btn.querySelector('span').textContent = t('listenLoad');
   const url = '/api/speak?t=' + b64url(String(text).slice(0, 2000)) + '&l=' + encodeURIComponent(LANG) + (CODE ? '&c=' + encodeURIComponent(CODE) : '');
   const a = new Audio(); AUDIO = a; a.preload = 'auto';
-  a.onplaying = () => { if (AUDIO === a) btn.querySelector('span').textContent = 'Stop'; };
+  a.onplaying = () => { if (AUDIO === a) btn.querySelector('span').textContent = t('listenStop'); };
   a.onended = () => { if (AUDIO === a) stopAudio(); };
-  a.onerror = () => { if (AUDIO !== a) return; stopAudio(); btn.querySelector('span').textContent = 'Could not play'; setTimeout(() => btn.querySelector('span').textContent = 'Listen', 2500); };
+  a.onerror = () => { if (AUDIO !== a) return; stopAudio(); btn.querySelector('span').textContent = t('listenFail'); setTimeout(() => btn.querySelector('span').textContent = t('listen'), 2500); };
   a.src = url;
   a.play().catch(() => {});
 }
@@ -996,7 +1040,7 @@ function scheduleSave(){
       if (hasForm()) sessionStorage.setItem(DRAFT_KEY, JSON.stringify({ form: S.form, abuse: S.abuse, pinned: !!PIN_KEY, t: Date.now() }));
       else sessionStorage.removeItem(DRAFT_KEY);
     } catch(e){}
-    if (PIN_KEY && hasForm()){ try { await writeVault(PIN_KEY, PIN_SALT); saveState('Saved on this device with your PIN.', true); } catch(e){} }
+    if (PIN_KEY && hasForm()){ try { await writeVault(PIN_KEY, PIN_SALT); saveState(t('savedPin'), true); } catch(e){} }
   }, 400);
 }
 const b64e = buf => btoa(String.fromCharCode(...new Uint8Array(buf)));
@@ -1019,34 +1063,34 @@ async function readVault(pin){
   return { data: JSON.parse(new TextDecoder().decode(pt)), key, salt };
 }
 $('saveLater').onclick = () => {
-  if (S.mode !== 'live'){ saveState('Saving works in a live conversation, not the demo.'); return; }
-  if (!window.crypto || !crypto.subtle){ saveState('Saving is not available in this browser.'); return; }
-  if (!hasForm()){ saveState('There is nothing to save yet.'); return; }
+  if (S.mode !== 'live'){ saveState(t('saveDemo')); return; }
+  if (!window.crypto || !crypto.subtle){ saveState(t('saveNA')); return; }
+  if (!hasForm()){ saveState(t('saveNothing')); return; }
   $('pin1').value = ''; $('pin2').value = ''; $('saveErr').textContent = ''; $('saveDlg').showModal(); setTimeout(() => $('pin1').focus(), 50);
 };
 $('saveCancel').onclick = () => $('saveDlg').close();
 $('saveForm').onsubmit = async e => {
   e.preventDefault();
   const a = $('pin1').value.trim(), b = $('pin2').value.trim();
-  if (a.length < 6){ $('saveErr').textContent = 'Please use at least 6 numbers or letters.'; return; }
-  if (a !== b){ $('saveErr').textContent = 'The two PINs are not the same. Please try again.'; return; }
+  if (a.length < 6){ $('saveErr').textContent = t('sErrShort'); return; }
+  if (a !== b){ $('saveErr').textContent = t('sErrMatch'); return; }
   try {
     PIN_SALT = crypto.getRandomValues(new Uint8Array(16)); PIN_KEY = await deriveKey(a, PIN_SALT);
     await writeVault(PIN_KEY, PIN_SALT); scheduleSave();
-    $('saveDlg').close(); saveState('Saved on this device with your PIN. Changes are saved as you go.', true);
-  } catch(err){ $('saveErr').textContent = 'Sorry, it could not be saved on this device.'; PIN_KEY = null; }
+    $('saveDlg').close(); saveState(t('savedPinGo'), true);
+  } catch(err){ $('saveErr').textContent = t('sErrSave'); PIN_KEY = null; }
 };
 $('openSaved').onclick = () => { $('pinOpen').value = ''; $('openErr').textContent = ''; $('openDlg').showModal(); setTimeout(() => $('pinOpen').focus(), 50); };
 $('openCancel').onclick = () => $('openDlg').close();
 let OPEN_TRIES = 0;
 async function tryOpen(){
   const pin = $('pinOpen').value.trim();
-  if (!pin){ $('openErr').textContent = 'Please enter your PIN.'; return null; }
-  if (!window.crypto || !crypto.subtle){ $('openErr').textContent = 'This browser cannot open saved applications.'; return null; }
+  if (!pin){ $('openErr').textContent = t('oErrEnter'); return null; }
+  if (!window.crypto || !crypto.subtle){ $('openErr').textContent = t('oErrBrowser'); return null; }
   try { const r = await readVault(pin); if (r) return r; } catch(e){}
   OPEN_TRIES++;
   await new Promise(r => setTimeout(r, Math.min(8000, 600 * OPEN_TRIES)));
-  $('openErr').textContent = 'That PIN did not open anything. Check the PIN, or there may be no application saved on this device.';
+  $('openErr').textContent = t('oErrWrong');
   return null;
 }
 $('openForm').onsubmit = async e => {
@@ -1059,13 +1103,13 @@ $('openForm').onsubmit = async e => {
 };
 $('openDelete').onclick = async () => {
   const r = await tryOpen(); if (!r) return;
-  if (!confirm('Delete the saved application from this device? This cannot be undone.')) return;
+  if (!confirm(t('oConfirmDelete'))) return;
   try { localStorage.removeItem(VAULT_KEY); } catch(e){}
-  $('openErr').textContent = 'The saved application has been deleted from this device.';
+  $('openErr').textContent = t('oDeleted');
 };
 $('startOver').onclick = () => {
   if (S.mode !== 'live') return;
-  if (!confirm('Start over? This clears the form on this page.' + (PIN_KEY ? ' Your PIN-saved copy will also be deleted.' : ''))) return;
+  if (!confirm(t('cStartOver') + (PIN_KEY ? t('cStartOverPin') : ''))) return;
   try { sessionStorage.removeItem(DRAFT_KEY); if (PIN_KEY) localStorage.removeItem(VAULT_KEY); } catch(e){}
   PIN_KEY = null; PIN_SALT = null;
   startApp('live', 'fill');
@@ -1075,21 +1119,21 @@ $('startOver').onclick = () => {
 function startApp(mode, cm = 'ask', restore = null){
   stopDemo(); stopAudio(); stopRecording(true); S = fresh(); S.mode = mode; LASTF = null;
   if (!restore || !restore.pinned){ PIN_KEY = null; PIN_SALT = null; }
-  saveState('Your form is kept if the page reloads.');
+  saveState(t('saveKept'));
   log.innerHTML = ''; buildPanel(); renderForm();
   $('demoBar').classList.toggle('on', mode === 'demo');
   $('gen').classList.remove('pulse');
   inp.disabled = mode !== 'live';
-  inp.placeholder = mode === 'live' ? 'Type your message…' : 'Demo is playing…';
-  $('underNote').textContent = mode === 'live' ? 'Your conversation is private. The chat is not saved, but your form is kept if the page reloads.' : 'Demo: an invented person and a scripted conversation.';
+  inp.placeholder = mode === 'live' ? t('ph') : t('phDemo');
+  $('underNote').textContent = mode === 'live' ? t('underLive') : t('underDemo');
   setBusy(false);
   show('app');
   if (restore){
     S.form = restore.form || {}; S.abuse = restore.abuse || []; renderForm();
     S.shown.fill = true; setMode('fill', false);
-    const o = "Welcome back. Your application is just as you left it, and you can see it on the right. Shall we carry on? You can tell me anything you would like to add or change.";
+    const o = t('welcomeBack');
     addMsg('assistant', o); S.msgs.push({ role:'assistant', content:o });
-    saveState(restore.pinned ? 'Saved on this device with your PIN.' : 'Your form is kept if the page reloads.', !!restore.pinned);
+    saveState(restore.pinned ? t('savedPin') : t('saveKept'), !!restore.pinned);
     return;
   }
   setMode(mode === 'demo' ? 'ask' : cm);
@@ -1106,15 +1150,15 @@ function openGen(){
   const hist = S.form.history || '';
   const incidents = (has('inc1_details') ? 1 : 0) + (has('inc2_details') ? 1 : 0) + ((hist.match(/^\s*\d+[.)]/gm) || []).length || (hist.trim() ? 1 : 0));
   const items = [
-    [has('c_names') || has('c_surname'), 'Your name and details (Form 6 section 1, Form 6A)'],
-    [has('r_names') || has('r_surname'), 'Details of the person harming you (section 3)'],
-    [incidents >= 3, incidents >= 3 ? `${incidents} incidents described, with dates where known (section 4)` : 'At least three incidents, with dates where you can (section 4)'],
-    [has('urg_why') || has('urg_fear'), 'Why the court must act urgently (section 5)'],
-    [FIELDS.some(f => f.s === 7 && has(f.id)), 'What you want the order to stop (section 6)'],
-    [has('police_station'), 'The police station you would report to (section 9)'],
+    [has('c_names') || has('c_surname'), t('rC1') + ' (Form 6 section 1, Form 6A)'],
+    [has('r_names') || has('r_surname'), t('rC2') + ' (section 3)'],
+    [incidents >= 3, (incidents >= 3 ? t('rC3ok', { n: incidents }) : t('rC3')) + ' (section 4)'],
+    [has('urg_why') || has('urg_fear'), t('rC4') + ' (section 5)'],
+    [FIELDS.some(f => f.s === 7 && has(f.id)), t('rC5') + ' (section 6)'],
+    [has('police_station'), t('rC6') + ' (section 9)'],
   ];
   $('checklist').innerHTML = '';
-  items.forEach(([ok, label]) => { const li=document.createElement('li'); li.innerHTML = `<span class="ic ${ok?'y':'n'}">${ok?'✓':'!'}</span><span></span>`; li.lastChild.textContent = label + (ok ? '' : ' — you can add this, or leave it for the clerk'); $('checklist').appendChild(li); });
+  items.forEach(([ok, label]) => { const li=document.createElement('li'); li.innerHTML = `<span class="ic ${ok?'y':'n'}">${ok?'✓':'!'}</span><span></span>`; li.lastChild.textContent = label + (ok ? '' : t('rAdd')); $('checklist').appendChild(li); });
   $('genErr').textContent = '';
   $('genDlg').showModal();
 }
@@ -1152,7 +1196,7 @@ function renderPaper(){
   });
   h += sig + `<p class="foot">Prepared with inFORMed \u00b7 Powered by GRIT (Gender Rights in Tech)</p>`;
   $('paper').innerHTML = h;
-  $('pvSum').textContent = filled ? `${filled} of ${total} parts filled in. You can change anything in the form panel, or keep talking to add more.` : 'Nothing has been filled in yet. Tell inFORMed what happened, and your application will fill in as you talk.';
+  $('pvSum').textContent = (filled ? t('pvSum', { f: filled, t: total }) : t('pvEmpty')) + (UI !== 'en' ? ' ' + t('formEnglish') : '');
 }
 function openPreview(){ closePanel(); if ($('genDlg').open) $('genDlg').close(); renderPaper(); $('pvDlg').showModal(); $('pvDlg').querySelector('.pv-scroll').scrollTop = 0; }
 ['pvOpen1','pvOpen2','pvOpen3'].forEach(id => $(id).onclick = openPreview);
@@ -1168,14 +1212,14 @@ $('gen').onclick = openGen; $('gen2').onclick = () => { closePanel(); openGen();
 $('genClose').onclick = () => $('genDlg').close();
 async function download(format, btnIn){
   const btn = btnIn || (format === 'pdf' ? $('dlPdf') : $('dlDocx')); const label = btn.textContent;
-  btn.disabled = true; btn.textContent = 'Preparing…'; $('genErr').textContent = '';
+  btn.disabled = true; btn.textContent = t('preparing'); $('genErr').textContent = '';
   try {
     const r = await fetch('/api/document', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ form:S.form, abuse:S.abuse, format, demo:S.mode==='demo' }) });
     if (!r.ok) throw new Error(await r.text());
     const blob = await r.blob(); const url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = 'protection-order-draft.' + (format === 'pdf' ? 'pdf' : 'docx');
     document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000);
-  } catch(e){ const msg = 'Sorry, the document could not be prepared. Please try again.'; if ($('genDlg').open) $('genErr').textContent = msg; else $('pvSum').textContent = msg; }
+  } catch(e){ const msg = t('docErr'); if ($('genDlg').open) $('genErr').textContent = msg; else $('pvSum').textContent = msg; }
   btn.disabled = false; btn.textContent = label;
 }
 $('dlPdf').onclick = () => download('pdf'); $('dlDocx').onclick = () => download('docx');
@@ -1279,14 +1323,14 @@ async function demoStep(){
   applyResult({ updates: Object.entries(st.up).map(([field,value]) => ({ field, value })), abuse_types: st.ab || undefined, ready: st.ready });
   return true;
 }
-function setPlayLabel(){ $('dPlay').textContent = D.i >= DEMO.length ? 'Replay' : D.playing ? 'Pause' : 'Play'; }
+function setPlayLabel(){ $('dPlay').textContent = D.i >= DEMO.length ? t('dReplay') : D.playing ? t('dPause') : t('dPlay'); }
 async function loop(){
   const g = D.gen;
   while (D.playing && g === D.gen && D.i < DEMO.length){
     D.cur = demoStep(); await D.cur; D.cur = null;
     if (!D.playing || g !== D.gen || D.i >= DEMO.length) break;
     const st = DEMO[D.i-1];
-    if (!(await pause(Math.min(7000, Math.max(3200, (st.b || FILL_OPENING).length * 38))))) break;
+    if (!(await pause(Math.min(7000, Math.max(3200, (st.b || FILL_OPENING_EN).length * 38))))) break;
   }
   if (g === D.gen && D.i >= DEMO.length) D.playing = false;
   setPlayLabel();
@@ -1315,12 +1359,13 @@ $('dSafety').onclick = async () => {
   addMsg('assistant', SAFETY_DEMO.bot, { crisis: true });
 };
 
+setUi(LANG === 'auto' ? autoUi() : LANG);
 show('home');
 try {
   const d = JSON.parse(sessionStorage.getItem(DRAFT_KEY) || 'null');
   if (d && d.form && Object.values(d.form).some(v => String(v || '').trim())){
     startApp('live', 'fill', { form: d.form, abuse: d.abuse, pinned: false });
-    if (d.pinned) saveState('Restored. To keep updating your PIN-saved copy, choose "Save to finish later" again.');
+    if (d.pinned) saveState(t('restoredPin'));
   }
 } catch(e){}
 })();
