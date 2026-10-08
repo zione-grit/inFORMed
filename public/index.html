@@ -86,7 +86,7 @@ a{color:var(--primary)}
 .voicebar.on{display:flex}
 .voicebar .dot{width:9px;height:9px;border-radius:50%;background:var(--danger);animation:bl 1.2s infinite}
 .fillcta{background:var(--primary);color:var(--primary-ink);border:0;border-radius:999px;padding:9px 16px;font-weight:700;font-size:14px;cursor:pointer}
-.app.ask #gen{display:none}
+.app.ask #gen,.app.ask #pvOpen1{display:none}
 .app:not(.ask) #fillCta{display:none}
 .tg{display:inline-flex;align-items:center;gap:8px;text-decoration:none;border-radius:999px;padding:8px 14px;font-size:14px;font-weight:700;color:#fff;background:#229ED9;border:0;box-shadow:0 2px 8px rgba(34,158,217,.28)}
 .tg:hover{background:#1A8BC2}
@@ -111,6 +111,37 @@ a{color:var(--primary)}
 .alt-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
 .linkbtn{background:none;border:0;color:var(--primary);font-weight:700;font-size:15px;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:8px 4px}
 .alsotg{margin-top:16px;font-size:15px;color:var(--soft);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pv-open{display:inline-flex;align-items:center;gap:6px}
+.p-actions{display:grid;grid-template-columns:auto 1fr;gap:8px}
+dialog.pv{max-width:min(860px,calc(100vw - 16px));width:100%;height:min(92dvh,1100px);display:flex;flex-direction:column;background:var(--bg)}
+dialog.pv:not([open]){display:none}
+.pv-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--surface)}
+.pv-bar h2{margin:0;font-size:20px;flex:1;min-width:150px}
+@media(max-width:600px){.pv-bar h2{font-size:17px;min-width:100%}#pvPrint{display:none}}
+.about{align-items:start}
+.pv-scroll{flex:1;overflow:auto;padding:18px 12px}
+.paper{background:#fff;color:#1a1f24;max-width:760px;margin:0 auto;padding:36px 40px;box-shadow:0 2px 14px rgba(0,0,0,.12);border-radius:4px;font-size:14px;line-height:1.5}
+@media(max-width:600px){.paper{padding:22px 18px}}
+.paper .ph{display:flex;gap:16px;align-items:flex-start}
+.paper .ph div{flex:1}
+.paper h1{font-family:var(--sans);font-size:19px;letter-spacing:.01em;margin:0;color:#1D5E6B;line-height:1.25}
+.paper .sub{color:#5b6670;font-size:12.5px;margin:2px 0 0}
+.paper .ph img{height:54px;width:auto}
+.paper .note{background:#EEF4F5;border-radius:6px;padding:10px 12px;font-size:12.5px;margin:14px 0 6px;color:#26323a}
+.paper .demo{color:#993333;font-weight:700;font-size:12.5px}
+.paper h3{font-size:13px;letter-spacing:.03em;text-transform:uppercase;color:#1D5E6B;border-bottom:1px solid #d6dde0;padding-bottom:4px;margin:22px 0 8px}
+.paper .row{display:grid;grid-template-columns:minmax(120px,38%) 1fr;gap:4px 14px;padding:4px 0;border-bottom:1px dotted #e3e8ea}
+@media(max-width:600px){.paper .row{grid-template-columns:1fr}}
+.paper .lab{color:#5b6670;font-size:12.5px;font-weight:600}
+.paper .val{white-space:pre-wrap}
+.paper .empty{color:#a0a8ae;font-style:italic}
+.paper .ck{display:flex;gap:10px;padding:5px 0;border-bottom:1px dotted #e3e8ea}
+.paper .bx{flex:none;width:15px;height:15px;border:1.5px solid #1a1f24;border-radius:2px;display:grid;place-items:center;font-size:11px;font-weight:800;margin-top:2px}
+.paper .ck .det{display:block;margin-top:2px}
+.paper .types{color:#5b6670;font-size:12.5px;margin:0 0 6px}
+.paper .sig{margin-top:26px;display:grid;gap:18px;font-size:13px}
+.paper .foot{margin-top:26px;color:#8a949b;font-size:11.5px;text-align:center}
+.pv-sum{max-width:760px;margin:0 auto 12px;font-size:14px;color:var(--soft)}
 .spacer{flex:1}
 .ghost{background:none;border:1px solid transparent;border-radius:999px;padding:7px 12px;color:var(--soft);cursor:pointer;font-size:14px}
 .ghost:hover{background:var(--tint-2);color:var(--ink)}
@@ -173,7 +204,8 @@ h2{font-family:var(--serif);font-weight:500;font-size:clamp(26px,3.4vw,36px);let
 .about h3{font-family:var(--serif);font-weight:500;font-size:24px;margin:0 0 10px}
 .about p{margin:0 0 12px;color:var(--soft)}
 .about ul{margin:0;padding-left:18px;color:var(--soft)}
-.about li{margin:4px 0}
+.about li{margin:6px 0}
+.about .card.grit strong{color:var(--primary-ink)}
 .help{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
 .help a{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;color:var(--ink)}
 .help a:hover{border-color:var(--primary)}
@@ -412,11 +444,13 @@ body.in-app .app{height:calc(100dvh - var(--toph,58px))}
       <div class="card grit">
         <img class="glogo" src="/grit-logo-white.png" alt="GRIT, Gender Rights in Tech">
         <h3>About GRIT</h3>
-        <p>GRIT (Gender Rights in Tech) is a South African organisation that builds feminist technology to support survivors of violence, and to help people find care and information about their rights, their bodies, and things they may be afraid to raise with another person.</p>
+        <p>GRIT (Gender Rights in Tech) is a South African feminist technology organisation that uses technology to support survivors of gender-based violence and help people access information, support and resources around their rights, health and wellbeing.</p>
+        <p style="margin-bottom:6px"><strong>GRIT&rsquo;s work is grounded in:</strong></p>
         <ul>
-          <li>Survivor-centred care and trauma-informed practice in everything it builds</li>
-          <li>Tools co-created with the young women, survivors and communities who use them</li>
-          <li>Zuzi, a multilingual WhatsApp companion, and the GRIT app with its panic button</li>
+          <li><strong>Survivor-centred and trauma-informed practice</strong>, with safety and the needs of survivors at the centre of its technology and programmes.</li>
+          <li><strong>Co-creation with communities</strong>, including young women, survivors and people whose experiences inform the design of the tools.</li>
+          <li><strong>Accessible digital support</strong>, including Zuzi, the AI-powered chat experience within the GRIT app, alongside WhatsApp-based support and other digital tools.</li>
+          <li><strong>Practical access to safety and support</strong>, including features such as the GRIT app&rsquo;s Panic Button and Evidence Vault.</li>
         </ul>
       </div>
     </div>
@@ -466,6 +500,7 @@ body.in-app .app{height:calc(100dvh - var(--toph,58px))}
         <button class="formpill" id="formPill">Your application · <span class="pct" id="pillPct">0%</span></button>
         <span class="grow" id="underNote">Your conversation is private. Nothing is saved when you close this page.</span>
         <button class="fillcta" id="fillCta">Help me fill in my protection order</button>
+        <button class="linkbtn" id="pvOpen1" type="button" style="font-size:14px">Preview form</button>
         <button class="gen" id="gen">Generate Protection Order</button>
       </div>
     </div>
@@ -480,7 +515,7 @@ body.in-app .app{height:calc(100dvh - var(--toph,58px))}
     </div>
     <div class="p-body" id="pBody"></div>
     <div class="p-foot">
-      <button class="btn primary" id="gen2">Generate Protection Order</button>
+      <div class="p-actions"><button class="btn secondary pv-open" id="pvOpen2" type="button">Preview form</button><button class="btn primary" id="gen2">Generate Protection Order</button></div>
       <small>A draft to take to the clerk at a Magistrates' Court. Not legal advice.</small>
     </div>
   </aside>
@@ -518,10 +553,23 @@ body.in-app .app{height:calc(100dvh - var(--toph,58px))}
   <p class="err" id="genErr"></p>
   <div class="acts">
     <button class="btn secondary" id="genClose">Keep talking</button>
+    <button class="btn secondary" id="pvOpen3">Preview form</button>
     <button class="btn secondary" id="dlDocx">Download Word</button>
     <button class="btn primary" id="dlPdf">Download PDF</button>
   </div>
 </div></dialog>
+
+<!-- Form preview -->
+<dialog class="pv" id="pvDlg" aria-label="Preview of your application">
+  <div class="pv-bar">
+    <h2>Preview of your application</h2>
+    <button class="btn secondary small" id="pvPrint">Print</button>
+    <button class="btn secondary small" id="pvWord">Word</button>
+    <button class="btn primary small" id="pvPdf">PDF</button>
+    <button class="btn secondary small" id="pvClose">Close</button>
+  </div>
+  <div class="pv-scroll"><p class="pv-sum" id="pvSum"></p><div class="paper" id="paper"></div></div>
+</dialog>
 
 <!-- Sources drawer -->
 <aside class="drawer" id="drawer" aria-label="What this is based on">
@@ -927,10 +975,51 @@ function openGen(){
   $('genErr').textContent = '';
   $('genDlg').showModal();
 }
+/* ---------- form preview (looks like the court form) ---------- */
+function esc(t){ return String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function renderPaper(){
+  const v = id => (S.form[id] || '').trim();
+  let filled = 0, total = 0;
+  let h = `<div class="ph"><div><h1>APPLICATION FOR PROTECTION ORDER</h1><p class="sub">Section 4(1) of the Domestic Violence Act, 1998 (Act No. 116 of 1998)</p></div><img src="/grit-logo.png" alt="GRIT"></div>
+  <div class="note">DRAFT prepared with inFORMed. Not yet sworn. Take this draft to the clerk at a Magistrates\u2019 Court. The clerk will help you complete the official form, and you will sign it in front of a commissioner of oaths.</div>`;
+  if (S.mode === 'demo') h += '<p class="demo">DEMO: this application is about an invented person.</p>';
+  SECTIONS.forEach(sec => {
+    const fs = FIELDS.filter(f => f.s === sec.n);
+    if (sec.optional && !fs.some(f => v(f.id))) return;
+    h += `<h3>Section ${sec.n}: ${esc(sec.formTitle)}</h3>`;
+    if (sec.n === 5 && S.abuse.length){
+      const names = S.abuse.map(a => (ABUSE_TYPES.find(x => x.id === a) || {}).label).filter(Boolean);
+      h += `<p class="types">Types of domestic violence described: ${esc(names.join(', '))}</p>`;
+    }
+    fs.forEach(f => {
+      const val = v(f.id); total++; if (val) filled++;
+      if (f.type === 'check'){
+        const det = val && val.toLowerCase() !== 'requested' ? `<span class="det">${esc(val)}</span>` : '';
+        h += `<div class="ck"><span class="bx">${val ? '\u2715' : ''}</span><div>${esc(f.label)}${det}</div></div>`;
+      } else {
+        h += `<div class="row"><div class="lab">${esc(f.label)}</div><div class="val">${val ? esc(val) : '<span class="empty">Not filled in yet</span>'}</div></div>`;
+      }
+    });
+  });
+  h += `<div class="sig"><div>Deponent (person applying): ______________________________</div><div>Date: ______________</div></div>
+  <p class="foot">Prepared with inFORMed \u00b7 Powered by GRIT (Gender Rights in Tech)</p>`;
+  $('paper').innerHTML = h;
+  $('pvSum').textContent = filled ? `${filled} of ${total} parts filled in. You can change anything in the form panel, or keep talking to add more.` : 'Nothing has been filled in yet. Tell inFORMed what happened, and your application will fill in as you talk.';
+}
+function openPreview(){ closePanel(); if ($('genDlg').open) $('genDlg').close(); renderPaper(); $('pvDlg').showModal(); $('pvDlg').querySelector('.pv-scroll').scrollTop = 0; }
+['pvOpen1','pvOpen2','pvOpen3'].forEach(id => $(id).onclick = openPreview);
+$('pvClose').onclick = () => $('pvDlg').close();
+$('pvPdf').onclick = () => download('pdf', $('pvPdf')); $('pvWord').onclick = () => download('docx', $('pvWord'));
+$('pvPrint').onclick = () => {
+  const w = window.open('', '_blank'); if (!w) return;
+  w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>Protection order application (draft)</title><style>' + [...document.styleSheets].map(ss => { try { return [...ss.cssRules].map(r => r.cssText).join('\n'); } catch(e){ return ''; } }).join('\n') + ' body{background:#fff} .paper{box-shadow:none;max-width:none}</style></head><body><div class="paper">' + $('paper').innerHTML + '</div></body></html>');
+  w.document.close(); w.onload = () => { w.focus(); w.print(); };
+};
+
 $('gen').onclick = openGen; $('gen2').onclick = () => { closePanel(); openGen(); };
 $('genClose').onclick = () => $('genDlg').close();
-async function download(format){
-  const btn = format === 'pdf' ? $('dlPdf') : $('dlDocx'); const label = btn.textContent;
+async function download(format, btnIn){
+  const btn = btnIn || (format === 'pdf' ? $('dlPdf') : $('dlDocx')); const label = btn.textContent;
   btn.disabled = true; btn.textContent = 'Preparing…'; $('genErr').textContent = '';
   try {
     const r = await fetch('/api/document', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ form:S.form, abuse:S.abuse, format, demo:S.mode==='demo' }) });
@@ -938,7 +1027,7 @@ async function download(format){
     const blob = await r.blob(); const url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = 'protection-order-draft.' + (format === 'pdf' ? 'pdf' : 'docx');
     document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000);
-  } catch(e){ $('genErr').textContent = 'Sorry, the document could not be prepared. Please try again.'; }
+  } catch(e){ const msg = 'Sorry, the document could not be prepared. Please try again.'; if ($('genDlg').open) $('genErr').textContent = msg; else $('pvSum').textContent = msg; }
   btn.disabled = false; btn.textContent = label;
 }
 $('dlPdf').onclick = () => download('pdf'); $('dlDocx').onclick = () => download('docx');
