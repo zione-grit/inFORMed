@@ -14,7 +14,7 @@
 <style>
 :root{
   /* Brand tokens, taken from the GRIT logo: navy, teal and indigo */
-  --bg:#F4F5F2; --surface:#FFFFFF; --surface-2:#FAFBFA; --ink:#14243F; --soft:#56627A; --faint:#8790A0;
+  --bg:#EEF3F6; --surface:#FFFFFF; --surface-2:#FAFBFA; --ink:#14243F; --soft:#56627A; --faint:#8790A0;
   --line:#DFE3E6; --primary:#2B7A86; --primary-2:#33899A; --primary-ink:#FFFFFF; --tint:#E4F0F2; --tint-2:#F1F7F8;
   --accent:#4B4296; --accent-tint:#ECEAF6; --warm:#C9805F; --warm-tint:#F8EDE6;
   --danger:#A8322A; --danger-tint:#FBEDEB; --ok:#3F8A5F;
@@ -143,6 +143,39 @@ dialog.pv:not([open]){display:none}
 .p-save .st-txt.ok{color:var(--ok)}
 .pinrow{display:grid;gap:10px;margin-top:6px}
 .dlg .small{font-size:13.5px;color:var(--soft)}
+/* GRIT look: soft mist background, gradient hero band and navy footer (navy, teal and indigo from the logo) */
+:root{ --grit-navy:#0F2440; --grit-teal:#23707D; --grit-indigo:#4A4296; }
+body{background:
+  radial-gradient(900px 500px at 8% 0%, rgba(43,122,134,.10), transparent 60%),
+  radial-gradient(800px 500px at 100% 30%, rgba(74,66,150,.08), transparent 60%),
+  linear-gradient(180deg,#EAF1F4 0%,#F1F2F7 55%,#F5F3F0 100%) fixed;}
+.top{background:rgba(255,255,255,.78)}
+.home{position:relative;z-index:0}
+.hero{position:relative;color:#fff}
+.hero::before{content:"";position:absolute;z-index:-1;top:-1px;bottom:0;left:calc(50% - 50vw);right:calc(50% - 50vw);
+  background:radial-gradient(700px 380px at 85% 20%, rgba(255,255,255,.10), transparent 60%),linear-gradient(120deg,var(--grit-navy) 0%,#1A4C66 45%,var(--grit-teal) 70%,var(--grit-indigo) 100%);
+  border-radius:0 0 44px 44px}
+.hero h1{color:#fff}
+.hero h1 em{color:#A9E3E6}
+.hero .lede{color:rgba(255,255,255,.86)}
+.hero .eyebrow{background:rgba(255,255,255,.14);color:#fff}
+.hero .reassure{color:rgba(255,255,255,.82)}
+.hero .reassure li::before{background:#A9E3E6;opacity:1}
+.hero .btn.primary{background:#fff;color:var(--grit-navy)}
+.hero .btn.primary:hover{background:#E6F4F5}
+.hero .btn.secondary{background:transparent;color:#fff;border-color:rgba(255,255,255,.55)}
+.hero .btn.secondary:hover{background:rgba(255,255,255,.10);border-color:#fff}
+.hero .linkbtn{color:#fff}
+.hero .preview{box-shadow:0 20px 50px rgba(5,15,30,.35);border:0;color:var(--ink)}
+.hero .pv-u{color:#fff}
+section.band{border-top:0}
+.step,.fact,.about .card:not(.grit),.help a{box-shadow:0 1px 2px rgba(20,36,63,.04),0 6px 18px rgba(20,36,63,.06);border-color:#E3E9EE}
+.about .card.grit{background:linear-gradient(135deg,var(--grit-navy),var(--grit-teal) 70%,var(--grit-indigo))}
+footer.foot{background:var(--grit-navy);color:rgba(255,255,255,.75);border-top:0;margin-top:30px}
+footer.foot .pw{color:#fff}
+footer.foot .pw b{color:#A9E3E6}
+.chat,.panel{border-color:#E1E8ED}
+
 [hidden]{display:none!important}
 .spacer{flex:1}
 .ghost{background:none;border:1px solid transparent;border-radius:999px;padding:7px 12px;color:var(--soft);cursor:pointer;font-size:14px}
@@ -516,7 +549,7 @@ body.in-app .app{height:calc(100dvh - var(--toph,58px))}
 <div class="scrim" id="scrim"></div>
 
 <footer class="foot" id="foot">
-  <picture class="flogo"><img src="/grit-logo.png" alt="GRIT, Gender Rights in Tech"></picture>
+  <picture class="flogo"><img src="/grit-logo-white.png" alt="GRIT, Gender Rights in Tech"></picture>
   <p class="pw">Powered by <b>GRIT</b> · Gender Rights in Tech</p>
   <p>Demo prototype. inFORMed helps you prepare a draft application. It is not legal advice and does not replace the court clerk or a lawyer.</p>
 </footer>
