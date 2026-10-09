@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>inFORMed · Protection order support</title>
 <meta name="description" content="inFORMed helps you prepare a protection order application through a calm, private conversation. Powered by GRIT (Gender Rights in Tech).">
-<meta name="theme-color" content="#1D5E6B">
+<meta name="theme-color" content="#2B7A86">
+<meta name="color-scheme" content="light">
 <link rel="icon" type="image/png" href="/grit-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,21 +15,13 @@
 :root{
   /* Brand tokens, taken from the GRIT logo: navy, teal and indigo */
   --bg:#F4F5F2; --surface:#FFFFFF; --surface-2:#FAFBFA; --ink:#14243F; --soft:#56627A; --faint:#8790A0;
-  --line:#DFE3E6; --primary:#1D5E6B; --primary-2:#257382; --primary-ink:#FFFFFF; --tint:#E1EDEF; --tint-2:#EFF5F6;
+  --line:#DFE3E6; --primary:#2B7A86; --primary-2:#33899A; --primary-ink:#FFFFFF; --tint:#E4F0F2; --tint-2:#F1F7F8;
   --accent:#4B4296; --accent-tint:#ECEAF6; --warm:#C9805F; --warm-tint:#F8EDE6;
   --danger:#A8322A; --danger-tint:#FBEDEB; --ok:#3F8A5F;
   --shadow:0 1px 2px rgba(30,42,43,.05),0 8px 24px rgba(30,42,43,.06);
   --r:16px; --r-sm:10px;
   --serif:'Fraunces',Georgia,'Times New Roman',serif;
   --sans:'Nunito Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#141B1C; --surface:#1B2425; --surface-2:#18201F; --ink:#E8EEEC; --soft:#A7B4B2; --faint:#7D8B89;
-    --line:#2B3738; --primary:#5FB3A9; --primary-2:#7CC5BC; --primary-ink:#0E1716; --tint:#1F3331; --tint-2:#1A2928;
-    --accent:#ABA4EA; --accent-tint:#24223A; --warm:#E0A487; --warm-tint:#33251F;
-    --danger:#F08A80; --danger-tint:#3A1E1B; --ok:#7CC79A; --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
-  }
 }
 :root[data-theme="dark"]{
   --bg:#141B1C; --surface:#1B2425; --surface-2:#18201F; --ink:#E8EEEC; --soft:#A7B4B2; --faint:#7D8B89;
@@ -108,7 +101,7 @@ a{color:var(--primary)}
 .start-card.primary .ic{background:rgba(255,255,255,.16);color:var(--primary-ink)}
 .start-card.primary span.d{color:color-mix(in srgb,var(--primary-ink) 85%,transparent)}
 .start-card.primary .go{color:var(--primary-ink)}
-.alt-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.alt-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:16px}
 .linkbtn{background:none;border:0;color:var(--primary);font-weight:700;font-size:15px;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:8px 4px}
 .alsotg{margin-top:16px;font-size:15px;color:var(--soft);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .pv-open{display:inline-flex;align-items:center;gap:6px}
@@ -370,7 +363,7 @@ body.in-app .app{height:calc(100dvh - var(--toph,58px))}
 <body>
 
 <header class="top"><div class="in">
-  <button class="brand" id="toHome" aria-label="inFORMed home"><picture class="mark"><source srcset="/grit-logo-white.png" media="(prefers-color-scheme: dark)"><img src="/grit-logo.png" alt="GRIT"></picture><span class="word">in<b>FORM</b>ed</span></button>
+  <button class="brand" id="toHome" aria-label="inFORMed home"><picture class="mark"><img src="/grit-logo.png" alt="GRIT"></picture><span class="word">in<b>FORM</b>ed</span></button>
   <span class="spacer"></span>
   <button class="ghost hide-sm" id="openSources" hidden>Sources (developer view)</button>
   <a class="tg" href="https://t.me/inFORMed_grit_bot" target="_blank" rel="noopener" title="Chat with inFORMed on Telegram" aria-label="Chat with inFORMed on Telegram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.7 19.4c-.2 1-.9 1.3-1.7.8l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.5 13.2l-4.7-1.5c-1-.3-1-1 .2-1.5L20.5 3c.9-.3 1.6.2 1.4 1.3z"/></svg><span class="tgl">Telegram</span></a>
@@ -386,22 +379,12 @@ body.in-app .app{height:calc(100dvh - var(--toph,58px))}
       <span class="eyebrow">Protection order support · South Africa</span>
       <h1>Understand protection orders, and <em>tell your story</em> in your own words.</h1>
       <p class="lede">Ask anything about protection orders, or get help preparing your application in a calm conversation. Type, or simply tell your story out loud.</p>
-      <div class="starts">
-        <button class="start-card primary" id="startAsk">
-          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.8A8 8 0 1 1 21 12z"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5v.2M12 16.5h.01"/></svg></span>
-          <strong>Ask a question</strong>
-          <span class="d">Understand protection orders, the court process and the legal words.</span>
-          <span class="go">Start a conversation &rarr;</span>
-        </button>
-        <button class="start-card" id="startFill">
-          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg></span>
-          <strong>Help me fill in my form</strong>
-          <span class="d">Tell your story by typing or speaking. Your application fills in as you talk.</span>
-          <span class="go">Start my application &rarr;</span>
-        </button>
+      <div class="ctas">
+        <button class="btn primary" id="startAsk">Ask a question</button>
+        <button class="btn secondary" id="startFill">Help me fill in my form</button>
       </div>
       <div class="alt-row">
-        <a class="tg big" href="https://t.me/inFORMed_grit_bot" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.7 19.4c-.2 1-.9 1.3-1.7.8l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.5 13.2l-4.7-1.5c-1-.3-1-1 .2-1.5L20.5 3c.9-.3 1.6.2 1.4 1.3z"/></svg><span>Chat on Telegram</span></a>
+        <a class="tg" href="https://t.me/inFORMed_grit_bot" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.7 19.4c-.2 1-.9 1.3-1.7.8l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.5 13.2l-4.7-1.5c-1-.3-1-1 .2-1.5L20.5 3c.9-.3 1.6.2 1.4 1.3z"/></svg><span>Chat on Telegram</span></a>
         <button class="linkbtn" id="openSaved">Continue a saved application</button>
         <button class="linkbtn" id="startDemo">Watch a demo</button>
       </div>
@@ -533,7 +516,7 @@ body.in-app .app{height:calc(100dvh - var(--toph,58px))}
 <div class="scrim" id="scrim"></div>
 
 <footer class="foot" id="foot">
-  <picture class="flogo"><source srcset="/grit-logo-white.png" media="(prefers-color-scheme: dark)"><img src="/grit-logo.png" alt="GRIT, Gender Rights in Tech"></picture>
+  <picture class="flogo"><img src="/grit-logo.png" alt="GRIT, Gender Rights in Tech"></picture>
   <p class="pw">Powered by <b>GRIT</b> · Gender Rights in Tech</p>
   <p>Demo prototype. inFORMed helps you prepare a draft application. It is not legal advice and does not replace the court clerk or a lawyer.</p>
 </footer>
