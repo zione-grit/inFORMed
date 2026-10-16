@@ -109,7 +109,7 @@ GRIT's original reference document and system prompt describe the older "Form 2"
 
 The look follows Shamryn Brittan's GRIT design concept (October 2026): GRIT navy and blue, Hanken Grotesk, the paper-slip inFORMed wordmark, and paper-style form panel and dialogs. All the working features underneath are unchanged.
 
-The design uses images from `public/img/`. Two of them are temporary stand-ins made for the build (`grit-logo-blue.webp` and `logo-paper.webp`). Four are not included yet (`bg-blue.webp`, `bg-blue-tall.webp`, `about-grit.webp`, `community.webp`); the page falls back to plain colours without them. To finish the design, put Shamryn's image files into `public/img/` with exactly these names and push. No code needs to change.
+The design's images are in `public/img/` (Shamryn's files, compressed for the web): `bg-blue.webp` and `bg-blue-tall.webp` (page background on wide and tall screens), `about-grit.webp` (About GRIT photo), `community.webp` (first Good to know card), `grit-logo-blue.webp` and `logo-paper.webp` (logos). To replace a picture, put a new file in with the same name and push.
 
 Direct-to-form link: `https://informedgrit.vercel.app/form` opens straight into "Help me fill in my form".
 
