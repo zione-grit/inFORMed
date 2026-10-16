@@ -1185,7 +1185,10 @@ $('quickExit').onclick = quickExit;
 // No 'leave this page?' warning: the form is kept in this tab and restored after a reload.
 
 /* ---------- views ---------- */
+// Form-only link (informedgrit.vercel.app/form): no home page, as in Shamryn's Direct-to-Form design
+const FORM_ONLY = /^\/form\/?$/.test(location.pathname);
 function show(view){
+  if (view === 'home' && FORM_ONLY){ startApp('live', 'fill'); return; }
   const home = view === 'home';
   $('home').style.display = home ? '' : 'none';
   $('foot').style.display = home ? '' : 'none';
@@ -1849,16 +1852,16 @@ $('dSafety').onclick = async () => {
 };
 
 setUi(LANG === 'auto' ? autoUi() : LANG);
-show('home');
+if (!FORM_ONLY) show('home');
 try {
   const d = JSON.parse(sessionStorage.getItem(DRAFT_KEY) || 'null');
   if (d && d.form && Object.values(d.form).some(v => String(v || '').trim())){
     startApp('live', 'fill', { form: d.form, abuse: d.abuse, pinned: false });
     if (d.pinned) saveState(t('restoredPin'));
-  } else if (/^\/form\/?$/.test(location.pathname)){
-    startApp('live', 'fill'); // direct-to-form link: informedgrit.vercel.app/form
+  } else if (FORM_ONLY){
+    startApp('live', 'fill');
   }
-} catch(e){}
+} catch(e){ if (FORM_ONLY) startApp('live', 'fill'); }
 })();
 </script>
 </body>
