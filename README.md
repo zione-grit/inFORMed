@@ -105,6 +105,14 @@ GRIT's original reference document and system prompt describe the older "Form 2"
 - The form is kept in the open browser tab (sessionStorage), so a reload or a dropped connection loses nothing. Closing the tab, Quick exit or Start over clears it.
 - "Save to finish later" locks the form with a PIN the person chooses (AES-GCM encryption, key derived with PBKDF2) and keeps it on that device only (localStorage). It is never sent to the server. "Continue a saved application" on the home page is always shown, so it does not reveal whether anything is saved. A forgotten PIN cannot be recovered.
 
+## Visual design
+
+The look follows Shamryn Brittan's GRIT design concept (October 2026): GRIT navy and blue, Hanken Grotesk, the paper-slip inFORMed wordmark, and paper-style form panel and dialogs. All the working features underneath are unchanged.
+
+The design uses images from `public/img/`. Two of them are temporary stand-ins made for the build (`grit-logo-blue.webp` and `logo-paper.webp`). Four are not included yet (`bg-blue.webp`, `bg-blue-tall.webp`, `about-grit.webp`, `community.webp`); the page falls back to plain colours without them. To finish the design, put Shamryn's image files into `public/img/` with exactly these names and push. No code needs to change.
+
+Direct-to-form link: `https://informedgrit.vercel.app/form` opens straight into "Help me fill in my form".
+
 ## Page languages
 
 Choosing isiZulu or Afrikaans switches all the page text: home page, buttons, chat messages, dialogs and help numbers. "Match my language" starts in the phone's language (if it is isiZulu or Afrikaans), and switches after the person's first message, in the language they wrote in. The form itself (form panel fields, preview, PDF and Word) stays in English, because it is filled in English for the court. This is enforced in code, not only asked of the AI: when the conversation is not in English, every form update goes through a separate translation step (`ensureEnglish` in `lib/engine.js`) before it reaches the form, and anything typed into the form panel in another language is translated when the PDF or Word draft is made. Words someone said are kept in English with the original words in brackets. The scripted demo and the fixed safety replies are also still in English.
