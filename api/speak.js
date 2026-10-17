@@ -15,7 +15,7 @@ module.exports = async (req, res) => {
   if (!codeOk(code)) return res.status(401).send('Wrong or missing access code.');
   if (!text) return res.status(400).send('No text.');
   // Listening has its own, generous limit and does not count towards the message limits.
-  if (await overLimit('speak:' + ip(req), { perHour: 300, global: false })) return res.status(429).send('Limit reached.');
+  if (await overLimit('speak:' + ip(req), { perHour: 600, global: false })) return res.status(429).send('Limit reached.');
   try {
     const upstream = await speakStream(text, lang);
     res.setHeader('Content-Type', 'audio/mpeg');

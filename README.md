@@ -7,7 +7,7 @@ Two ways to use it, on every channel:
 - **Ask a question** (default): explains protection orders, the court process and legal words. Answers come from GRIT's documents first. If they don't cover a question, the AI answers from general knowledge and the reply is clearly labelled "General information, not from GRIT's guides".
 - **Fill in my form**: the original inFORMed flow, with the original opening, one gentle question at a time, and the Generate Protection Order button.
 
-People can type or speak: a microphone on the website, and voice notes on Telegram and WhatsApp. Replies can be read aloud with **Listen**. This only happens when tapped, never automatically, so nobody nearby hears unexpectedly.
+People can type or speak: a microphone on the website, and voice notes on Telegram and WhatsApp. Replies can be read aloud with **Listen**, or every time if the person turns on **Read aloud**. Nothing plays by itself unless they choose that, so nobody nearby hears unexpectedly.
 
 One Vercel project runs three channels:
 
@@ -33,6 +33,7 @@ api/setup-telegram.js  one-time Telegram connection
 api/whatsapp.js        WhatsApp Cloud API webhook
 api/transcribe.js      voice to text (website microphone)
 api/speak.js           read a reply aloud (Listen button)
+api/translate.js       translates the form for "Hear my form" in isiZulu or Afrikaans (listening only)
 lib/knowledge.js       system prompt (v8.14), the four documents, and GRIT's protection order guide (Zuzi KB LEGAL-01)
 lib/openings.js        opening messages (the fill opening is the original, word for word)
 lib/voice.js           OpenAI speech to text and text to speech
@@ -71,7 +72,7 @@ Optional: `MODEL` (default `gpt-4.1`), `TRANSCRIBE_MODEL` (default `gpt-4o-trans
    - `TELEGRAM_WEBHOOK_SECRET`: any random string of letters and numbers
 4. Redeploy, then open once in your browser:
    `https://YOUR-SITE.vercel.app/api/setup-telegram?code=YOUR_TELEGRAM_WEBHOOK_SECRET`
-5. Open your bot in Telegram (https://t.me/inFORMed_grit_bot) and send `/start` (and the access code, if you set one). The website links to this bot from the header, the home page and the help section.
+5. Open your bot in Telegram (https://t.me/inFORMed_grit_bot) and send `/start` (and the access code, if you set one). The website does not link to the bot at the moment (see "Home page" below).
 
 ## 3. WhatsApp (about 30 to 45 minutes, needs a Meta developer account)
 
@@ -112,6 +113,24 @@ The look follows Shamryn Brittan's GRIT design concept (October 2026): GRIT navy
 The design's images are in `public/img/` (Shamryn's files, compressed for the web): `bg-blue.webp` and `bg-blue-tall.webp` (page background on wide and tall screens), `about-grit.webp` (About GRIT photo), `community.webp` (first Good to know card), `grit-logo-blue.webp` and `logo-paper.webp` (logos). To replace a picture, put a new file in with the same name and push.
 
 Direct-to-form link: `https://informedgrit.vercel.app/form` opens straight into "Help me fill in my form".
+
+## Home page and voice
+
+- **The form comes first.** The main button is "Start my form". "Ask a question" is lower down, under "Want to learn more before you start?".
+- **WhatsApp:** the header shows a WhatsApp button that says "WhatsApp: coming soon". The website no longer links to Telegram (the Telegram bot still works for anyone who already has it). When the WhatsApp channel is live, change the button in `public/index.html` (`id="waBtn"`) into a link to the WhatsApp number.
+- **For people who find reading hard:**
+  - "Listen: how this works" on the home page reads a short spoken guide (`guideAudio` in `public/i18n.js`).
+  - The main actions have pictures as well as words.
+  - In the chat, the microphone is the big button whenever the message box is empty, like sending a voice note.
+  - A sound meter moves while someone speaks, so they can see the phone is hearing them.
+- **Speaking instead of typing** works the same way everywhere, like a voice note:
+  - Tap the microphone to start and tap it again to stop. It never stops on silence, because people often pause while telling a painful story.
+  - There is a 3-minute safety limit. The timer turns orange at 2½ minutes. At 3 minutes it stops and keeps the words, and the person can record more.
+  - Nothing is ever sent by itself. The words appear in the box with "Is this what you said?" and three buttons: **Hear it** (reads the words back, for people who cannot read them), **Say it again** and **Send**. People who can read can also correct the words by typing.
+  - The AI is told when a message was spoken. It then gently repeats important details back ("Did I hear correctly that this happened on Friday 2 October?"), because names, dates and places are the words speech recognition gets wrong most. It also checks weapons (a misheard "gun" or "knife") and children, because both change how urgent the case is. This also applies to voice notes on Telegram and WhatsApp.
+- **Hear my form** (next to every Preview form button, and in the preview) reads the whole application aloud: every filled-in section, with its heading. The application is sworn evidence, and what the person says in court must match it, so people who cannot read need to know exactly what they are swearing to. In English it reads the exact words. In isiZulu or Afrikaans it first says that the form itself stays in English, then reads a faithful translation (made by `api/translate.js`, for listening only, limited to 40 per hour per internet address). The PDF and Word drafts are never translated.
+- **Read aloud** (switch at the top of the chat, off by default) does only one thing: it reads every answer out loud by itself. When it is off, nothing plays unless someone taps Listen.
+- **Faster listening:** long answers are read in pieces. The first piece is short, so it starts quickly, and the next piece loads while the one before is playing. Each piece counts towards the listening limit, which is now 600 per hour per internet address.
 
 ## Page languages
 

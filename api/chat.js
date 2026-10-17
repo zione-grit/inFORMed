@@ -7,7 +7,7 @@ module.exports = async (req, res) => {
   if (!codeOk(req.headers['x-demo-code'])) return res.status(401).json({ reply: 'Wrong or missing access code.' });
   const over = await overLimit('web:' + ip(req));
   if (over) return res.status(200).json({ reply: LIMIT_REPLY[over], updates: [], sources: [], limited: true });
-  const { messages, form, abuse, lang, mode } = req.body || {};
-  const out = await turn({ messages, form, abuse, lang, mode, channel: 'web' });
+  const { messages, form, abuse, lang, mode, voice } = req.body || {};
+  const out = await turn({ messages, form, abuse, lang, mode, channel: 'web', voice: voice === true });
   return res.status(200).json(out);
 };

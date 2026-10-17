@@ -94,12 +94,10 @@ a{color:var(--aqua-hi)}
 .fillcta{background:var(--aqua);color:var(--navy);border:0;border-radius:8px;padding:9px 16px;font-weight:800;font-size:14px;cursor:pointer}
 .app.ask #gen,.app.ask #pvOpen1{display:none}
 .app:not(.ask) #fillCta{display:none}
-.tg{display:inline-flex;align-items:center;gap:8px;text-decoration:none;border-radius:8px;padding:8px 14px;font-size:14px;font-weight:800;color:#fff;background:#1B76A6;border:0;box-shadow:0 6px 16px rgba(0,0,0,.3)}
-.tg:hover{background:#16658F}
-.tg svg{width:17px;height:17px}
-.tg.big{padding:14px 22px;font-size:16px}
-.tg.big svg{width:20px;height:20px}
-@media(max-width:719px){.top .tg{padding:8px}.top .tg .tgl{display:none}.top .sel{max-width:84px;padding-right:22px;background-position:right 8px center}.top .in{gap:6px}.mark img{height:30px!important}.word{font-size:20px!important}}
+.wa{display:inline-flex;align-items:center;gap:8px;text-decoration:none;border-radius:8px;padding:8px 14px;font-size:14px;font-weight:800;color:#fff;background:#1E8C4E;cursor:pointer;border:0;box-shadow:0 6px 16px rgba(0,0,0,.3)}
+.wa:hover{background:#18763F}
+.wa svg{width:17px;height:17px}
+@media(max-width:719px){.top .wa{padding:8px}.top .wa .wal{display:none}.top .sel{max-width:84px;padding-right:22px;background-position:right 8px center}.top .in{gap:6px}.mark img{height:30px!important}.word{font-size:20px!important}}
 @media(max-width:379px){.brand .word{display:none}}
 
 /* Start cards: aqua strip and paper note, like the deck's stickers */
@@ -608,7 +606,7 @@ body.in-app .app{flex:1 1 auto;min-height:0;width:100%;height:auto}
   .brand{gap:8px;min-width:0}
   .mark img{height:36px!important}
   .brand .ilogo{--s:.2}
-  .top .tg{flex:none;width:38px;height:38px;padding:0;justify-content:center}
+  .top .wa{flex:none;width:38px;height:38px;padding:0;justify-content:center}
   /* Language: a globe button; tapping it opens the phone's own list of languages */
   .top .sel{flex:none;width:38px;max-width:38px;height:38px;padding:0;font-size:16px;color:transparent;text-shadow:none;cursor:pointer;
     background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23D6E8FF' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M3 12h18M12 3c2.6 2.6 3.9 5.6 3.9 9s-1.3 6.4-3.9 9c-2.6-2.6-3.9-5.6-3.9-9S9.4 5.6 12 3z'/%3E%3C/svg%3E") center/20px no-repeat}
@@ -770,7 +768,6 @@ section.band:nth-of-type(1) > h2{width:fit-content;max-width:100%;text-shadow:no
 
 /* ---------- Hero: title lifted higher above the conversation; one Telegram button is enough ---------- */
 @media(min-width:920px){.hero-side .hero-logo-side{transform:translateY(-58px) rotate(-5deg)}}
-.hero .alt-row .tg{display:none}
 
 /* ---------- A faded line above the footer ---------- */
 footer.foot{position:relative;isolation:isolate}
@@ -843,6 +840,94 @@ section.band:last-of-type::after{content:"";position:absolute;left:0;right:0;top
   .grit-intro::before{background:var(--grain-l),linear-gradient(180deg,rgba(14,53,112,0) 45%,rgba(14,53,112,.75) 80%,#0E3570 100%),url(/img/about-grit.webp) center 45%/cover no-repeat}
   .grit-intro{background:var(--grain-l),linear-gradient(180deg,#0E3570 0,#0E3570 230px,#13428A 100%)}
 }
+
+/* ===================== Form first, voice first (easy to use without much reading) ===================== */
+.wa-wrap{position:relative;display:inline-flex}
+.wa-soon{position:absolute;top:calc(100% + 10px);right:0;white-space:nowrap;background:#F4F1EA;color:#071A33;font-weight:800;font-size:15px;padding:10px 14px;border-radius:10px;box-shadow:0 14px 30px rgba(0,0,0,.45);z-index:70}
+.wa-soon::before{content:"";position:absolute;top:-6px;right:13px;border:6px solid transparent;border-top:0;border-bottom-color:#F4F1EA}
+/* the one main button: start my form */
+.go-form{display:flex;align-items:center;gap:18px;width:100%;max-width:560px;text-align:left;border:0;cursor:pointer;border-radius:18px;padding:18px 20px 18px 18px;margin:0 0 22px;color:#071A33;font:inherit;
+  background:var(--grain-d),linear-gradient(160deg,#D6E8FF 0%,#A9CFFF 45%,#7AB3FF 100%);box-shadow:0 22px 44px rgba(0,0,0,.45);transition:transform .2s ease,box-shadow .2s ease}
+.go-form:hover{transform:translateY(-3px);box-shadow:0 28px 52px rgba(0,0,0,.5)}
+.go-form:focus-visible,.hear:focus-visible,.ask-btn:focus-visible,.ra:focus-visible,.wa:focus-visible{outline:3px solid #FFFFFF;outline-offset:3px}
+.gf-ic{flex:none;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:#071A33;color:#A9CFFF}
+.gf-ic svg{width:30px;height:30px}
+.gf-t{flex:1;display:flex;flex-direction:column;gap:5px;min-width:0}
+.gf-t strong{font-size:27px;font-weight:800;letter-spacing:-.025em;line-height:1.05}
+.gf-t span{font-size:15px;font-weight:700;color:#0B2A45}
+.gf-arrow{flex:none;width:50px;height:50px;border-radius:50%;display:grid;place-items:center;background:rgba(7,26,51,.12);transition:background .2s,color .2s}
+.gf-arrow svg{width:24px;height:24px}
+.go-form:hover .gf-arrow{background:#071A33;color:#A9CFFF}
+.hero .alt-row{gap:12px 18px}
+.hear{display:inline-flex;align-items:center;gap:10px;border-radius:999px;padding:8px 18px 8px 8px;border:1px solid rgba(169,207,255,.45);background:rgba(4,20,46,.6);color:#FFFFFF;font:inherit;font-weight:800;font-size:15px;cursor:pointer}
+.hear svg{width:22px;height:22px;padding:6px;box-sizing:content-box;border-radius:50%;background:#7AB3FF;color:#071A33}
+.hear:hover{border-color:#7AB3FF}
+.hear.playing svg{background:#D2363C;color:#FFFFFF;animation:recp 1.4s infinite}
+.picto{display:flex;flex-wrap:wrap;gap:12px;margin:28px 0 0;padding:0;list-style:none}
+.picto li{display:flex;align-items:center;gap:10px;background:var(--grain-l),rgba(4,20,46,.55);border:1px solid rgba(169,207,255,.3);border-radius:999px;padding:6px 16px 6px 6px;color:var(--body);font-weight:700;font-size:15px}
+.pi{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:rgba(122,179,255,.22);color:#D6E8FF}
+.pi svg{width:20px;height:20px}
+/* learn more first: lower on the page */
+.learn-card{display:grid;grid-template-columns:auto 1fr auto;gap:28px;align-items:center;max-width:1140px;margin:0 auto;padding:34px 36px;border-radius:24px;color:var(--ink);
+  background:var(--grain-l),radial-gradient(70% 120% at 100% 0%,rgba(122,179,255,.28) 0%,rgba(122,179,255,0) 60%),linear-gradient(135deg,#0B2D5E 0%,#071A33 100%);border:1px solid rgba(169,207,255,.3);box-shadow:0 3px 8px rgba(0,0,0,.22),8px 24px 56px rgba(0,0,0,.45)}
+.learn-ic{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;background:#7AB3FF;color:#071A33}
+.learn-ic svg{width:38px;height:38px}
+.learn-t h2{margin:0 0 8px;font-size:clamp(24px,3vw,34px);color:var(--ink)}
+.learn-t p{margin:0;color:var(--body);font-size:17px;line-height:1.5;max-width:620px}
+.ask-btn{display:inline-flex;align-items:center;gap:10px;border:0;border-radius:999px;padding:15px 24px;background:#F4F1EA;color:#071A33;font:inherit;font-weight:800;font-size:17px;cursor:pointer;white-space:nowrap;box-shadow:0 12px 26px rgba(0,0,0,.35)}
+.ask-btn svg{width:22px;height:22px}
+.ask-btn:hover{background:#FFFFFF}
+@media(max-width:759px){.learn-card{grid-template-columns:1fr;gap:16px;padding:28px 22px}.learn-ic{width:60px;height:60px}.learn-ic svg{width:30px;height:30px}.ask-btn{justify-content:center;width:100%}}
+@media(max-width:479px){.go-form{gap:12px;padding:14px}.gf-ic{width:56px;height:56px}.gf-t strong{font-size:24px}.gf-arrow{display:none}.hear{width:100%;justify-content:center}.picto li{font-size:14px}}
+/* read aloud switch in the chat */
+.ra{flex:none;display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:6px 10px 6px 8px;border:1px solid rgba(169,207,255,.45);background:rgba(4,20,46,.5);color:#FFFFFF;font:inherit;font-weight:800;font-size:14px;cursor:pointer;white-space:nowrap}
+.ra svg{width:20px;height:20px}
+.ra-s{width:30px;height:18px;border-radius:999px;background:rgba(214,232,255,.3);position:relative;transition:background .2s}
+.ra-s::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#FFFFFF;transition:transform .2s}
+.ra[aria-pressed="true"]{background:#7AB3FF;color:#071A33;border-color:#7AB3FF}
+.ra[aria-pressed="true"] .ra-s{background:#071A33}
+.ra[aria-pressed="true"] .ra-s::after{transform:translateX(12px);background:#7AB3FF}
+/* the microphone is the main button when the box is empty, like sending a voice note */
+.composer .mic{width:54px;height:54px;background:#7AB3FF;color:#071A33;border-color:#7AB3FF}
+.composer .mic svg{width:25px;height:25px}
+.composer .mic.rec{background:var(--danger);color:#FFFFFF;border-color:var(--danger)}
+.composer .send{width:54px;height:54px}
+.mic.invite{animation:invite 1.6s ease-in-out 3}
+@keyframes invite{0%,100%{box-shadow:0 0 0 0 rgba(122,179,255,.75)}50%{box-shadow:0 0 0 14px rgba(122,179,255,0)}}
+.composer.has-text:not(.recording) .mic{display:none}
+.composer:not(.has-text) .send,.composer.recording .send{display:none}
+.voicebar{font-size:15px;font-weight:600}
+.lvl{display:inline-flex;align-items:center;gap:3px;height:24px;flex:none}
+.lvl i{display:block;width:4px;height:4px;border-radius:2px;background:#FF8A8F;transition:height .08s linear}
+.vreview{display:flex;flex-direction:column;gap:10px;padding:2px 2px 0}
+.vreview[hidden]{display:none}
+.vr-q{font-size:15px;font-weight:600;color:#D6E8FF}
+.vr-btns{display:flex;flex-wrap:wrap;gap:10px}
+.vr{flex:1 1 0;min-width:110px;display:inline-flex;align-items:center;justify-content:center;gap:9px;border-radius:999px;padding:12px 16px;border:1px solid rgba(169,207,255,.5);background:rgba(4,20,46,.55);color:#FFFFFF;font:inherit;font-weight:800;font-size:16px;cursor:pointer}
+.vr svg{width:22px;height:22px}
+.vr:hover{border-color:#7AB3FF}
+.vr.ok{background:#7AB3FF;color:#071A33;border-color:#7AB3FF}
+.vr.playing{background:#D2363C;border-color:#D2363C}
+.composer.reviewing .row .send{display:none}
+.hf-link{display:inline-flex;align-items:center;gap:6px;background:none;border:0;padding:4px 2px;color:inherit;font:inherit;font-size:14px;font-weight:800;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.hf-link svg{width:18px;height:18px}
+.hf-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px}
+.hf-btn svg{width:18px;height:18px;flex:none}
+.hf-btn.playing,.hf-link.playing{color:#D2363C}
+.p-actions{grid-template-columns:1fr 1fr}
+.p-actions #gen2{grid-column:1 / -1}
+.app.ask #hf1{display:none}
+.vr{white-space:nowrap}
+@media(max-width:479px){.vr-btns{gap:8px;flex-wrap:nowrap}.vr{flex:1 1 auto;min-width:0;padding:11px 10px;gap:6px;font-size:15px}.vr svg{width:20px;height:20px}.vr-q{font-size:14px}}
+.voicebar.near{color:#FFC27A}
+.voicebar.near .lvl i{background:#FFC27A}
+.chip.listen{padding:7px 13px;font-size:14px}
+.chip.listen svg{width:18px;height:18px}
+@media(max-width:719px){.ra .ra-l{display:none}}
+@media(max-width:479px){.c-head .c-title{display:none}.c-head{justify-content:space-between}}
+section.band.learn{padding-top:64px;padding-bottom:64px}
+/* isiZulu and Afrikaans Quick exit labels are longer: make room on small phones */
+@media(max-width:419px){html:not([lang=en]) .top .word{display:none}.top .exit{white-space:nowrap}}
 </style>
 </head>
 <body><svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><filter id="ilInk" x="-10%" y="-20%" width="120%" height="140%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="3" result="w"/><feDisplacementMap in="SourceGraphic" in2="w" scale="3" xChannelSelector="R" yChannelSelector="G" result="r"/><feTurbulence type="fractalNoise" baseFrequency="0.2" numOctaves="3" seed="9" result="n1"/><feColorMatrix in="n1" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  18 0 0 0 -12.1" result="h1"/><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="1" seed="4" result="n2"/><feColorMatrix in="n2" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  20 0 0 0 -13.6" result="h2"/><feMerge result="holes"><feMergeNode in="h1"/><feMergeNode in="h2"/></feMerge><feComposite in="r" in2="holes" operator="out"/></filter><filter id="ilInkSm" x="-10%" y="-20%" width="120%" height="140%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="2" seed="5" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  18 0 0 0 -12.4" result="h"/><feComposite in="SourceGraphic" in2="h" operator="out"/></filter></svg>
@@ -850,7 +935,7 @@ section.band:last-of-type::after{content:"";position:absolute;left:0;right:0;top
   <button class="brand" id="toHome" aria-label="inFORMed home"><picture class="mark"><img src="/img/grit-logo-blue.webp" alt="GRIT"></picture><span class="word ilogo is-static" role="img" aria-label="inFORMed"><span class="il-in" aria-hidden="true">in</span><span class="il-slip" aria-hidden="true"><span class="il-form">FORM</span><span class="il-caret"></span></span><span class="il-ed" aria-hidden="true">ed</span></span></button>
   <span class="spacer"></span>
   <button class="ghost hide-sm" id="openSources" hidden>Sources (developer view)</button>
-  <a class="tg" href="https://t.me/inFORMed_grit_bot" target="_blank" rel="noopener" title="Chat with inFORMed on Telegram" aria-label="Chat with inFORMed on Telegram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.7 19.4c-.2 1-.9 1.3-1.7.8l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.5 13.2l-4.7-1.5c-1-.3-1-1 .2-1.5L20.5 3c.9-.3 1.6.2 1.4 1.3z"/></svg><span class="tgl">Telegram</span></a>
+  <span class="wa-wrap"><button class="wa" id="waBtn" type="button" title="inFORMed on WhatsApp: coming soon" aria-label="inFORMed on WhatsApp: coming soon" aria-describedby="waSoon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.3-4.2A8.5 8.5 0 1 1 8 19.3z"/><path d="M9 8.5c0 3.4 3 6.5 6.5 6.5l1-1.6-2-1-1 .9c-1-.4-2.4-1.8-2.8-2.8l.9-1-1-2z" fill="currentColor" stroke-width="1"/></svg><span class="wal">WhatsApp</span></button><span class="wa-soon" id="waSoon" role="status" hidden>WhatsApp: coming soon</span></span>
   <label class="sr" for="lang">Language</label>
   <select class="sel" id="lang" title="Language for replies"></select>
   <button class="exit" id="quickExit" title="Leave this site immediately">Quick exit</button>
@@ -862,31 +947,22 @@ section.band:last-of-type::after{content:"";position:absolute;left:0;right:0;top
     <div>
       <div class="hero-logo" aria-hidden="true"><span class="ilogo"><span class="il-in" aria-hidden="true">in</span><span class="il-slip" aria-hidden="true"><span class="il-form">FORM</span><span class="il-caret"></span></span><span class="il-ed" aria-hidden="true">ed</span></span></div>
       <span class="eyebrow">Protection order support · South Africa</span>
-      <h1>Understand protection orders, and <em>tell your story</em> in your own words.</h1>
-      <p class="lede">Ask anything about protection orders, or get help preparing your application in a calm conversation. Type, or simply tell your story out loud.</p>
-      <div class="starts">
-        <button class="start-card primary" id="startAsk">
-          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.8A8 8 0 1 1 21 12z"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5v.2M12 16.5h.01"/></svg></span>
-          <strong>Ask a question</strong>
-          <span class="d">Understand protection orders, the court process and the legal words.</span>
-          <span class="go">Start a conversation &rarr;</span>
-        </button>
-        <button class="start-card" id="startFill">
-          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg></span>
-          <strong>Help me fill in my form</strong>
-          <span class="d">Tell your story by typing or speaking. Your application fills in as you talk.</span>
-          <span class="go">Start my application &rarr;</span>
-        </button>
-      </div>
+      <h1>Fill in your <em>protection order</em> form, with help.</h1>
+      <p class="lede">Tell us what happened by talking or typing. We fill in the court form with you, one question at a time. It is free and private.</p>
+      <button class="go-form" id="startFill" type="button">
+        <span class="gf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg></span>
+        <span class="gf-t"><strong>Start my form</strong><span>Talk or type · free · private</span></span>
+        <span class="gf-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </button>
       <div class="alt-row">
-        <a class="tg big" href="https://t.me/inFORMed_grit_bot" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.7 19.4c-.2 1-.9 1.3-1.7.8l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.5 13.2l-4.7-1.5c-1-.3-1-1 .2-1.5L20.5 3c.9-.3 1.6.2 1.4 1.3z"/></svg><span>Chat on Telegram</span></a>
+        <button class="hear" id="hearPage" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 19V5L7.5 9.5z"/><path d="M15.5 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg><span>Listen: how this works</span></button>
         <button class="linkbtn" id="openSaved">Continue a saved application</button>
         <button class="linkbtn" id="startDemo">Watch a demo</button>
       </div>
-      <ul class="reassure">
-        <li>One gentle question at a time</li>
-        <li>Pause whenever you need</li>
-        <li>You decide what happens next</li>
+      <ul class="picto" aria-label="What to expect">
+        <li><span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span><span>Talk or type</span></li>
+        <li><span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></svg></span><span>Stop any time</span></li>
+        <li><span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span><span>Private</span></li>
       </ul>
     </div>
     <div class="hero-side">
@@ -921,6 +997,17 @@ section.band:last-of-type::after{content:"";position:absolute;left:0;right:0;top
       <div class="fact"><div class="dot">2</div><p>You apply at a Magistrates' Court where you live, work or study, where the other person lives or works, or where the abuse happened.<small>Court hours are usually 9am to 3:30pm on weekdays. If you are in danger you can apply after hours.</small></p></div>
       <div class="fact"><div class="dot">3</div><p>Domestic violence is more than physical harm. It includes emotional, economic and sexual abuse, harassment, intimidation and controlling behaviour.</p></div>
       <div class="fact"><div class="dot">4</div><p>Photos, doctors' notes or witnesses can help, but you can still apply without them. A child of any age can apply too.</p></div>
+    </div>
+  </section>
+
+  <section class="band learn">
+    <div class="learn-card">
+      <span class="learn-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.8A8 8 0 1 1 21 12z"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5v.2M12 16.5h.01"/></svg></span>
+      <div class="learn-t">
+        <h2>Want to learn more before you start?</h2>
+        <p>Ask anything about protection orders, the court, or the legal words. Type or speak, and you can listen to every answer.</p>
+      </div>
+      <button class="ask-btn" id="startAsk" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.8A8 8 0 1 1 21 12z"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5v.2M12 16.5h.01"/></svg><span>Ask a question</span></button>
     </div>
   </section>
 
@@ -962,7 +1049,6 @@ section.band:last-of-type::after{content:"";position:absolute;left:0;right:0;top
       <a href="tel:0800428428"><strong>0800 428 428</strong><span>GBV Command Centre, 24 hours</span></a>
       <a href="tel:0800567567"><strong>0800 567 567</strong><span>SADAG suicide crisis line, 24 hours</span></a>
       <a href="https://wa.me/27727378819" target="_blank" rel="noopener"><strong>072 737 8819</strong><span>GRIT on WhatsApp</span></a>
-      <a href="https://t.me/inFORMed_grit_bot" target="_blank" rel="noopener"><strong>Telegram</strong><span>Chat with inFORMed, type or send voice notes</span></a>
     </div>
   </section>
 </main>
@@ -976,6 +1062,7 @@ section.band:last-of-type::after{content:"";position:absolute;left:0;right:0;top
         <button type="button" role="tab" id="mAsk" class="on">Ask a question</button>
         <button type="button" role="tab" id="mFill">Fill in my form</button>
       </div>
+      <button class="ra" id="readAloud" type="button" aria-pressed="false" title="Read every answer out loud"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 19V5L7.5 9.5z"/><path d="M15.5 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg><span class="ra-l">Read aloud</span><span class="ra-s" aria-hidden="true"></span></button>
     </div>
     <div class="demo-bar" id="demoBar">
       <span class="tag">Demo</span>
@@ -992,12 +1079,14 @@ section.band:last-of-type::after{content:"";position:absolute;left:0;right:0;top
         <button class="mic" id="mic" type="button" aria-label="Speak instead of typing" title="Speak instead of typing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
         <button class="send" id="send" aria-label="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
       </div>
-      <div class="voicebar" id="voiceBar"><span class="dot"></span><span id="voiceTxt">Listening… tap the microphone again when you are done.</span></div>
+      <div class="voicebar" id="voiceBar"><span class="lvl" id="lvl" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><span id="voiceTxt">Listening… tap the microphone again when you are done.</span></div>
+      <div class="vreview" id="vReview" hidden><span class="vr-q">Is this what you said? You can change the words, or listen to them.</span><div class="vr-btns"><button class="vr" id="vrHear" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 19V5L7.5 9.5z"/><path d="M15.5 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg><span>Hear it</span></button><button class="vr" id="vrAgain" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4.5h4.5"/><rect x="10" y="8" width="4" height="7" rx="2"/></svg><span>Say it again</span></button><button class="vr ok" id="vrSend" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Send</span></button></div></div>
       <div class="under">
         <button class="formpill" id="formPill">Your application · <span class="pct" id="pillPct">0%</span></button>
         <span class="grow" id="underNote">Your conversation is private. The chat is not saved, but your form is kept if the page reloads.</span>
         <button class="fillcta" id="fillCta">Help me fill in my protection order</button>
         <button class="linkbtn" id="pvOpen1" type="button" style="font-size:14px">Preview form</button>
+        <button class="hf-link" id="hf1" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 19V5L7.5 9.5z"/><path d="M15.5 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg><span>Hear my form</span></button>
         <button class="gen" id="gen">Generate Protection Order</button>
       </div>
     </div>
@@ -1013,7 +1102,7 @@ section.band:last-of-type::after{content:"";position:absolute;left:0;right:0;top
     <div class="p-body" id="pBody"></div>
     <div class="p-foot">
       <div class="p-save"><span class="st-txt" id="saveState">Your form is kept if the page reloads.</span><button class="btn secondary small" id="saveLater" type="button">Save to finish later</button><button class="btn secondary small" id="startOver" type="button">Start over</button></div>
-      <div class="p-actions"><button class="btn secondary pv-open" id="pvOpen2" type="button">Preview form</button><button class="btn primary" id="gen2">Generate Protection Order</button></div>
+      <div class="p-actions"><button class="btn secondary pv-open" id="pvOpen2" type="button">Preview form</button><button class="btn secondary hf-btn" id="hf2" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 19V5L7.5 9.5z"/><path d="M15.5 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg><span>Hear my form</span></button><button class="btn primary" id="gen2">Generate Protection Order</button></div>
       <small>A draft to take to the clerk at a Magistrates' Court. Not legal advice.</small>
     </div>
   </aside>
@@ -1053,6 +1142,7 @@ section.band:last-of-type::after{content:"";position:absolute;left:0;right:0;top
   <div class="acts">
     <button class="btn secondary" id="genClose">Keep talking</button>
     <button class="btn secondary" id="pvOpen3">Preview form</button>
+    <button class="btn secondary hf-btn" id="hf3" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 19V5L7.5 9.5z"/><path d="M15.5 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg><span>Hear my form</span></button>
     <button class="btn secondary" id="dlDocx">Download Word</button>
     <button class="btn primary" id="dlPdf">Download PDF</button>
   </div>
@@ -1088,6 +1178,7 @@ section.band:last-of-type::after{content:"";position:absolute;left:0;right:0;top
 <dialog class="pv" id="pvDlg" aria-label="Preview of your application">
   <div class="pv-bar">
     <h2>Preview of your application</h2>
+    <button class="btn secondary small hf-btn" id="hf4" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 19V5L7.5 9.5z"/><path d="M15.5 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg><span>Hear my form</span></button>
     <button class="btn secondary small" id="pvPrint">Print</button>
     <button class="btn secondary small" id="pvWord">Word</button>
     <button class="btn primary small" id="pvPdf">PDF</button>
@@ -1168,6 +1259,9 @@ function setUi(lang){
   document.querySelectorAll('.f6a').forEach(x => x.textContent = t('f6a'));
   if (S.mode){ inp.placeholder = S.mode === 'live' ? t('ph') : t('phDemo'); $('underNote').textContent = S.mode === 'live' ? t('underLive') : t('underDemo'); }
   if ($('st1')) refreshProgress();
+  const hp = $('hearPage'); if (hp && !hp.classList.contains('playing')) btnLabel(hp, 'hearPage');
+  const vh = $('vrHear'); if (vh && !vh.classList.contains('playing')) btnLabel(vh, 'vHear');
+  ['hf1','hf2','hf3','hf4'].forEach(id => { const b = $(id); if (b && !b.classList.contains('playing')) btnLabel(b, 'hearForm'); });
   renderTypes(); setPlayLabel();
 }
 $('lang').onchange = e => { LANG = e.target.value; try{localStorage.setItem('informed_lang',LANG)}catch(_){} setUi(LANG === 'auto' ? autoUi() : LANG); };
@@ -1176,7 +1270,7 @@ $('lang').onchange = e => { LANG = e.target.value; try{localStorage.setItem('inf
 let leaving = false;
 function quickExit(){
   leaving = true;
-  try { if (V.stream) V.stream.getTracks().forEach(t => t.stop()); if (AUDIO) AUDIO.pause(); } catch(e){}
+  try { if (V.stream) V.stream.getTracks().forEach(t => t.stop()); stopAudio(); } catch(e){}
   try { sessionStorage.clear(); } catch(e){}
   S = fresh(); document.body.innerHTML = '';
   window.location.replace('https://www.google.com/search?q=weather+today');
@@ -1344,7 +1438,7 @@ function applyResult(j, flash = true){
 
 /* ---------- composer ---------- */
 const inp = $('inp');
-function autosize(){ inp.style.height='auto'; inp.style.height = Math.min(inp.scrollHeight, 160) + 'px'; }
+function autosize(){ inp.style.height='auto'; inp.style.height = Math.min(inp.scrollHeight, 160) + 'px'; inp.closest('.composer').classList.toggle('has-text', !!inp.value.trim()); }
 inp.addEventListener('input', autosize);
 inp.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && window.innerWidth >= 720){ e.preventDefault(); sendLive(); } });
 $('send').onclick = () => sendLive();
@@ -1354,20 +1448,22 @@ async function sendLive(){
   if (S.mode !== 'live' || S.busy) return;
   const v = inp.value.trim(); if (!v) return;
   if (V.state === 'recording' || V.state === 'starting') stopRecording(true);
-  inp.value = ''; autosize(); voiceBar(false);
+  inp.value = ''; autosize(); voiceBar(false); showReview(false);
+  const spoken = V.spoken; V.spoken = false;
   addMsg('user', v); S.msgs.push({ role:'user', content:v });
-  await callChat();
+  await callChat(spoken);
 }
-async function callChat(){
+async function callChat(spoken = false){
   setBusy(true);
   const dots = typing();
   try {
     const r = await fetch('/api/chat', { method:'POST', headers:{ 'Content-Type':'application/json', 'x-demo-code': CODE },
-      body: JSON.stringify({ messages: S.msgs, form: S.form, abuse: S.abuse, lang: LANG, mode: S.cm }) });
-    if (r.status === 401){ dots.remove(); setBusy(false); askCode(CODE ? t('codeWrong') : '', () => callChat()); return; }
+      body: JSON.stringify({ messages: S.msgs, form: S.form, abuse: S.abuse, lang: LANG, mode: S.cm, voice: spoken }) });
+    if (r.status === 401){ dots.remove(); setBusy(false); askCode(CODE ? t('codeWrong') : '', () => callChat(spoken)); return; }
     const j = await r.json();
     dots.remove();
-    addMsg('assistant', j.reply, { crisis: j.crisis, sources: (j.fixed || j.grounding === 'general') ? [] : j.sources, general: !j.fixed && j.grounding === 'general' });
+    const m = addMsg('assistant', j.reply, { crisis: j.crisis, sources: (j.fixed || j.grounding === 'general') ? [] : j.sources, general: !j.fixed && j.grounding === 'general' });
+    if (RA) autoRead(m, j.reply);
     S.msgs.push({ role:'assistant', content:j.reply });
     if (S.cm === 'fill') applyResult(j);
     if (LANG === 'auto' && ['en','zu','af'].includes(j.language) && j.language !== UI){ DETECTED = j.language; setUi(j.language); }
@@ -1402,7 +1498,8 @@ function setMode(cm, announce = true){
   if (!S.shown[cm]){
     S.shown[cm] = true;
     const o = opening(cm);
-    addMsg('assistant', o); S.msgs.push({ role:'assistant', content:o });
+    const om = addMsg('assistant', o); S.msgs.push({ role:'assistant', content:o });
+    if (RA && S.mode === 'live') autoRead(om, o);
     if (cm === 'ask' && S.mode === 'live') suggest();
   } else {
     const note = cm === 'fill' ? t('toFill') : t('toAsk');
@@ -1416,7 +1513,9 @@ $('fillCta').onclick = () => { if (S.mode === 'live') setMode('fill'); };
 
 /* ---------- voice: speak instead of typing ---------- */
 // One recording at a time. Tapping the mic, typing, sending, switching mode or leaving always stops it.
-const V = { state: 'idle', rec: null, stream: null, tick: null, discard: false, hideT: null };
+const V = { state: 'idle', rec: null, stream: null, tick: null, discard: false, hideT: null, meter: null, before: '', spoken: false };
+// After speaking: "Is this what you said?" with Hear it / Say it again / Send. Nothing is sent by itself.
+function showReview(on){ $('vReview').hidden = !on; inp.closest('.composer').classList.toggle('reviewing', !!on); if (!on && AUDIO_BTN === $('vrHear')) stopAudio(); }
 function pickMime(){
   const c = ['audio/webm;codecs=opus','audio/webm','audio/mp4','audio/ogg;codecs=opus'];
   for (const m of c) if (window.MediaRecorder && MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(m)) return m;
@@ -1427,7 +1526,33 @@ function voiceBar(on, text, hideAfter){
   $('voiceBar').classList.toggle('on', on); if (text) $('voiceTxt').textContent = text;
   if (on && hideAfter) V.hideT = setTimeout(() => { if (V.state === 'idle') voiceBar(false); }, hideAfter);
 }
+// Live sound level, so people can see the phone is hearing them.
+// Recording never stops on silence: people often pause while telling a painful story.
+function startMeter(stream){
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+    const ctx = new AC(); const an = ctx.createAnalyser(); an.fftSize = 512;
+    ctx.createMediaStreamSource(stream).connect(an);
+    const buf = new Uint8Array(an.fftSize), bars = [...$('lvl').children];
+    const m = V.meter = { ctx, raf: 0 };
+    const tick = () => {
+      if (V.meter !== m) return;
+      an.getByteTimeDomainData(buf);
+      let sum = 0; for (let i = 0; i < buf.length; i++){ const d = (buf[i] - 128) / 128; sum += d * d; }
+      const rms = Math.sqrt(sum / buf.length);
+      const now = Date.now(), lv = Math.min(1, rms * 7);
+      bars.forEach((b, i) => b.style.height = (4 + lv * 20 * (0.55 + 0.45 * Math.abs(Math.sin(now / 140 + i * 1.7)))) + 'px');
+      m.raf = requestAnimationFrame(tick);
+    };
+    tick();
+  } catch(e){}
+}
+function stopMeter(){
+  if (!V.meter) return; cancelAnimationFrame(V.meter.raf); try { V.meter.ctx.close(); } catch(e){} V.meter = null;
+  [...$('lvl').children].forEach(b => b.style.height = '4px');
+}
 function releaseMic(){
+  stopMeter(); inp.closest('.composer').classList.remove('recording'); $('voiceBar').classList.remove('near');
   clearInterval(V.tick); V.tick = null;
   if (V.stream){ V.stream.getTracks().forEach(t => t.stop()); V.stream = null; }
   $('mic').classList.remove('rec');
@@ -1454,8 +1579,8 @@ async function finishRecording(chunks, mime){
     if (j.error || !j.text) throw new Error(j.error || 'empty');
     inp.value = (inp.value ? inp.value.trim() + ' ' : '') + j.text; autosize();
     V.state = 'idle';
-    voiceBar(true, t('vCheck'), 7000);
-    inp.focus();
+    $('mic').classList.remove('busy');
+    V.spoken = true; voiceBar(false); showReview(true); // never sent by itself: they check first (read, edit or listen)
   } catch(e){
     V.state = 'idle';
     voiceBar(true, e.message && e.message.length > 10 ? e.message : t('vFail'), 6000);
@@ -1466,6 +1591,8 @@ async function toggleMic(){
   if (S.mode !== 'live') return;
   if (V.state === 'recording' || V.state === 'starting'){ stopRecording(false); return; }
   if (V.state === 'sending') return;
+  unlockAudio(); $('mic').classList.remove('invite');
+  showReview(false); V.before = inp.value;
   if (!navigator.mediaDevices || !window.MediaRecorder){ voiceBar(true, t('vNoSupport'), 4000); return; }
   stopAudio();
   V.state = 'starting'; V.discard = false;
@@ -1484,36 +1611,142 @@ async function toggleMic(){
   V.tick = setInterval(() => {
     if (V.rec !== rec){ clearInterval(V.tick); return; }
     const s = Math.floor((Date.now() - started) / 1000);
-    voiceBar(true, t('vListenT', { t: `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}` }));
-    if (s >= 180) stopRecording(false); // three minutes at most
+    const near = s >= 150; $('voiceBar').classList.toggle('near', near);
+    voiceBar(true, t(near ? 'vNear' : 'vListenT', { t: `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}` }));
+    if (s >= 180) stopRecording(false); // three minutes at most; the words are kept and they can record more
   }, 500);
   rec.start(1000);
-  $('mic').classList.add('rec');
+  $('mic').classList.add('rec'); inp.closest('.composer').classList.add('recording');
+  startMeter(stream);
   voiceBar(true, t('vListen'));
 }
 $('mic').onclick = toggleMic;
 // Typing while recording means they chose to type: stop and throw the recording away.
-inp.addEventListener('input', () => { if (V.state === 'recording' || V.state === 'starting') stopRecording(true); });
+inp.addEventListener('input', () => { if (V.state === 'recording' || V.state === 'starting') stopRecording(true); if (!inp.value.trim()){ showReview(false); V.spoken = false; } });
 
-/* ---------- listen: read a reply aloud (only when tapped, never automatically) ---------- */
-// Audio streams from the server, so it starts playing while the rest is still being made.
-let AUDIO = null, AUDIO_BTN = null;
-function stopAudio(){ if (AUDIO){ AUDIO.pause(); AUDIO.removeAttribute('src'); AUDIO = null; } if (AUDIO_BTN){ AUDIO_BTN.classList.remove('playing'); AUDIO_BTN.querySelector('span').textContent = t('listen'); AUDIO_BTN = null; } }
+/* ---------- listen: read aloud ---------- */
+// Nothing plays by itself unless the person turns on "Read aloud".
+// Speed: the reply is split into pieces. The first piece is short, so it starts quickly, and each next
+// piece is fetched while the one before is still playing, so there are no long gaps.
+// Two audio players are reused (and unlocked on the first tap), so phones allow auto-play in Read aloud mode.
+let AUDIO = null, AUDIO_BTN = null, PGEN = 0, UNLOCKED = false, RA = false;
+const PLAYERS = [new Audio(), new Audio()];
+function silentWav(){
+  const n = 400, b = new ArrayBuffer(44 + n * 2), v = new DataView(b), w = (o, x) => { for (let i = 0; i < x.length; i++) v.setUint8(o + i, x.charCodeAt(i)); };
+  w(0,'RIFF'); v.setUint32(4, 36 + n*2, true); w(8,'WAVE'); w(12,'fmt '); v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true);
+  v.setUint32(24,8000,true); v.setUint32(28,16000,true); v.setUint16(32,2,true); v.setUint16(34,16,true); w(36,'data'); v.setUint32(40, n*2, true);
+  return URL.createObjectURL(new Blob([b], { type: 'audio/wav' }));
+}
+function unlockAudio(){
+  if (UNLOCKED) return; UNLOCKED = true;
+  try { const u = silentWav(); PLAYERS.forEach(a => { a.src = u; const p = a.play(); if (p) p.then(() => { if (a.src === u) a.pause(); }).catch(() => {}); }); } catch(e){}
+}
+document.addEventListener('pointerdown', unlockAudio, { once: true, capture: true });
+function btnLabel(btn, k){ const sp = btn && btn.querySelector('span'); if (sp) sp.textContent = t(k); }
+function stopAudio(){
+  PGEN++;
+  PLAYERS.forEach(a => { a.onplaying = a.onended = a.onerror = null; try { a.pause(); a.removeAttribute('src'); a.load(); } catch(e){} });
+  AUDIO = null;
+  if (AUDIO_BTN){ AUDIO_BTN.classList.remove('playing'); btnLabel(AUDIO_BTN, AUDIO_BTN.dataset.k || 'listen'); AUDIO_BTN = null; }
+}
 function b64url(str){ const bytes = new TextEncoder().encode(str); let bin = ''; bytes.forEach(b => bin += String.fromCharCode(b)); return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
-function listen(text, btn){
+function speechChunks(text, max = 14){
+  const parts = String(text).replace(/\s+/g, ' ').trim().match(/[^.!?…]+[.!?…]+["'’”)\]]*\s*|[^.!?…]+$/g) || [String(text)];
+  const out = []; let cur = '';
+  for (const p of parts){
+    const lim = out.length ? 450 : 170;
+    if (cur && (cur + p).length > lim){ out.push(cur.trim()); cur = ''; }
+    cur += p;
+    if (!out.length && cur.length >= 60){ out.push(cur.trim()); cur = ''; }
+  }
+  if (cur.trim()) out.push(cur.trim());
+  return out.slice(0, max);
+}
+function speakUrl(x){ return '/api/speak?t=' + b64url(x.slice(0, 1800)) + '&l=' + encodeURIComponent(LANG === 'auto' ? UI : LANG) + (CODE ? '&c=' + encodeURIComponent(CODE) : ''); }
+function listen(text, btn, auto, opts = {}){
   if (AUDIO_BTN === btn){ stopAudio(); return; }
   stopAudio();
-  if (S.mode !== 'live'){ btn.querySelector('span').textContent = t('listenDemo'); setTimeout(() => btn.querySelector('span').textContent = t('listen'), 2500); return; }
-  if (V.state === 'recording') stopRecording(true);
-  AUDIO_BTN = btn; btn.classList.add('playing'); btn.querySelector('span').textContent = t('listenLoad');
-  const url = '/api/speak?t=' + b64url(String(text).slice(0, 2000)) + '&l=' + encodeURIComponent(LANG) + (CODE ? '&c=' + encodeURIComponent(CODE) : '');
-  const a = new Audio(); AUDIO = a; a.preload = 'auto';
-  a.onplaying = () => { if (AUDIO === a) btn.querySelector('span').textContent = t('listenStop'); };
-  a.onended = () => { if (AUDIO === a) stopAudio(); };
-  a.onerror = () => { if (AUDIO !== a) return; stopAudio(); btn.querySelector('span').textContent = t('listenFail'); setTimeout(() => btn.querySelector('span').textContent = t('listen'), 2500); };
-  a.src = url;
-  a.play().catch(() => {});
+  if (S.mode === 'demo'){ btnLabel(btn, 'listenDemo'); setTimeout(() => btnLabel(btn, btn.dataset.k || 'listen'), 2500); return; }
+  if (V.state === 'recording' || V.state === 'starting') stopRecording(true);
+  const gen = PGEN, parts = speechChunks(String(text).slice(0, opts.long ? 30000 : 5000), opts.long ? 80 : 14), loaded = [];
+  AUDIO_BTN = btn; btn.classList.add('playing'); btnLabel(btn, 'listenLoad');
+  const load = i => { const a = PLAYERS[i % 2]; a.preload = 'auto'; a.src = speakUrl(parts[i]); loaded[i] = true; return a; };
+  const fail = () => { if (gen !== PGEN) return; const b = btn; stopAudio(); if (!auto){ btnLabel(b, 'listenFail'); setTimeout(() => btnLabel(b, b.dataset.k || 'listen'), 2500); } };
+  const play = i => {
+    if (gen !== PGEN) return;
+    const a = loaded[i] ? PLAYERS[i % 2] : load(i); AUDIO = a;
+    a.onplaying = () => { if (gen !== PGEN) return; btnLabel(btn, 'listenStop'); if (i + 1 < parts.length && !loaded[i + 1]) load(i + 1); };
+    a.onended = () => { if (gen !== PGEN) return; if (i + 1 < parts.length) play(i + 1); else { stopAudio(); if (RA && S.mode === 'live' && btn.classList.contains('chip')) $('mic').classList.add('invite'); } };
+    a.onerror = fail;
+    const p = a.play(); if (p) p.catch(e => { if (e && e.name === 'NotAllowedError') fail(); });
+  };
+  play(0);
 }
+function autoRead(m, text){ const b = m && m.querySelector('.chip.listen'); if (b) setTimeout(() => listen(text, b, true), 250); }
+function setRA(on){
+  RA = !!on; $('readAloud').setAttribute('aria-pressed', RA ? 'true' : 'false');
+  try { sessionStorage.setItem('informed_ra', RA ? '1' : '0'); } catch(e){}
+}
+try { RA = sessionStorage.getItem('informed_ra') === '1'; } catch(e){}
+$('readAloud').setAttribute('aria-pressed', RA ? 'true' : 'false');
+$('readAloud').onclick = () => {
+  unlockAudio(); setRA(!RA);
+  if (!RA){ stopAudio(); return; }
+  if (S.mode !== 'live') return;
+  const last = [...log.querySelectorAll('.msg.a')].pop();
+  if (last) autoRead(last, last.querySelector('.b').textContent); // read the latest answer now, so they hear it working
+};
+// "Listen: how this works" on the home page
+$('hearPage').dataset.k = 'hearPage';
+$('hearPage').onclick = () => { unlockAudio(); listen(t('guideAudio'), $('hearPage')); };
+$('vrHear').dataset.k = 'vHear';
+$('vrHear').onclick = () => { unlockAudio(); if (inp.value.trim()) listen(inp.value.trim(), $('vrHear')); };
+$('vrAgain').onclick = () => { stopAudio(); inp.value = V.before; autosize(); V.spoken = false; showReview(false); toggleMic(); };
+$('vrSend').onclick = () => { stopAudio(); sendLive(); };
+/* "Hear my form": the whole application read aloud, so people who cannot read know exactly what they will swear to.
+   In isiZulu or Afrikaans it is translated for listening only; the form itself stays in English. */
+function formSpeech(){
+  const v = id => (S.form[id] || '').trim();
+  const out = []; let cur = null;
+  OFFICIAL.forEach(sec => {
+    const fs = FIELDS.filter(f => f.doc === sec.doc && f.ds === sec.n && v(f.id));
+    if (!fs.length) return;
+    if (sec.doc !== cur){ cur = sec.doc; out.push(sec.doc === '6A' ? 'Form 6A. Personal information. This page is not given to the respondent.' : 'Form 6. Application for a protection order.'); }
+    out.push(`Section ${sec.n}. ${sec.title}.`);
+    fs.forEach(f => {
+      const val = v(f.id).replace(/\s*\n+\s*/g, '. ');
+      if (f.type === 'check') out.push(`Ticked: ${f.label}.` + (val.toLowerCase() !== 'requested' ? ' ' + val + '.' : ''));
+      else out.push(`${f.label}: ${val}${/[.!?]$/.test(val) ? '' : '.'}`);
+    });
+  });
+  return out.join('\n').replace(/\.\./g, '.');
+}
+async function hearForm(btn){
+  if (AUDIO_BTN === btn){ stopAudio(); return; }
+  unlockAudio();
+  if (!hasForm()){ stopAudio(); listen(t('pvEmpty'), btn); return; }
+  const body = formSpeech(), lang = UI;
+  if (lang === 'en' || S.mode === 'demo'){ listen(t('hfIntro') + '\n' + body, btn, false, { long: true }); return; }
+  stopAudio(); const gen = PGEN;
+  AUDIO_BTN = btn; btn.classList.add('playing'); btnLabel(btn, 'hfLoad');
+  try {
+    const r = await fetch('/api/translate', { method:'POST', headers:{ 'Content-Type':'application/json', 'x-demo-code': CODE }, body: JSON.stringify({ text: body, lang }) });
+    const j = await r.json(); if (!r.ok || !j.text) throw new Error(j.error || 'failed');
+    if (gen !== PGEN) return; // stopped while translating
+    AUDIO_BTN = null; btn.classList.remove('playing');
+    listen(t('hfIntroTr') + '\n' + j.text, btn, false, { long: true });
+  } catch(e){
+    if (gen !== PGEN) return; stopAudio(); btnLabel(btn, 'listenFail'); setTimeout(() => btnLabel(btn, 'hearForm'), 2500);
+  }
+}
+['hf1','hf2','hf3','hf4'].forEach(id => { $(id).dataset.k = 'hearForm'; $(id).onclick = () => hearForm($(id)); });
+
+// WhatsApp is not ready yet
+$('waBtn').onclick = e => {
+  e.stopPropagation(); const s = $('waSoon'); s.hidden = !s.hidden;
+  clearTimeout(s._t); if (!s.hidden) s._t = setTimeout(() => s.hidden = true, 4000);
+};
+document.addEventListener('click', () => { $('waSoon').hidden = true; });
 
 /* ---------- keeping the form (not the chat) ---------- */
 // 1. In this tab: the form is kept in sessionStorage, so a reload or a dropped connection loses nothing.
@@ -1610,6 +1843,7 @@ $('startOver').onclick = () => {
 /* ---------- start ---------- */
 function startApp(mode, cm = 'ask', restore = null){
   stopDemo(); stopAudio(); stopRecording(true); S = fresh(); S.mode = mode; LASTF = null;
+  showReview(false); V.spoken = false;
   if (!restore || !restore.pinned){ PIN_KEY = null; PIN_SALT = null; }
   saveState(t('saveKept'));
   log.innerHTML = ''; buildPanel(); renderForm();
@@ -1692,7 +1926,7 @@ function renderPaper(){
 }
 function openPreview(){ closePanel(); if ($('genDlg').open) $('genDlg').close(); renderPaper(); $('pvDlg').showModal(); $('pvDlg').querySelector('.pv-scroll').scrollTop = 0; }
 ['pvOpen1','pvOpen2','pvOpen3'].forEach(id => $(id).onclick = openPreview);
-$('pvClose').onclick = () => $('pvDlg').close();
+$('pvClose').onclick = () => { if (AUDIO_BTN === $('hf4')) stopAudio(); $('pvDlg').close(); };
 $('pvPdf').onclick = () => download('pdf', $('pvPdf')); $('pvWord').onclick = () => download('docx', $('pvWord'));
 $('pvPrint').onclick = () => {
   const w = window.open('', '_blank'); if (!w) return;
