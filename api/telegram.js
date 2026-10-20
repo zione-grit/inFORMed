@@ -1,7 +1,7 @@
 // Telegram webhook. Set up once with /api/setup-telegram (see README).
 const { waitUntil } = require('@vercel/functions');
 const { handle } = require('../lib/bot');
-const { toPdf, toDocx } = require('../lib/render');
+const { toOfficialPdf, toDocx } = require('../lib/render');
 const store = require('../lib/store');
 const { transcribe } = require('../lib/voice');
 
@@ -16,7 +16,7 @@ async function tg(method, body) {
 
 async function sendDoc(chatId, format, s) {
   const isWord = format === 'docx';
-  const buf = isWord ? await toDocx(s.form, s.abuse) : await toPdf(s.form, s.abuse);
+  const buf = isWord ? await toDocx(s.form, s.abuse) : await toOfficialPdf(s.form, s.abuse);
   const fd = new FormData();
   fd.append('chat_id', String(chatId));
   fd.append('document', new Blob([buf], { type: isWord ? 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' : 'application/pdf' }), `protection-order-draft.${isWord ? 'docx' : 'pdf'}`);

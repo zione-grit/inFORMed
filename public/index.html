@@ -144,6 +144,12 @@ dialog.pv:not([open]){display:none}
 .paper .bx{flex:none;width:15px;height:15px;border:1.5px solid #1a1f24;border-radius:2px;display:grid;place-items:center;font-size:11px;font-weight:800;margin-top:2px}
 .paper .ck .det{display:block;margin-top:2px}
 .paper .types{color:#5b6670;font-size:12.5px;margin:0 0 6px}
+.paper .lab.ol{margin:10px 0 6px;font-weight:700}
+.paper .opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:5px 14px;font-size:12px;margin:0 0 12px}
+.paper .op{display:flex;align-items:flex-start;gap:6px;color:#3d474e}
+.paper .op.on{color:#071A33;font-weight:700}
+.paper .op .bx,.paper .yn .bx{flex:none;display:inline-grid;place-items:center;width:13px;height:13px;border:1px solid #555;font-size:10px;line-height:1;margin-top:1px}
+.paper .yn{display:inline-flex;align-items:center;gap:6px;margin-left:8px}
 .paper .sig{margin-top:26px;display:grid;gap:18px;font-size:13px}
 .paper .foot{margin-top:26px;color:#8a949b;font-size:11.5px;text-align:center}
 .pv-sum{max-width:760px;margin:0 auto 12px;font-size:14px;color:var(--soft)}
@@ -926,6 +932,12 @@ section.band:last-of-type::after{content:"";position:absolute;left:0;right:0;top
 @media(max-width:719px){.ra .ra-l{display:none}}
 @media(max-width:479px){.c-head .c-title{display:none}.c-head{justify-content:space-between}}
 section.band.learn{padding-top:64px;padding-bottom:64px}
+.will{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.will:empty{display:none}
+.will .wl{flex:1 1 100%;font-size:12px;font-weight:700;color:var(--soft)}
+.will .wc{font-size:12px;font-weight:700;padding:3px 8px;border-radius:999px;background:#E8EFF8;color:#071A33}
+/* The inFORMed wordmark shows the product name only (no typing cursor after FORM) */
+.il-caret{display:none!important}
 /* isiZulu and Afrikaans Quick exit labels are longer: make room on small phones */
 @media(max-width:419px){html:not([lang=en]) .top .word{display:none}.top .exit{white-space:nowrap}}
 </style>
@@ -1199,7 +1211,7 @@ section.band.learn{padding-top:64px;padding-bottom:64px}
 <script src="/i18n.js"></script>
 <script>
 (function(){
-const { SECTIONS, OFFICIAL, FIELDS, ABUSE_TYPES, DOCS, LANGS, FORM_VERSION } = window.INFORMED;
+const { SECTIONS, OFFICIAL, FIELDS, ABUSE_TYPES, DOCS, LANGS, FORM_VERSION, OPTIONS, pickOptions, yesNo } = window.INFORMED;
 // Developer view: open the site with ?sources at the end of the address to see which document each answer used.
 let SHOW_SOURCES = false;
 try { SHOW_SOURCES = new URLSearchParams(location.search).has('sources') || sessionStorage.getItem('informed_sources') === '1'; if (SHOW_SOURCES) sessionStorage.setItem('informed_sources', '1'); } catch(e){}
@@ -1312,14 +1324,15 @@ function buildPanel(){
         el.innerHTML = `<div class="chk"><input type="checkbox" id="cb_${f.id}"><div class="c"><label for="cb_${f.id}"></label><input type="text" id="in_${f.id}" placeholder="Details, if any"></div></div>`;
         el.querySelector('label').textContent = f.label;
         const cb = el.querySelector('input[type=checkbox]'), tx = el.querySelector('input[type=text]');
-        cb.onchange = () => { S.form[f.id] = cb.checked ? (tx.value.trim() || 'Requested') : ''; if(!cb.checked) tx.value=''; refreshProgress(); };
-        tx.oninput = () => { S.form[f.id] = tx.value.trim() ? tx.value : (cb.checked ? 'Requested' : ''); if (tx.value.trim()) cb.checked = true; refreshProgress(); };
+        cb.onchange = () => { S.form[f.id] = cb.checked ? (f.id === 'o_h' ? 'Yes' : (tx.value.trim() || 'Requested')) : ''; if(!cb.checked) tx.value=''; showWill(f.id); refreshProgress(); };
+        tx.oninput = () => { S.form[f.id] = tx.value.trim() ? tx.value : (cb.checked ? 'Requested' : ''); if (tx.value.trim()) cb.checked = f.id !== 'o_h' || yesNo(tx.value) === 'Yes'; showWill(f.id); refreshProgress(); };
       } else {
         const big = ['history','inc1_details','inc2_details','urg_why'].includes(f.id);
         el.innerHTML = `<label for="in_${f.id}"></label>` + (f.type === 'long' ? `<textarea id="in_${f.id}" class="${big?'big':''}"></textarea>` : `<input type="text" id="in_${f.id}">`);
         el.querySelector('label').textContent = f.label;
-        el.querySelector('#in_'+f.id).oninput = e => { S.form[f.id] = e.target.value; refreshProgress(); };
+        el.querySelector('#in_'+f.id).oninput = e => { S.form[f.id] = e.target.value; showWill(f.id); refreshProgress(); };
       }
+      if (OPTIONS[f.id]){ const w = document.createElement('div'); w.className = 'will'; w.id = 'will_' + f.id; el.appendChild(w); }
       wrap.appendChild(el);
     });
     body.appendChild(d);
@@ -1329,8 +1342,9 @@ function setField(id, value, flash){
   S.form[id] = value;
   const f = FIELDS.find(x => x.id === id); if (!f) return;
   const tx = $('in_'+id);
-  if (f.type === 'check'){ const cb = $('cb_'+id); cb.checked = !!value; tx.value = (value && value.toLowerCase() !== 'requested') ? value : ''; }
+  if (f.type === 'check'){ const cb = $('cb_'+id); cb.checked = id === 'o_h' ? yesNo(value) === 'Yes' : !!value; tx.value = (value && value.toLowerCase() !== 'requested' && !(id === 'o_h' && yesNo(value) === 'Yes')) ? value : ''; }
   else tx.value = value;
+  showWill(id);
   if (flash){
     LASTF = id;
     const el = $('f_'+id); el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
@@ -1338,6 +1352,15 @@ function setField(id, value, flash){
     const pb = $('pBody'); const top = el.offsetTop - pb.offsetTop - 40;
     if (window.innerWidth >= 1000) pb.scrollTo({ top, behavior: 'smooth' });
   }
+}
+// Under each official tick list: which boxes will be ticked on the government form.
+function showWill(id){
+  const w = $('will_' + id); if (!w) return;
+  const v = String(S.form[id] || '');
+  const { on, detail } = pickOptions(id, id === 't_a' && !v ? '' : v);
+  w.innerHTML = ''; if (!on.size) return;
+  const l = document.createElement('span'); l.className = 'wl'; l.textContent = t('willTick'); w.appendChild(l);
+  on.forEach(x => { const c = document.createElement('span'); c.className = 'wc'; c.textContent = '\u2715 ' + x + (detail[x] ? ': ' + detail[x] : ''); w.appendChild(c); });
 }
 let LASTF = null;
 function renderForm(){ FIELDS.forEach(f => setField(f.id, S.form[f.id] || '', false)); renderTypes(); refreshProgress(); }
@@ -1912,6 +1935,12 @@ function renderPaper(){
     if (sec.note) h += `<p class="types">${esc(sec.note)}</p>`;
     fs.forEach(f => {
       const val = v(f.id); total++; if (val) filled++;
+      if (OPTIONS[f.id]){ // an official tick list: show every box, ticked only where the answer names it
+        const { on, detail } = pickOptions(f.id, f.type === 'check' && !val ? '' : val);
+        h += `<div class="lab ol">${esc(f.label)}</div><div class="opts">` + OPTIONS[f.id].map(o => `<span class="op${on.has(o.label) ? ' on' : ''}"><span class="bx">${on.has(o.label) ? '\u2715' : ''}</span>${esc(o.label)}${detail[o.label] ? ': <b>' + esc(detail[o.label]) + '</b>' : ''}</span>`).join('') + '</div>';
+        return;
+      }
+      if (f.id === 'o_h'){ const yn = yesNo(val); h += `<div class="ck"><div>${esc(f.label)} <span class="yn"><span class="bx">${yn === 'Yes' ? '\u2715' : ''}</span>Yes <span class="bx">${yn === 'No' ? '\u2715' : ''}</span>No</span></div></div>`; return; }
       if (f.type === 'check'){
         const det = val && val.toLowerCase() !== 'requested' ? `<span class="det">${esc(val)}</span>` : '';
         h += `<div class="ck"><span class="bx">${val ? '\u2715' : ''}</span><div>${esc(f.label)}${det}</div></div>`;
@@ -1943,7 +1972,7 @@ async function download(format, btnIn){
     const r = await fetch('/api/document', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ form:S.form, abuse:S.abuse, format, demo:S.mode==='demo' }) });
     if (!r.ok) throw new Error(await r.text());
     const blob = await r.blob(); const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = 'protection-order-draft.' + (format === 'pdf' ? 'pdf' : 'docx');
+    const a = document.createElement('a'); a.href = url; a.download = format === 'pdf' ? (S.mode === 'demo' ? 'protection-order-draft.pdf' : 'protection-order-Form6-J480E.pdf') : 'protection-order-draft.docx';
     document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000);
   } catch(e){ const msg = t('docErr'); if ($('genDlg').open) $('genErr').textContent = msg; else $('pvSum').textContent = msg; }
   btn.disabled = false; btn.textContent = label;

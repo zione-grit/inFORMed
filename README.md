@@ -96,9 +96,16 @@ Words the WhatsApp bot understands: `ASK`, `FILL`, `FORM`, `PDF`, `WORD`, `LANGU
 
 ## The form
 
-The draft follows the current official application: **Form 6** (Application for protection order) and **Form 6A** (Personal information for office use, not served on the respondent), Domestic Violence Regulations 2022 (published 14 April 2023), court form J480 as updated on 7 March 2025: https://www.justice.gov.za/forms/dva/dv-Form06-J480.pdf
+**The PDF download is the real government form.** `lib/forms/J480E-2025-03.pdf` is the Department of Justice's own fillable Form 6 and Form 6A (court form J480E, March 2025, from justice.gov.za). `lib/official.js` fills its boxes and ticks its tick boxes directly, so the person downloads the official form, filled in. The Word download is an editable draft with the same sections and the same tick lists.
 
-GRIT's original reference document and system prompt describe the older "Form 2" from the 1999 regulations, which were repealed. The model is told to use the Form 6/6A fields, and the reference document in `lib/knowledge.js` now describes Form 6/6A. Re-check the form on the Justice website before going live, because it can change again.
+- **Tick boxes:** every official tick list is used: the capacity list (section 2), the relationship list (section 3), the 20 acts of domestic violence in 6(a), 6(b) to 6(i), Yes or No in 7(h), and the consent boxes on Form 6A. A box is ticked only when the person's answer names it (`pickOptions` in `public/fields.js`); nothing is guessed, and anything not on a list goes under "Other" in the person's own words. The form panel shows "Ticked on the official form:" under each list, so people can see and change it.
+- **Long answers:** when an answer does not fit its box, the box says "See continuation, Annexure B" and the full answer goes on continuation pages. Form 6 continuations come straight after Form 6. Form 6A continuations come after Form 6A, so the personal details stay separate. Section 11 lists the annexures: A is Form 6A, then the continuation, then the person's own documents.
+- **Left blank on purpose:** gender, race, disability and marital status (the clerk completes these), and Part B, the certificate, which the commissioner of oaths completes.
+- **Two faults in the government PDF are worked around:** in 7(h), the Yes and No boxes are linked to two consent boxes on Form 6A (ticking one ticked the other), and a few boxes are stored upside down. Both are handled in `lib/official.js`.
+
+**If the Department of Justice changes the form:** replacing the PDF file alone is not enough, because the box names and positions will change. Put the new PDF in `lib/forms/`, then update the box names in `lib/official.js` and the fields in `public/fields.js`. Check the Justice website for a new version before going live.
+
+GRIT's original reference document and system prompt describe the older "Form 2" from the 1999 regulations, which were repealed. The model is told to use the Form 6/6A fields, and the reference document in `lib/knowledge.js` describes Form 6/6A.
 
 ## Keeping the form
 

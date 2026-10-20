@@ -128,6 +128,7 @@
     hfLoad: "Getting it ready…",
     hfIntro: "Here is your application, read out loud. This is what you will swear to at the court. You can tap Stop at any time. If anything is wrong or missing, tell me in the chat, or change it in the form.",
     hfIntroTr: "Here is your application.",
+    willTick: "Ticked on the official form:",
   };
 
   // DRAFT: to be checked by GRIT's isiZulu speakers.
@@ -245,6 +246,7 @@
     hfLoad: "Iyalungiswa…",
     hfIntro: "Nasi isicelo sakho, sifundwa ngezwi. Yilokhu ozofunga ngakho enkantolo. Ungacindezela ethi Misa noma nini. Uma kukhona okungalungile noma okushodayo, ngitshele engxoxweni, noma ukushintshe efomini.",
     hfIntroTr: "Nasi isicelo sakho, sihunyushelwe esiZulwini ukuze usizwe. Ifomu uqobo lihlala ngesiNgisi, ngoba lifakwa enkantolo ngesiNgisi. Yilokhu ozofunga ngakho enkantolo. Ungacindezela ethi Misa noma nini. Uma kukhona okungalungile noma okushodayo, ngitshele engxoxweni.",
+    willTick: "Kuzomakwa efomini elisemthethweni:",
   };
 
   // DRAFT: to be checked by GRIT's Afrikaans speakers.
@@ -362,6 +364,7 @@
     hfLoad: "Word gereed gemaak…",
     hfIntro: "Hier is jou aansoek, hardop gelees. Dit is wat jy by die hof onder eed gaan bevestig. Jy kan enige tyd Stop tik. As iets verkeerd is of ontbreek, sê vir my in die gesprek, of verander dit in die vorm.",
     hfIntroTr: "Hier is jou aansoek, in Afrikaans vertaal sodat jy dit kan verstaan. Die vorm self bly in Engels, want dit word in Engels by die hof ingedien. Dit is wat jy by die hof onder eed gaan bevestig. Jy kan enige tyd Stop tik. As iets verkeerd is of ontbreek, sê vir my in die gesprek.",
+    willTick: "Gemerk op die amptelike vorm:",
   };
 
   const STR = { en, zu, af };

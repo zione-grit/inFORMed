@@ -1,5 +1,5 @@
 // Builds the PDF or Word draft from the form the browser sends. Nothing is stored.
-const { toPdf, toDocx } = require('../lib/render');
+const { toOfficialPdf, toDocx } = require('../lib/render');
 const { ensureEnglish } = require('../lib/engine');
 const { overLimit, ip } = require('../lib/guard');
 
@@ -14,9 +14,9 @@ module.exports = async (req, res) => {
       if (fixed !== items) { form = { ...form }; for (const u of fixed) form[u.field] = u.value; }
     }
     const isWord = format === 'docx';
-    const buf = isWord ? await toDocx(form, abuse, { demo }) : await toPdf(form, abuse, { demo });
+    const buf = isWord ? await toDocx(form, abuse, { demo }) : await toOfficialPdf(form, abuse, { demo });
     res.setHeader('Content-Type', isWord ? 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' : 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="protection-order-draft.${isWord ? 'docx' : 'pdf'}"`);
+    res.setHeader('Content-Disposition', `attachment; filename="${isWord ? 'protection-order-draft.docx' : (demo ? 'protection-order-draft.pdf' : 'protection-order-Form6-J480E.pdf')}"`);
     res.setHeader('Cache-Control', 'no-store');
     return res.status(200).send(buf);
   } catch (e) {

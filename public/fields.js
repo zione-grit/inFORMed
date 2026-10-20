@@ -169,9 +169,47 @@
     { id: 'af', label: 'Afrikaans' },
   ];
 
+  // The official tick lists, exactly as printed on Form 6 / 6A (J480E). "other" options take extra words after a colon.
+  const OPTIONS = {
+    tp_capacity: ['Care Giver', 'Counsellor', 'Educator', 'Family Member', 'Health Care Personnel', 'Medical Practitioner',
+      'Official In Public Health Establishment', 'Related Person (Having a close relationship with Complainant)', 'Social Worker',
+      'South African Police Service Member', { label: 'Other (specify)', other: true, generic: true }],
+    r_relationship: ['Boyfriend', 'Girlfriend', 'Ex-Boyfriend', 'Ex-Girlfriend', 'Brother', 'Sister', 'Husband', 'Wife', 'Daughter', 'Son', 'Father', 'Mother',
+      'Current co-resident', 'Ex-Co-resident in the past year', 'Ex-Husband', 'Ex-Wife', 'Ex-Partner', 'Parent of child/children',
+      'Intimate/sexual partner of any duration', 'Partner', 'Partner in perceived relationship', 'Partner in alleged marriage',
+      'Mother-In-law', 'Father-In-law', 'Sister-In-law', { label: '(Other) -in-law', other: true },
+      'Ex-Mother-In-law', 'Ex-Father-In-law', 'Ex-Sister-In-law', { label: '(Other) Ex-In-law', other: true }, 'Related by adoption',
+      'Stepmother', 'Stepfather', 'Stepsister', 'Stepbrother', { label: '(Other) Step', other: true },
+      'Aunt', 'Uncle', 'Cousin', 'Nephew', 'Niece', { label: 'Other (specify)', other: true, generic: true }],
+    tp_consent: ['Written consent has been obtained and is attached', 'A child who cannot bring the application him/herself',
+      'A person with a mental disability', 'Unconscious', { label: 'Unable to provide consent because', other: true }],
+    t_a: ABUSE_TYPES.map(a => a.label),
+  };
+  Object.keys(OPTIONS).forEach(k => { OPTIONS[k] = OPTIONS[k].map(o => typeof o === 'string' ? { label: o } : o); });
+
+  // Which official boxes a value ticks. Only names the person's answer contains are ticked; nothing is guessed.
+  // Longest names are matched first, so "Ex-Husband" never also ticks "Husband".
+  function normOpt(t) { return ' ' + String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim() + ' '; }
+  function pickOptions(id, value) {
+    const opts = OPTIONS[id] || [], on = new Set(), detail = {};
+    const v = String(value || '').trim();
+    if (!v || /^requested$/i.test(v)) return { on, detail };
+    const segs = v.split(/\s*[;\n]\s*/).filter(Boolean);
+    const order = opts.slice().sort((a, b) => normOpt(b.label).length - normOpt(a.label).length);
+    segs.forEach(seg => {
+      const i = seg.indexOf(':'); const head = i >= 0 ? seg.slice(0, i) : seg; const extra = i >= 0 ? seg.slice(i + 1).trim() : '';
+      let h = normOpt(head);
+      order.forEach(o => { const n = normOpt(o.label); if (n.trim() && h.includes(n)) { on.add(o.label); h = h.replace(n, ' | '); if (o.other && extra) detail[o.label] = extra; } });
+    });
+    if (!on.size) { const g = opts.find(o => o.generic); if (g) { on.add(g.label); detail[g.label] = v; } }
+    return { on, detail };
+  }
+  // 7(h): "Yes", "No", or nothing if the person has not answered.
+  function yesNo(value) { const v = String(value || '').trim(); if (!v) return ''; return /^no\b/i.test(v) ? 'No' : 'Yes'; }
+
   const FORM_VERSION = 'Form 6 and Form 6A, Domestic Violence Regulations (J480, updated 7 March 2025)';
 
-  const API = { SECTIONS, OFFICIAL, FIELDS, ABUSE_TYPES, DOCS, LANGS, FORM_VERSION };
+  const API = { SECTIONS, OFFICIAL, FIELDS, ABUSE_TYPES, DOCS, LANGS, FORM_VERSION, OPTIONS, pickOptions, yesNo };
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
   else root.INFORMED = API;
 })(typeof window !== 'undefined' ? window : this);
