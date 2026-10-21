@@ -243,7 +243,8 @@
     ready: 'Isicelo sakho sesilungele ukubuyekezwa →',
     serverErr: 'Uxolo, angikwazanga ukufinyelela iseva manje. Sicela uzame futhi. Uma usengozini, shayela u-10111 noma i-GBV Command Centre ku-0800 428 428.',
     askOpening: "Sawubona, ngingu-inFORMed. Ngiyi-AI chatbot, angiyena umuntu. Angikwazi ukunikeza iseluleko somthetho. Ngingachaza ukuthi imiyalelo yokuvikela isebenza kanjani, ukuthi amagama asemthethweni asho ukuthini, nokuthi yini elindelekile enkantolo. Ungathanda ukwazi ini?",
-    fillOpening: "Sawubona, ngingu-inFORMed. Ngiyi-AI chatbot, angiyena umuntu. Angikwazi ukunikeza iseluleko somthetho.\n\nNgingakusiza ukugcwalisa ifomu lomyalelo wokuvikela.\n\n✔ Indaba yakho isetshenziselwa ifomu lakho kuphela.\n✔ Uzikhethela ukuthi wabelane ngani.\n✔ Ifomu lakho ligcwaliswa njengoba sixoxa, ngakho uxoxa indaba yakho kanye kuphela.\n✔ Cindezela ethi PHUMA NGOKUSHESHA ukuze uphume masinyane.\n\nUsengozini manje? Shayela u-10111.",
+    // written by a native isiZulu speaker (October 2026)
+    fillOpening: "Sawubona, Ngingu InFormed. Ngiyi- AI Chatbot hhayi umuntu. Angikwazi ukukweluleka.\n\nNgingakusiza ngokugcwalisa i-Protection Order Form.\n\n✔ Isitori sakho ngizosibenzisela iForm yakho.\n✔ Uyazikhethela ukuth yin ofuna ukukhuluma ngayo.\n✔ I form yakho iyagcwaliseka ube usachaza ukuth kwenzakaleni, uchaza kanye uqede.\n✔ Ciphiza QUICK Exit uma ufuna ukusheshe uphume lana.\n\nUsenkingeni name? Fonela 10111",
     sug1: 'Uyini umyalelo wokuvikela?', sug2: 'Ngiyamdinga ummeli?', sug3: 'Kwenzekani ngemva kokufaka isicelo?', sug4: 'Lisho ukuthini igama elithi ‘respondent’?', sug5: 'Uyini umyalelo wesikhashana?',
     toFill: 'Asiqhubeke nesicelo sakho. Ifomu lakho ligcinwe ngakwesokudla.',
     toAsk: 'Ngibuze noma yini mayelana nemiyalelo yokuvikela. Ifomu lakho ligciniwe, futhi ungabuyela kulo noma nini.',
