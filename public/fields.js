@@ -160,6 +160,7 @@
     { id: 'rights', short: 'Rights & referral guide' },
     { id: 'magistrates', short: 'What magistrates look for' },
     { id: 'guide', short: 'GRIT protection order guide' },
+    { id: 'evidence', short: 'Evidence guide' },
   ];
 
   const LANGS = [
@@ -207,9 +208,43 @@
   // 7(h): "Yes", "No", or nothing if the person has not answered.
   function yesNo(value) { const v = String(value || '').trim(); if (!v) return ''; return /^no\b/i.test(v) ? 'No' : 'Yes'; }
 
+  // The tick lists shown in the chat. Each choice ticks one box on the official form (or, for money, fills one).
+  // "ask" means inFORMed asks for that detail after the person has chosen.
+  const CHOICES = {
+    protections: [
+      { id: 'stop', field: 't_a', label: 'Stop hurting, threatening or controlling me' },
+      { id: 'others', field: 't_b', label: 'Not ask other people to do it for him' },
+      { id: 'home', field: 't_e', ask: true, label: 'Stay away from my home' },
+      { id: 'work', field: 't_f', ask: true, label: 'Stay away from my work or school' },
+      { id: 'leave', field: 't_c', ask: true, label: 'Leave the home we share' },
+      { id: 'part', field: 't_d', ask: true, label: 'Stay out of part of our home' },
+      { id: 'lockout', field: 't_g', label: 'Not stop me from living in our home' },
+      { id: 'media', field: 't_h', ask: true, label: 'Not share my photos, videos or messages' },
+      { id: 'weapons', field: 'o_b', ask: true, label: 'Give up his guns or weapons' },
+      { id: 'fetch', field: 'o_a', label: 'Police help me fetch my things' },
+      { id: 'children', field: '', ask: true, label: 'Rules about seeing the children' },
+      { id: 'secret', field: 'o_h', label: 'Keep my address and work details from him' },
+      { id: 'other', field: 't_i', ask: true, label: 'Something else (tell me)' },
+    ],
+    money: [
+      { id: 'pay', field: 'o_e', label: 'I lost pay from work' },
+      { id: 'medical', field: 'o_e', label: 'Doctor, clinic or dentist costs' },
+      { id: 'moving', field: 'o_e', label: 'Moving or a place to stay' },
+      { id: 'food', field: 'o_e', label: 'Food or things for the home' },
+      { id: 'rent', field: 'o_c', label: 'Rent or bond on our home (if he must leave)' },
+      { id: 'maint', field: 'o_d', label: 'Money for me or the children until the court date' },
+      { id: 'none', field: '', none: true, label: 'No, none of these' },
+    ],
+  };
+  // Everyone should bring these (from GRIT's evidence guide); story-specific items are added by inFORMed.
+  const BRING_ALWAYS = ['Your ID document or passport (or any ID you have)',
+    'This application, with Form 6A (your personal details) kept separate',
+    'Everything you know about him: full name, ID number, home and work address, phone number, car registration, a photo',
+    'Any old protection orders, police case (CAS) or OB numbers'];
+
   const FORM_VERSION = 'Form 6 and Form 6A, Domestic Violence Regulations (J480, updated 7 March 2025)';
 
-  const API = { SECTIONS, OFFICIAL, FIELDS, ABUSE_TYPES, DOCS, LANGS, FORM_VERSION, OPTIONS, pickOptions, yesNo };
+  const API = { SECTIONS, OFFICIAL, FIELDS, ABUSE_TYPES, DOCS, LANGS, FORM_VERSION, OPTIONS, pickOptions, yesNo, CHOICES, BRING_ALWAYS };
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
   else root.INFORMED = API;
 })(typeof window !== 'undefined' ? window : this);

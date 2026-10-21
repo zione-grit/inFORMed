@@ -129,6 +129,22 @@ The "Fill in my form" opening (proposed by GRIT, consent question left out) says
 
 There is no consent question about using people's words to improve inFORMed, because nothing is stored or used for training. If GRIT later decides to collect conversations, consent would be added then, after a POPIA and safeguarding review.
 
+## Protections and money as tick lists
+
+When the main story and the urgency questions are done, inFORMed shows the person a **tick list of everything the court can order**, in plain words, instead of asking about each protection one by one. The options that fit their story come first (inFORMed chooses these), the rest are under "Show more options", and "Something else" is always last. Nothing is pre-ticked. "Not sure? Help me choose" lets them talk it through instead. Each choice ticks the matching box on the official form straight away (`CHOICES` in `public/fields.js`), and inFORMed then asks only for the details the chosen ones need, such as the work address. A second list covers money (lost pay, medical, moving, household, rent or bond, and maintenance until the court date), with a reminder to bring slips or receipts. On WhatsApp the same lists come as numbers ("Reply with the numbers, for example: 1, 3").
+
+## Support when someone is distressed
+
+When someone shows strong fear or distress but is not in immediate danger ("I am scared he can kill me"), inFORMed answers as usual and adds one fixed line underneath, with tap-to-call buttons: the GBV Command Centre (0800 428 428, free, 24 hours) and GRIT on WhatsApp (072 737 8819), and that they can pause. It is not repeated more than once every few messages. The wording is `SUPPORT` in `lib/engine.js`. Emergencies still get GRIT's fixed emergency replies, as before.
+
+## Simple language
+
+inFORMed matches how the person writes: short, simple sentences and everyday words for people who write simply, explaining any legal word, and a little more detail for people who write in a fuller way. It never corrects spelling or talks down to anyone. The form itself stays in formal English for the court.
+
+## Evidence and "Things to bring to court"
+
+GRIT's evidence guide is inFORMed's sixth reference document. inFORMed asks about evidence only when that part of the story comes up, one item at a time, always says the person can still apply without it, and never suggests getting evidence in a risky way. It keeps a list of what this person should bring (for example the clinic card or J88, screenshots of messages), shown with the items everyone needs (ID, the form, everything known about him, old case or OB numbers) as a tick list in "Review your application", at the end of the Word file (on its own page, marked as not part of the application) and on WhatsApp. It is not added to the official PDF.
+
 ## Home page and voice
 
 - **The form comes first.** The main button is "Start my form". "Ask a question" is lower down, under "Want to learn more before you start?".

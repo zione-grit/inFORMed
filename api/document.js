@@ -9,7 +9,7 @@ module.exports = async (req, res) => {
     let { form = {}, abuse = [], format = 'pdf', demo = false } = req.body || {};
     // The person may have typed into the form panel in another language: make sure the court draft is English.
     if (process.env.OPENAI_API_KEY) {
-      const items = Object.entries(form).filter(([, v]) => String(v || '').trim()).map(([field, value]) => ({ field, value: String(value) }));
+      const items = Object.entries(form).filter(([k, v]) => !k.startsWith('_') && String(v || '').trim()).map(([field, value]) => ({ field, value: String(value) }));
       const fixed = await ensureEnglish(items, null, null);
       if (fixed !== items) { form = { ...form }; for (const u of fixed) form[u.field] = u.value; }
     }

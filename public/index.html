@@ -933,6 +933,28 @@ section.band:last-of-type::after{content:"";position:absolute;left:0;right:0;top
 @media(max-width:479px){.c-head .c-title{display:none}.c-head{justify-content:space-between}}
 section.band.learn{padding-top:64px;padding-bottom:64px}
 .dlg.info{max-width:620px;max-height:80dvh;overflow:auto}
+.choices{align-self:flex-start;max-width:min(92%,620px);background:#F4F1EA;color:#071A33;border-radius:18px;padding:16px 16px 14px;display:flex;flex-direction:column;gap:10px;box-shadow:0 10px 24px rgba(0,0,0,.25)}
+.choices .ch-h{margin:0;font-weight:800;font-size:16px}
+.ch-list{display:flex;flex-direction:column;gap:6px}
+.ch-list[hidden]{display:none}
+.ch-o{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:12px;background:#FFFFFF;border:1px solid #D9DEE5;cursor:pointer;font-size:15.5px;line-height:1.35}
+.ch-o input{position:absolute;opacity:0;pointer-events:none}
+.ch-b{flex:none;width:22px;height:22px;border-radius:6px;border:2px solid #1A62B5;display:grid;place-items:center;margin-top:-1px}
+.ch-o input:checked + .ch-b{background:#1A62B5}
+.ch-o input:checked + .ch-b::after{content:"";width:6px;height:11px;border:solid #FFFFFF;border-width:0 3px 3px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.ch-o input:focus-visible + .ch-b{outline:3px solid #7AB3FF;outline-offset:2px}
+.ch-o:has(input:checked){border-color:#1A62B5;background:#EEF3FA;font-weight:700}
+.ch-acts{display:flex;flex-wrap:wrap;gap:8px}
+.choices .chip{background:#FFFFFF;color:#071A33;border:1px solid #C9D3D6}
+.ch-err{margin:0;color:#B3261E;font-size:14px;font-weight:600}
+.ch-err:empty{display:none}
+.ch-done{align-self:flex-start;min-width:130px}
+.choices.done{opacity:.6}
+.bring{background:#EEF3FA;border-radius:12px;padding:12px 14px;margin:0 0 12px}
+.calls.sup a,.calls.sup a:hover{background:#EEF3FA;color:#071A33;border:1px solid #9FB6D4;box-shadow:none}
+.bring .bn{margin:4px 0 8px;font-size:14px}
+.bring ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.bring label{display:flex;gap:8px;align-items:flex-start;font-size:14.5px}
 .chip.startgo{background:#7AB3FF;color:#071A33;border-color:#7AB3FF;font-weight:800;padding:8px 16px;font-size:15px}
 .chip.startgo svg{width:16px;height:16px}
 .dlg.info h3{margin:18px 0 4px;font-size:17px}
@@ -1149,6 +1171,7 @@ section.band.learn{padding-top:64px;padding-bottom:64px}
   <h2 tabindex="-1" autofocus>Review your application</h2>
   <p style="margin-top:0">Magistrates look for specific details. Here is what your draft has so far.</p>
   <ul class="check" id="checklist"></ul>
+  <div class="bring"><strong>Things to bring to court</strong><p class="bn">You can still apply without these. Bring copies and keep the originals safe.</p><ul id="bringList"></ul></div>
   <div class="next"><strong>What happens next</strong>
     <ol>
       <li>Take your draft to the clerk at a Magistrates' Court during court hours (usually 9am to 3:30pm on weekdays).</li>
@@ -1235,7 +1258,7 @@ section.band.learn{padding-top:64px;padding-bottom:64px}
 <script src="/i18n.js"></script>
 <script>
 (function(){
-const { SECTIONS, OFFICIAL, FIELDS, ABUSE_TYPES, DOCS, LANGS, FORM_VERSION, OPTIONS, pickOptions, yesNo } = window.INFORMED;
+const { SECTIONS, OFFICIAL, FIELDS, ABUSE_TYPES, DOCS, LANGS, FORM_VERSION, OPTIONS, pickOptions, yesNo, CHOICES, BRING_ALWAYS } = window.INFORMED;
 // Developer view: open the site with ?sources at the end of the address to see which document each answer used.
 let SHOW_SOURCES = false;
 try { SHOW_SOURCES = new URLSearchParams(location.search).has('sources') || sessionStorage.getItem('informed_sources') === '1'; if (SHOW_SOURCES) sessionStorage.setItem('informed_sources', '1'); } catch(e){}
@@ -1395,6 +1418,81 @@ function addReadMore(m){
   b.innerHTML = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.2v4M8 4.9v.1"/></svg><span></span>';
   b.querySelector('span').textContent = t('readMore'); b.onclick = openInfo; sr.appendChild(b);
 }
+/* ---------- tick lists in the chat (protections, then money) ---------- */
+// Every option is shown (the ones that fit the story first), nothing is pre-ticked, and each choice ticks the
+// matching box on the official form. inFORMed then asks only for the details the chosen ones need.
+function choiceCard(group, first){
+  const opts = CHOICES[group]; if (!opts) return;
+  const top = new Set(group === 'protections' ? ['stop', 'others', ...first] : opts.map(o => o.id));
+  const w = document.createElement('div'); w.className = 'choices'; w.setAttribute('role', 'group');
+  const head = document.createElement('p'); head.className = 'ch-h'; head.textContent = t(group === 'money' ? 'chMoneyTitle' : 'chProtTitle'); w.appendChild(head);
+  const list = document.createElement('div'); list.className = 'ch-list'; w.appendChild(list);
+  const more = document.createElement('div'); more.className = 'ch-list more'; more.hidden = true;
+  const add = (o, into) => {
+    const l = document.createElement('label'); l.className = 'ch-o';
+    l.innerHTML = '<input type="checkbox"><span class="ch-b" aria-hidden="true"></span><span class="ch-t"></span>';
+    l.querySelector('input').value = o.id; l.querySelector('.ch-t').textContent = t('ch_' + group + '_' + o.id);
+    if (o.none) l.querySelector('input').onchange = e => { if (e.target.checked) w.querySelectorAll('input').forEach(i => { if (i !== e.target) i.checked = false; }); };
+    else l.querySelector('input').onchange = e => { if (e.target.checked) w.querySelectorAll('input[value="none"]').forEach(i => i.checked = false); };
+    into.appendChild(l);
+  };
+  opts.filter(o => top.has(o.id) && o.id !== 'other').forEach(o => add(o, list));
+  const rest = opts.filter(o => !top.has(o.id) && o.id !== 'other');
+  const last = opts.find(o => o.id === 'other');
+  const acts = document.createElement('div'); acts.className = 'ch-acts';
+  if (rest.length){
+    rest.forEach(o => add(o, more)); w.appendChild(more);
+    const mb = document.createElement('button'); mb.type = 'button'; mb.className = 'chip'; mb.textContent = t('chMore');
+    mb.onclick = () => { more.hidden = !more.hidden; mb.textContent = t(more.hidden ? 'chMore' : 'chLess'); };
+    acts.appendChild(mb);
+  }
+  if (group === 'protections'){
+    const hb = document.createElement('button'); hb.type = 'button'; hb.className = 'chip'; hb.textContent = t('chHelp');
+    hb.onclick = () => { if (S.busy) return; lock(); inp.value = t('chHelpMsg'); sendLive(); };
+    acts.appendChild(hb);
+  }
+  const err = document.createElement('p'); err.className = 'ch-err';
+  const db = document.createElement('button'); db.type = 'button'; db.className = 'btn primary ch-done'; db.textContent = t('chDone');
+  db.onclick = () => {
+    if (S.busy) return;
+    const picked = [...w.querySelectorAll('input:checked')].map(i => opts.find(o => o.id === i.value));
+    if (!picked.length){ err.textContent = t('chPick'); return; }
+    lock(); applyChoices(group, picked);
+    const none = picked.some(o => o.none);
+    inp.value = none ? t('chNoneMsg') : t('chChose') + ' ' + picked.map(o => t('ch_' + group + '_' + o.id)).join('; ');
+    sendLive();
+  };
+  function lock(){ w.classList.add('done'); w.querySelectorAll('input,button').forEach(x => x.disabled = true); }
+  if (last){ const lw = document.createElement('div'); lw.className = 'ch-list'; add(last, lw); w.appendChild(lw); } // "Something else" always last
+  w.appendChild(acts); w.appendChild(err); w.appendChild(db);
+  log.appendChild(w); scrollDown();
+}
+// Tick the official boxes for what the person chose. Details (addresses, amounts) are asked for afterwards.
+function applyChoices(group, picked){
+  const set = (id, v) => setField(id, v, true);
+  const empty = id => !String(S.form[id] || '').trim() || /^requested$/i.test(String(S.form[id]).trim());
+  if (group === 'protections'){
+    picked.forEach(o => {
+      if (!o.field) return;
+      if (o.id === 'stop'){ if (empty('t_a')){ const acts = (S.abuse || []).map(a => (ABUSE_TYPES.find(x => x.id === a) || {}).label).filter(Boolean); set('t_a', acts.length ? acts.join('; ') : 'Requested'); } }
+      else if (o.id === 'secret') set('o_h', 'Yes');
+      else if (empty(o.field)) set(o.field, 'Requested');
+    });
+  } else {
+    const kinds = picked.filter(o => o.field === 'o_e').map(o => CHOICES.money.find(x => x.id === o.id).label);
+    if (kinds.length && empty('o_e')) set('o_e', kinds.join('; '));
+    picked.forEach(o => { if (o.field && o.field !== 'o_e' && empty(o.field)) set(o.field, 'Requested'); });
+  }
+  refreshProgress(); scheduleSave();
+}
+// Distress without an emergency: tap-to-call support under inFORMed's reply
+function addSupport(m){
+  const c = document.createElement('div'); c.className = 'calls sup';
+  c.innerHTML = '<a href="tel:0800428428"></a><a href="https://wa.me/27727378819" target="_blank" rel="noopener"></a>';
+  const a = c.querySelectorAll('a'); a[0].textContent = t('callGbv'); a[1].textContent = t('supWa');
+  m.insertBefore(c, m.querySelector('.srcs'));
+}
+
 // "Start" under the fill opening: shows the first question. Typing or talking straight away works too.
 function addStart(m){
   let sr = m.querySelector('.srcs'); if (!sr){ sr = document.createElement('div'); sr.className = 'srcs'; m.appendChild(sr); }
@@ -1532,9 +1630,12 @@ async function callChat(spoken = false){
     const j = await r.json();
     dots.remove();
     const m = addMsg('assistant', j.reply, { crisis: j.crisis, sources: (j.fixed || j.grounding === 'general') ? [] : j.sources, general: !j.fixed && j.grounding === 'general' });
+    if (j.support) addSupport(m);
+    if (Array.isArray(j.bring) && j.bring.length && S.cm === 'fill') S.form._bring = j.bring.join('\n');
     if (RA) autoRead(m, j.reply);
     S.msgs.push({ role:'assistant', content:j.reply });
     if (S.cm === 'fill') applyResult(j);
+    if (S.cm === 'fill' && (j.offer === 'protections' || j.offer === 'money')) choiceCard(j.offer, j.offer_first || []);
     if (LANG === 'auto' && ['en','zu','af'].includes(j.language) && j.language !== UI){ DETECTED = j.language; setUi(j.language); }
   } catch(e){
     dots.remove();
@@ -1956,6 +2057,9 @@ function openGen(){
   ];
   $('checklist').innerHTML = '';
   items.forEach(([ok, label]) => { const li=document.createElement('li'); li.innerHTML = `<span class="ic ${ok?'y':'n'}">${ok?'✓':'!'}</span><span></span>`; li.lastChild.textContent = label + (ok ? '' : t('rAdd')); $('checklist').appendChild(li); });
+  const bring = [...['bringA1','bringA2','bringA3','bringA4'].map(k => t(k)), ...String(S.form._bring || '').split('\n').map(x => x.trim()).filter(Boolean)];
+  $('bringList').innerHTML = '';
+  bring.forEach((b, i) => { const li = document.createElement('li'); li.innerHTML = `<label><input type="checkbox" id="br${i}"><span></span></label>`; li.querySelector('span').textContent = b; $('bringList').appendChild(li); });
   $('genErr').textContent = '';
   $('genDlg').showModal();
 }
