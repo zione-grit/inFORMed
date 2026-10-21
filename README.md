@@ -121,6 +121,14 @@ The design's images are in `public/img/` (Shamryn's files, compressed for the we
 
 Direct-to-form link: `https://informedgrit.vercel.app/form` opens straight into "Help me fill in my form".
 
+## Opening and "Read more"
+
+The "Fill in my form" opening (proposed by GRIT, consent question left out) says inFORMed is an AI chatbot, not a person, and cannot give legal advice; that the story is only used for the form; that the person chooses what to share; that the form fills in as they talk, so they only tell their story once; how to use Quick exit; and to call 10111 if in danger. Under it are two buttons: **Start**, which shows "Tell me what is happening. You can type or talk.", and **Read more**. Typing or talking straight away also works. "Ask a question" opens with the same AI and legal advice disclosure.
+
+"Read more" (also linked in the footer) covers: not a lawyer; who can see what you write (messages go to OpenAI to produce replies, OpenAI is asked not to keep them, GRIT does not see or store them); how long it is kept (the chat not at all; the form on the phone, PIN-locked if saved); how to delete it; the shared-phone risk; and the danger numbers. The wording is in `public/i18n.js` (`fillOpening`, `fillStart`, `startBtn`, `askOpening`, `iTitle`, `iH1`–`iH6`, `iP1`–`iP6`). The WhatsApp opening in `lib/openings.js` says instead that the chat is kept for 24 hours and how to delete it.
+
+There is no consent question about using people's words to improve inFORMed, because nothing is stored or used for training. If GRIT later decides to collect conversations, consent would be added then, after a POPIA and safeguarding review.
+
 ## Home page and voice
 
 - **The form comes first.** The main button is "Start my form". "Ask a question" is lower down, under "Want to learn more before you start?".

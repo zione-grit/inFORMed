@@ -932,6 +932,11 @@ section.band:last-of-type::after{content:"";position:absolute;left:0;right:0;top
 @media(max-width:719px){.ra .ra-l{display:none}}
 @media(max-width:479px){.c-head .c-title{display:none}.c-head{justify-content:space-between}}
 section.band.learn{padding-top:64px;padding-bottom:64px}
+.dlg.info{max-width:620px;max-height:80dvh;overflow:auto}
+.chip.startgo{background:#7AB3FF;color:#071A33;border-color:#7AB3FF;font-weight:800;padding:8px 16px;font-size:15px}
+.chip.startgo svg{width:16px;height:16px}
+.dlg.info h3{margin:18px 0 4px;font-size:17px}
+.dlg.info p{margin:0;line-height:1.55}
 .will{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
 .will:empty{display:none}
 .will .wl{flex:1 1 100%;font-size:12px;font-weight:700;color:var(--soft)}
@@ -1125,7 +1130,8 @@ section.band.learn{padding-top:64px;padding-bottom:64px}
   <picture class="flogo"><img src="/img/grit-logo-blue.webp" alt="GRIT, Gender Rights in Tech"></picture>
   <div class="foot-logo"><span class="ilogo is-static" aria-hidden="true"><span class="il-in">in</span><span class="il-slip"><span class="il-form">FORM</span><span class="il-caret"></span></span><span class="il-ed">ed</span></span></div>
   <p class="pw">Powered by <b>GRIT</b> · Gender Rights in Tech</p>
-  <p>Demo prototype. inFORMed helps you prepare a draft application. It is not legal advice and does not replace the court clerk or a lawyer.</p>
+  <p>inFORMed helps you prepare your application for a protection order. It is not legal advice and does not replace the court clerk or a lawyer.</p>
+  <p><button class="linkbtn" id="infoOpen" type="button">About inFORMed and your information</button></p>
 </footer>
 
 <!-- Access code -->
@@ -1185,6 +1191,24 @@ section.band.learn{padding-top:64px;padding-bottom:64px}
     <button class="btn primary" type="submit">Open</button>
   </div>
 </form></dialog>
+
+<!-- About inFORMed and your information ("Read more") -->
+<dialog id="infoDlg" aria-labelledby="infoTitle"><div class="dlg info">
+  <h2 id="infoTitle">About inFORMed</h2>
+  <h3>Not a lawyer</h3>
+  <p>inFORMed is an AI chatbot made by GRIT (Gender Rights in Tech). It is not a person and not a lawyer, and it does not give legal advice. It helps you prepare a draft of the official court form. The clerk at the Magistrates' Court goes through it with you before you sign it.</p>
+  <h3>Who can see what you write</h3>
+  <p>To answer you, inFORMed sends your messages to OpenAI, the company whose AI it uses. GRIT does not see or store your messages. OpenAI is asked not to keep them, and they are not used to train any AI.</p>
+  <h3>How long we keep it</h3>
+  <p>The chat is not kept at all: it is gone when you close the page. Your form is kept only on this phone, in the open page, so reloading the page does not lose it. If you choose “Save to finish later”, it is locked with a PIN you choose and stays on this phone until you delete it. Nobody can open it without the PIN, not even GRIT. A forgotten PIN cannot be recovered.</p>
+  <h3>How to delete it</h3>
+  <p>Press Start over or Quick exit to clear the page. To delete a saved form, tap “Continue a saved application” on the home page, enter your PIN and choose “Delete it”. A PDF or Word file you downloaded stays in your phone’s downloads until you delete it.</p>
+  <h3>If you share a phone</h3>
+  <p>Someone else using this phone could see in the browser history that you visited inFORMed, or find a form you downloaded. If that is a risk, use a private (incognito) tab, delete downloads after you have used them, and clear your browser history. A form saved with a PIN stays locked. In a private tab, a saved form is lost when you close the tab.</p>
+  <h3>In danger now?</h3>
+  <p>Call the police on 10111 or the GBV Command Centre on 0800 428 428. Both are free.</p>
+  <div class="acts"><button class="btn primary" type="button" id="infoClose">Close</button></div>
+</div></dialog>
 
 <!-- Form preview -->
 <dialog class="pv" id="pvDlg" aria-label="Preview of your application">
@@ -1268,6 +1292,8 @@ function setUi(lang){
   const fp = $('formPill'); if (fp && fp.firstChild) fp.firstChild.nodeValue = t('formPill') + ' · ';
   document.querySelectorAll('.chip.listen:not(.playing) span').forEach(x => x.textContent = t('listen'));
   document.querySelectorAll('.chip.gen-info').forEach(x => x.textContent = t('generalInfo'));
+  document.querySelectorAll('.chip.readmore span').forEach(x => x.textContent = t('readMore'));
+  document.querySelectorAll('.chip.startgo span').forEach(x => x.textContent = t('startBtn'));
   document.querySelectorAll('.f6a').forEach(x => x.textContent = t('f6a'));
   if (S.mode){ inp.placeholder = S.mode === 'live' ? t('ph') : t('phDemo'); $('underNote').textContent = S.mode === 'live' ? t('underLive') : t('underDemo'); }
   if ($('st1')) refreshProgress();
@@ -1362,6 +1388,25 @@ function showWill(id){
   const l = document.createElement('span'); l.className = 'wl'; l.textContent = t('willTick'); w.appendChild(l);
   on.forEach(x => { const c = document.createElement('span'); c.className = 'wc'; c.textContent = '\u2715 ' + x + (detail[x] ? ': ' + detail[x] : ''); w.appendChild(c); });
 }
+// "Read more" under the opening message: what inFORMed is, and what happens to what people write
+function addReadMore(m){
+  let sr = m.querySelector('.srcs'); if (!sr){ sr = document.createElement('div'); sr.className = 'srcs'; m.appendChild(sr); }
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'chip readmore';
+  b.innerHTML = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.2v4M8 4.9v.1"/></svg><span></span>';
+  b.querySelector('span').textContent = t('readMore'); b.onclick = openInfo; sr.appendChild(b);
+}
+// "Start" under the fill opening: shows the first question. Typing or talking straight away works too.
+function addStart(m){
+  let sr = m.querySelector('.srcs'); if (!sr){ sr = document.createElement('div'); sr.className = 'srcs'; m.appendChild(sr); }
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'chip startgo';
+  b.innerHTML = '<span></span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8h9M9 4.5 12.5 8 9 11.5"/></svg>';
+  b.querySelector('span').textContent = t('startBtn');
+  b.onclick = () => { if (S.mode !== 'live' && S.mode !== 'demo') return; stopAudio(); removeStart(); const q = t('fillStart'); const qm = addMsg('assistant', q);
+    S.msgs.push({ role:'assistant', content:q }); if (RA && S.mode === 'live') autoRead(qm, q); if (window.innerWidth >= 720) inp.focus(); else $('mic').classList.add('invite'); };
+  sr.prepend(b);
+}
+function removeStart(){ document.querySelectorAll('.chip.startgo').forEach(b => b.remove()); }
+function openInfo(){ stopAudio(); $('infoDlg').showModal(); $('infoDlg').querySelector('.dlg').scrollTop = 0; }
 let LASTF = null;
 function renderForm(){ FIELDS.forEach(f => setField(f.id, S.form[f.id] || '', false)); renderTypes(); refreshProgress(); }
 function renderTypes(){
@@ -1473,6 +1518,7 @@ async function sendLive(){
   if (V.state === 'recording' || V.state === 'starting') stopRecording(true);
   inp.value = ''; autosize(); voiceBar(false); showReview(false);
   const spoken = V.spoken; V.spoken = false;
+  removeStart(); // they started by typing or talking
   addMsg('user', v); S.msgs.push({ role:'user', content:v });
   await callChat(spoken);
 }
@@ -1522,6 +1568,8 @@ function setMode(cm, announce = true){
     S.shown[cm] = true;
     const o = opening(cm);
     const om = addMsg('assistant', o); S.msgs.push({ role:'assistant', content:o });
+    if (cm === 'fill') addStart(om);
+    addReadMore(om);
     if (RA && S.mode === 'live') autoRead(om, o);
     if (cm === 'ask' && S.mode === 'live') suggest();
   } else {
@@ -1674,7 +1722,7 @@ function stopAudio(){
 }
 function b64url(str){ const bytes = new TextEncoder().encode(str); let bin = ''; bytes.forEach(b => bin += String.fromCharCode(b)); return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
 function speechChunks(text, max = 14){
-  const parts = String(text).replace(/\s+/g, ' ').trim().match(/[^.!?…]+[.!?…]+["'’”)\]]*\s*|[^.!?…]+$/g) || [String(text)];
+  const parts = String(text).replace(/[\u2714\u2713\u2715]/g, '').replace(/\s+/g, ' ').trim().match(/[^.!?…]+[.!?…]+["'’”)\]]*\s*|[^.!?…]+$/g) || [String(text)];
   const out = []; let cur = '';
   for (const p of parts){
     const lim = out.length ? 450 : 170;
@@ -1955,6 +2003,8 @@ function renderPaper(){
 }
 function openPreview(){ closePanel(); if ($('genDlg').open) $('genDlg').close(); renderPaper(); $('pvDlg').showModal(); $('pvDlg').querySelector('.pv-scroll').scrollTop = 0; }
 ['pvOpen1','pvOpen2','pvOpen3'].forEach(id => $(id).onclick = openPreview);
+$('infoClose').onclick = () => $('infoDlg').close();
+$('infoOpen').onclick = openInfo;
 $('pvClose').onclick = () => { if (AUDIO_BTN === $('hf4')) stopAudio(); $('pvDlg').close(); };
 $('pvPdf').onclick = () => download('pdf', $('pvPdf')); $('pvWord').onclick = () => download('docx', $('pvWord'));
 $('pvPrint').onclick = () => {
