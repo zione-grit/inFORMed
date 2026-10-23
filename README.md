@@ -169,6 +169,8 @@ GRIT's evidence guide is inFORMed's sixth reference document. inFORMed asks abou
 
 Choosing isiZulu or Afrikaans switches all the page text: home page, buttons, chat messages, dialogs and help numbers. "Match my language" starts in the phone's language (if it is isiZulu or Afrikaans), and switches after the person's first message, in the language they wrote in. The form itself (form panel fields, preview, PDF and Word) stays in English, because it is filled in English for the court. This is enforced in code, not only asked of the AI: when the conversation is not in English, every form update goes through a separate translation step (`ensureEnglish` in `lib/engine.js`) before it reaches the form, and anything typed into the form panel in another language is translated when the PDF or Word draft is made. Words someone said are kept in English with the original words in brackets. The scripted demo and the fixed safety replies are also still in English.
 
+Changing the language also changes inFORMed's welcome, the Start question and the suggested questions already on the screen, with a short fade (they are tagged with their text key in `addMsg`). Answers the AI has already written stay as they were; new answers follow the new language. The Start question includes an example of how to begin.
+
 All interface text is in `public/i18n.js`. The isiZulu and Afrikaans text is a **draft** and must be checked by GRIT's native speakers. To correct a line, change the text after the colon and keep the key before it. No other code needs to change.
 
 ## Sources (developer view)

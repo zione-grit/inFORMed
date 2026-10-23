@@ -962,6 +962,8 @@ section.band.learn{padding-top:64px;padding-bottom:64px}
 .bring label{display:flex;gap:8px;align-items:flex-start;font-size:14.5px}
 .chip.startgo{background:#7AB3FF;color:#071A33;border-color:#7AB3FF;font-weight:800;padding:8px 16px;font-size:15px}
 .chip.startgo svg{width:16px;height:16px}
+.msg .b{transition:opacity .16s ease}
+.msg .b.swap{opacity:0}
 .dlg.info h3{margin:18px 0 4px;font-size:17px}
 .dlg.info p{margin:0;line-height:1.55}
 .will{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
@@ -1338,6 +1340,13 @@ function setUi(lang){
   document.querySelectorAll('.chip.readmore span').forEach(x => x.textContent = t('readMore'));
   document.querySelectorAll('.chip.startgo span').forEach(x => x.textContent = t('startBtn'));
   document.querySelectorAll('.f6a').forEach(x => x.textContent = t('f6a'));
+  // Messages inFORMed wrote from fixed text (welcome, Start question, notes) change language too, with a short fade.
+  document.querySelectorAll('#log .msg[data-k]').forEach(m => {
+    const tx = t(m.dataset.k), b = m.querySelector('.b'); if (!b || b.textContent === tx) return;
+    const i = +m.dataset.i; if (S.msgs[i] && S.msgs[i].role === 'assistant') S.msgs[i].content = tx;
+    b.classList.add('swap'); setTimeout(() => { b.textContent = tx; b.classList.remove('swap'); }, 160);
+  });
+  document.querySelectorAll('#log .suggest').forEach(w => { const qs = suggested(); w.querySelectorAll('button').forEach((b, i) => { if (qs[i]) b.textContent = qs[i]; }); });
   if (S.mode){ inp.placeholder = S.mode === 'live' ? t('ph') : t('phDemo'); $('underNote').textContent = S.mode === 'live' ? t('underLive') : t('underDemo'); }
   if ($('st1')) refreshProgress();
   const hp = $('hearPage'); if (hp && !hp.classList.contains('playing')) btnLabel(hp, 'hearPage');
@@ -1519,7 +1528,7 @@ function addStart(m){
   const b = document.createElement('button'); b.type = 'button'; b.className = 'chip startgo';
   b.innerHTML = '<span></span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8h9M9 4.5 12.5 8 9 11.5"/></svg>';
   b.querySelector('span').textContent = t('startBtn');
-  b.onclick = () => { if (S.mode !== 'live' && S.mode !== 'demo') return; stopAudio(); removeStart(); const q = t('fillStart'); const qm = addMsg('assistant', q);
+  b.onclick = () => { if (S.mode !== 'live' && S.mode !== 'demo') return; stopAudio(); removeStart(); const q = t('fillStart'); const qm = addMsg('assistant', q, { k:'fillStart' });
     S.msgs.push({ role:'assistant', content:q }); if (RA && S.mode === 'live') autoRead(qm, q); if (window.innerWidth >= 720) inp.focus(); else $('mic').classList.add('invite'); };
   sr.prepend(b);
 }
@@ -1570,6 +1579,7 @@ function addMsg(role, text, opts = {}){
   m.className = 'msg ' + (role === 'user' ? 'u' : 'a') + (opts.crisis ? ' crisis' : '');
   if (role !== 'user') { const w=document.createElement('div'); w.className='who'; w.textContent='inFORMed'; m.appendChild(w); }
   const b = document.createElement('div'); b.className='b'; b.textContent = text; m.appendChild(b);
+  if (opts.k){ m.dataset.k = opts.k; m.dataset.i = S.msgs.length; }
   if (opts.crisis){
     const c = document.createElement('div'); c.className='calls';
     c.innerHTML = '<a href="tel:10111"></a><a href="tel:10177"></a><a class="alt" href="tel:0800428428"></a>'; const cl = c.querySelectorAll('a'); cl[0].textContent = t('callPolice'); cl[1].textContent = t('callAmb'); cl[2].textContent = t('callGbv');
@@ -1596,7 +1606,7 @@ function addMsg(role, text, opts = {}){
     if (opts.listen !== false){
       const l=document.createElement('button'); l.type='button'; l.className='chip listen';
       l.innerHTML='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2.5 6v4h2.5l3.5 3V3L5 6z"/><path d="M11 5.5a3.5 3.5 0 0 1 0 5"/></svg><span></span>'; l.querySelector('span').textContent = t('listen');
-      l.onclick = () => listen(text, l); sr.appendChild(l);
+      l.onclick = () => listen(m.dataset.k ? t(m.dataset.k) : text, l); sr.appendChild(l);
     }
   }
   log.appendChild(m); scrollDown(); return m;
@@ -1604,7 +1614,7 @@ function addMsg(role, text, opts = {}){
 function suggest(){
   const w = document.createElement('div'); w.className='suggest';
   suggested().forEach(q => { const b=document.createElement('button'); b.type='button'; b.textContent=q;
-    b.onclick = () => { if (S.mode !== 'live' || S.busy) return; w.remove(); inp.value = q; sendLive(); }; w.appendChild(b); });
+    b.onclick = () => { if (S.mode !== 'live' || S.busy) return; w.remove(); inp.value = b.textContent; sendLive(); }; w.appendChild(b); });
   log.appendChild(w); scrollDown();
 }
 function typing(){ const m=document.createElement('div'); m.className='msg a typing'; m.innerHTML='<div class="b"><i></i><i></i><i></i></div>'; log.appendChild(m); scrollDown(); return m; }
@@ -1688,14 +1698,14 @@ function setMode(cm, announce = true){
   if (!S.shown[cm]){
     S.shown[cm] = true;
     const o = opening(cm);
-    const om = addMsg('assistant', o); S.msgs.push({ role:'assistant', content:o });
+    const om = addMsg('assistant', o, { k: cm === 'fill' ? 'fillOpening' : 'askOpening' }); S.msgs.push({ role:'assistant', content:o });
     if (cm === 'fill') addStart(om);
     addReadMore(om);
     if (RA && S.mode === 'live') autoRead(om, o);
     if (cm === 'ask' && S.mode === 'live') suggest();
   } else {
     const note = cm === 'fill' ? t('toFill') : t('toAsk');
-    addMsg('assistant', note, { listen:false }); S.msgs.push({ role:'assistant', content:note });
+    addMsg('assistant', note, { listen:false, k: cm === 'fill' ? 'toFill' : 'toAsk' }); S.msgs.push({ role:'assistant', content:note });
   }
   if (S.mode === 'live' && window.innerWidth >= 720) inp.focus();
 }
