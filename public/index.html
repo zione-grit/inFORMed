@@ -933,6 +933,11 @@ section.band:last-of-type::after{content:"";position:absolute;left:0;right:0;top
 @media(max-width:479px){.c-head .c-title{display:none}.c-head{justify-content:space-between}}
 section.band.learn{padding-top:64px;padding-bottom:64px}
 .dlg.info{max-width:620px;max-height:80dvh;overflow:auto}
+.dlg.info ol.after{margin:4px 0 6px;padding-left:22px;line-height:1.55}
+.dlg.info ol.after li{margin:0 0 6px}
+.nog{font-size:14px;font-style:italic;margin:6px 0 0}
+.applinks{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px!important}
+.applinks a{display:inline-block;padding:8px 14px;border-radius:999px;background:#071A33;color:#FFFFFF;font-weight:700;font-size:14px;text-decoration:none}
 .choices{align-self:flex-start;max-width:min(92%,620px);background:#F4F1EA;color:#071A33;border-radius:18px;padding:16px 16px 14px;display:flex;flex-direction:column;gap:10px;box-shadow:0 10px 24px rgba(0,0,0,.25)}
 .choices .ch-h{margin:0;font-weight:800;font-size:16px}
 .ch-list{display:flex;flex-direction:column;gap:6px}
@@ -1172,12 +1177,16 @@ section.band.learn{padding-top:64px;padding-bottom:64px}
   <p style="margin-top:0">Magistrates look for specific details. Here is what your draft has so far.</p>
   <ul class="check" id="checklist"></ul>
   <div class="bring"><strong>Things to bring to court</strong><p class="bn">You can still apply without these. Bring copies and keep the originals safe.</p><ul id="bringList"></ul></div>
-  <div class="next"><strong>What happens next</strong>
+  <div class="next"><strong>What happens after you finish your form</strong>
     <ol>
-      <li>Take your draft to the clerk at a Magistrates' Court during court hours (usually 9am to 3:30pm on weekdays).</li>
-      <li>The clerk helps you complete the official form. You sign it in front of a commissioner of oaths.</li>
-      <li>If the court grants an interim order, it is served on the respondent and you are given a date to return to court.</li>
+      <li>Take your form to the clerk at any Magistrates' Court, during court hours (usually 9am to 3:30pm on weekdays). If you are in danger, you can also apply after hours. It is free, and you do not need a lawyer.</li>
+      <li>The clerk goes through it with you. You sign it in front of a commissioner of oaths.</li>
+      <li>A magistrate reads it, often on the same day. If the magistrate sees that you need protection now, they give you an interim (temporary) protection order.</li>
+      <li>The interim order is given to him by the sheriff or the police. It protects you from the moment he receives it.</li>
+      <li>You are given a return date. On that day you both can come to court, and the magistrate decides whether to give a final protection order. Make sure you go to court on that date.</li>
+      <li>If he breaks the order, report it at the police station you named on your form. He can be arrested.</li>
     </ol>
+    <p class="nog">The magistrate decides. Using inFORMed does not guarantee that the court will grant an order, or that the police will enforce it.</p>
   </div>
   <p class="err" id="genErr"></p>
   <div class="acts">
@@ -1228,8 +1237,19 @@ section.band.learn{padding-top:64px;padding-bottom:64px}
   <p>Press Start over or Quick exit to clear the page. To delete a saved form, tap “Continue a saved application” on the home page, enter your PIN and choose “Delete it”. A PDF or Word file you downloaded stays in your phone’s downloads until you delete it.</p>
   <h3>If you share a phone</h3>
   <p>Someone else using this phone could see in the browser history that you visited inFORMed, or find a form you downloaded. If that is a risk, use a private (incognito) tab, delete downloads after you have used them, and clear your browser history. A form saved with a PIN stays locked. In a private tab, a saved form is lost when you close the tab.</p>
+  <h3>What happens after you finish your form</h3>
+  <ol class="after">
+      <li>Take your form to the clerk at any Magistrates' Court, during court hours (usually 9am to 3:30pm on weekdays). If you are in danger, you can also apply after hours. It is free, and you do not need a lawyer.</li>
+      <li>The clerk goes through it with you. You sign it in front of a commissioner of oaths.</li>
+      <li>A magistrate reads it, often on the same day. If the magistrate sees that you need protection now, they give you an interim (temporary) protection order.</li>
+      <li>The interim order is given to him by the sheriff or the police. It protects you from the moment he receives it.</li>
+      <li>You are given a return date. On that day you both can come to court, and the magistrate decides whether to give a final protection order. Make sure you go to court on that date.</li>
+      <li>If he breaks the order, report it at the police station you named on your form. He can be arrested.</li>
+  </ol>
+  <p class="nog">The magistrate decides. Using inFORMed does not guarantee that the court will grant an order, or that the police will enforce it.</p>
   <h3>In danger now?</h3>
-  <p>Call the police on 10111 or the GBV Command Centre on 0800 428 428. Both are free.</p>
+  <p>Call the police on 10111 or the GBV Command Centre on 0800 428 428. Both are free. You can also use the GRIT app, which has a panic button that connects you to help.</p>
+  <p class="applinks"><a href="https://play.google.com/store/apps/details?id=com.ads.apps.kwanele" target="_blank" rel="noopener">GRIT app for Android</a> <a href="https://apps.apple.com/us/app/kwanele/id1616602924" target="_blank" rel="noopener">GRIT app for iPhone</a></p>
   <div class="acts"><button class="btn primary" type="button" id="infoClose">Close</button></div>
 </div></dialog>
 

@@ -127,6 +127,8 @@ The "Fill in my form" opening (proposed by GRIT, consent question left out) says
 
 "Read more" (also linked in the footer) covers: not a lawyer; who can see what you write (messages go to OpenAI to produce replies, OpenAI is asked not to keep them, GRIT does not see or store them); how long it is kept (the chat not at all; the form on the phone, PIN-locked if saved); how to delete it; the shared-phone risk; and the danger numbers. The wording is in `public/i18n.js` (`fillOpening`, `fillStart`, `startBtn`, `askOpening`, `iTitle`, `iH1`–`iH6`, `iP1`–`iP6`). The WhatsApp opening in `lib/openings.js` says instead that the chat is kept for 24 hours and how to delete it.
 
+Read more also explains what happens after the form is finished (the clerk, the commissioner of oaths, the interim order, service, the return date and the final order, and reporting a breach), says that the magistrate decides and that using inFORMed does not guarantee an order or enforcement, and offers the GRIT app (with its panic button) in the danger section. The same steps appear in "Review your application". All of it is in English, isiZulu and Afrikaans (`aTitle`, `aS1`–`aS6`, `aNo`, `appAndroid`, `appIos` in `public/i18n.js`).
+
 There is no consent question about using people's words to improve inFORMed, because nothing is stored or used for training. If GRIT later decides to collect conversations, consent would be added then, after a POPIA and safeguarding review.
 
 ## Protections and money as tick lists

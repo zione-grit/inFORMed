@@ -144,7 +144,7 @@
     iH5: "If you share a phone",
     iP5: "Someone else using this phone could see in the browser history that you visited inFORMed, or find a form you downloaded. If that is a risk, use a private (incognito) tab, delete downloads after you have used them, and clear your browser history. A form saved with a PIN stays locked. In a private tab, a saved form is lost when you close the tab.",
     iH6: "In danger now?",
-    iP6: "Call the police on 10111 or the GBV Command Centre on 0800 428 428. Both are free.",
+    iP6: "Call the police on 10111 or the GBV Command Centre on 0800 428 428. Both are free. You can also use the GRIT app, which has a panic button that connects you to help.",
     iClose: "Close",
     fillStart: "Tell me what is happening. You can type or talk.",
     startBtn: "Start",
@@ -186,6 +186,16 @@
     bringA2: "This application, with Form 6A (your personal details) kept separate",
     bringA3: "Everything you know about him: full name, ID number, home and work address, phone number, car registration, a photo",
     bringA4: "Any old protection orders, police case (CAS) or OB numbers",
+    aTitle: "What happens after you finish your form",
+    aS1: "Take your form to the clerk at any Magistrates' Court, during court hours (usually 9am to 3:30pm on weekdays). If you are in danger, you can also apply after hours. It is free, and you do not need a lawyer.",
+    aS2: "The clerk goes through it with you. You sign it in front of a commissioner of oaths.",
+    aS3: "A magistrate reads it, often on the same day. If the magistrate sees that you need protection now, they give you an interim (temporary) protection order.",
+    aS4: "The interim order is given to him by the sheriff or the police. It protects you from the moment he receives it.",
+    aS5: "You are given a return date. On that day you both can come to court, and the magistrate decides whether to give a final protection order. Make sure you go to court on that date.",
+    aS6: "If he breaks the order, report it at the police station you named on your form. He can be arrested.",
+    aNo: "The magistrate decides. Using inFORMed does not guarantee that the court will grant an order, or that the police will enforce it.",
+    appAndroid: "GRIT app for Android",
+    appIos: "GRIT app for iPhone",
   };
 
   // DRAFT: to be checked by GRIT's isiZulu speakers.
@@ -320,7 +330,7 @@
     iH5: "Uma wabelana ngefoni",
     iP5: "Omunye umuntu osebenzisa le foni angabona emlandweni wesiphequluli ukuthi uvakashele i-inFORMed, noma athole ifomu olilandile. Uma lokho kuyingozi, sebenzisa ithebhu eyimfihlo (incognito), susa okulandiwe ngemuva kokukusebenzisa, bese usula umlando wesiphequluli. Ifomu eligcinwe nge-PIN lihlala likhiyiwe. Ethebhu eyimfihlo, ifomu eligciniwe liyalahleka uma uvala ithebhu.",
     iH6: "Usengozini manje?",
-    iP6: "Shayela amaphoyisa ku-10111 noma i-GBV Command Centre ku-0800 428 428. Zombili zimahhala.",
+    iP6: "Shayela amaphoyisa ku-10111 noma i-GBV Command Centre ku-0800 428 428. Zombili zimahhala. Ungasebenzisa ne-app ye-GRIT, enenkinobho yokuphuthuma ekuxhumanisa nosizo.",
     iClose: "Vala",
     fillStart: "Ngitshele ukuthi kwenzekani. Ungabhala noma ukhulume.",
     startBtn: "Qala",
@@ -362,6 +372,16 @@
     bringA2: "Lesi sicelo, neFomu 6A (imininingwane yakho) ligcinwe lodwa",
     bringA3: "Konke okwaziyo ngaye: igama eligcwele, inombolo kamazisi, ikheli lasekhaya nelomsebenzi, inombolo yocingo, inombolo yemoto, isithombe",
     bringA4: "Noma yimiphi imiyalelo yokuvikela yangaphambili, izinombolo zamacala (CAS) noma ze-OB",
+    aTitle: "Kwenzekani ngemuva kokuqeda ifomu lakho",
+    aS1: "Yisa ifomu lakho kumabhalane kunoma iyiphi iNkantolo kaMantshi, ngezikhathi zenkantolo (imvamisa kusukela ngo-9 ekuseni kuya ku-3:30 ntambama ngezinsuku zomsebenzi). Uma usengozini, ungafaka isicelo nangemuva kwamahora omsebenzi. Kumahhala, futhi awudingi ummeli.",
+    aS2: "Umabhalane ulihlola nawe. Ulisayina phambi kukakhomishana wezifungo.",
+    aS3: "UMantshi uyalifunda, ngokuvamile ngalo lolo suku. Uma uMantshi ebona ukuthi udinga ukuvikelwa manje, ukunika umyalelo wokuvikela wesikhashana.",
+    aS4: "Umyalelo wesikhashana unikezwa yena ngusherifu noma ngamaphoyisa. Ukuvikela kusukela ngesikhathi ewuthola.",
+    aS5: "Unikezwa usuku lokubuyela enkantolo. Ngalolo suku nobabili ningeza enkantolo, futhi uMantshi unquma ukuthi uzowunikeza yini umyalelo wokuvikela wokugcina. Qiniseka ukuthi uya enkantolo ngalolo suku.",
+    aS6: "Uma ephula umyalelo, kubike esiteshini samaphoyisa osibhale efomini lakho. Angaboshwa.",
+    aNo: "UMantshi nguye onqumayo. Ukusebenzisa i-inFORMed akuqinisekisi ukuthi inkantolo izowunikeza umyalelo, noma ukuthi amaphoyisa azowuphoqelela.",
+    appAndroid: "I-app ye-GRIT ye-Android",
+    appIos: "I-app ye-GRIT ye-iPhone",
   };
 
   // DRAFT: to be checked by GRIT's Afrikaans speakers.
@@ -495,7 +515,7 @@
     iH5: "As jy ’n foon deel",
     iP5: "Iemand anders wat hierdie foon gebruik, kan in die blaaiergeskiedenis sien dat jy inFORMed besoek het, of ’n vorm vind wat jy afgelaai het. As dit ’n risiko is, gebruik ’n privaat (incognito) oortjie, skrap aflaaie nadat jy dit gebruik het, en maak jou blaaiergeskiedenis skoon. ’n Vorm wat met ’n PIN gestoor is, bly gesluit. In ’n privaat oortjie gaan ’n gestoorde vorm verlore wanneer jy die oortjie toemaak.",
     iH6: "In gevaar nou?",
-    iP6: "Bel die polisie by 10111 of die GBV Command Centre by 0800 428 428. Albei is gratis.",
+    iP6: "Bel die polisie by 10111 of die GBV Command Centre by 0800 428 428. Albei is gratis. Jy kan ook die GRIT-toep gebruik, wat ’n paniekknoppie het wat jou met hulp verbind.",
     iClose: "Maak toe",
     fillStart: "Vertel my wat aan die gebeur is. Jy kan tik of praat.",
     startBtn: "Begin",
@@ -537,6 +557,16 @@
     bringA2: "Hierdie aansoek, met Vorm 6A (jou persoonlike besonderhede) apart gehou",
     bringA3: "Alles wat jy van hom weet: volle naam, ID-nommer, huis- en werkadres, foonnommer, motorregistrasie, ’n foto",
     bringA4: "Enige ou beskermingsbevele, polisiesaak- (CAS) of OB-nommers",
+    aTitle: "Wat gebeur nadat jy jou vorm klaar ingevul het",
+    aS1: "Neem jou vorm na die klerk by enige landdroshof, gedurende hofure (gewoonlik 09:00 tot 15:30 op weeksdae). As jy in gevaar is, kan jy ook na ure aansoek doen. Dit is gratis, en jy het nie ’n prokureur nodig nie.",
+    aS2: "Die klerk gaan dit saam met jou deur. Jy teken dit voor ’n kommissaris van ede.",
+    aS3: "’n Landdros lees dit, dikwels op dieselfde dag. As die landdros sien dat jy nou beskerming nodig het, gee hy of sy vir jou ’n tussentydse (tydelike) beskermingsbevel.",
+    aS4: "Die tussentydse bevel word deur die balju of die polisie aan hom gegee. Dit beskerm jou vanaf die oomblik dat hy dit ontvang.",
+    aS5: "Jy kry ’n keerdatum. Op daardie dag kan julle albei hof toe kom, en die landdros besluit of ’n finale beskermingsbevel gegee word. Maak seker jy gaan op daardie datum hof toe.",
+    aS6: "As hy die bevel verbreek, rapporteer dit by die polisiestasie wat jy op jou vorm genoem het. Hy kan gearresteer word.",
+    aNo: "Die landdros besluit. Om inFORMed te gebruik, waarborg nie dat die hof ’n bevel sal toestaan, of dat die polisie dit sal afdwing nie.",
+    appAndroid: "GRIT-toep vir Android",
+    appIos: "GRIT-toep vir iPhone",
   };
 
   const STR = { en, zu, af };
