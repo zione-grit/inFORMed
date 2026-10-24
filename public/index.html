@@ -960,6 +960,8 @@ section.band.learn{padding-top:64px;padding-bottom:64px}
 .bring .bn{margin:4px 0 8px;font-size:14px}
 .bring ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
 .bring label{display:flex;gap:8px;align-items:flex-start;font-size:14.5px}
+.bring input[type=checkbox]{width:18px;height:18px;flex:none;margin:2px 0 0;padding:0;accent-color:#1F4E8C}
+.bring label span{flex:1}
 .chip.startgo{background:#7AB3FF;color:#071A33;border-color:#7AB3FF;font-weight:800;padding:8px 16px;font-size:15px}
 .chip.startgo svg{width:16px;height:16px}
 .msg .b{transition:opacity .16s ease}
@@ -1195,6 +1197,7 @@ section.band.learn{padding-top:64px;padding-bottom:64px}
     <button class="btn secondary" id="genClose">Keep talking</button>
     <button class="btn secondary" id="pvOpen3">Preview form</button>
     <button class="btn secondary hf-btn" id="hf3" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 19V5L7.5 9.5z"/><path d="M15.5 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg><span>Hear my form</span></button>
+    <button class="btn secondary" id="dlPrint">Print</button>
     <button class="btn secondary" id="dlDocx">Download Word</button>
     <button class="btn primary" id="dlPdf">Download PDF</button>
   </div>
@@ -2141,17 +2144,42 @@ $('infoClose').onclick = () => $('infoDlg').close();
 $('infoOpen').onclick = openInfo;
 $('pvClose').onclick = () => { if (AUDIO_BTN === $('hf4')) stopAudio(); $('pvDlg').close(); };
 $('pvPdf').onclick = () => download('pdf', $('pvPdf')); $('pvWord').onclick = () => download('docx', $('pvWord'));
-$('pvPrint').onclick = () => {
-  const w = window.open('', '_blank'); if (!w) return;
-  w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>Protection order application (draft)</title><style>' + [...document.styleSheets].map(ss => { try { return [...ss.cssRules].map(r => r.cssText).join('\n'); } catch(e){ return ''; } }).join('\n') + ' body{background:#fff} .paper{box-shadow:none;max-width:none}</style></head><body><div class="paper">' + $('paper').innerHTML + '</div></body></html>');
-  w.document.close(); w.onload = () => { w.focus(); w.print(); };
-};
+// Print the official form (the same PDF as Download PDF). On a computer it opens the print window straight away.
+// Phones can't print a PDF from inside a page, so there the PDF opens in a new tab, where Share / Print is available.
+// Show "Preparing…" on a button without replacing its text node, so the button still changes language afterwards.
+function busyBtn(btn, on){
+  const n = btn.firstChild; if (!n || n.nodeType !== 3){ btn.disabled = on; return; }
+  if (on){ btn._lbl = n.nodeValue; n.nodeValue = t('preparing'); }
+  else { const e = I18N_NODES.find(x => x[0] === n); n.nodeValue = e ? t(e[1]) : btn._lbl; }
+  btn.disabled = on;
+}
+async function printForm(btn){
+  const phone = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+  const tab = phone ? window.open('', '_blank') : null;
+  busyBtn(btn, true); $('genErr').textContent = '';
+  try {
+    const r = await fetch('/api/document', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ form:S.form, abuse:S.abuse, format:'pdf', demo:S.mode==='demo' }) });
+    if (!r.ok) throw new Error(await r.text());
+    const url = URL.createObjectURL(await r.blob());
+    if (phone){ if (tab) tab.location.href = url; else location.assign(url); }
+    else {
+      const old = $('printFrame'); if (old) old.remove();
+      const f = document.createElement('iframe'); f.id = 'printFrame'; f.style.cssText = 'position:fixed;right:0;bottom:0;width:1px;height:1px;border:0;opacity:0';
+      f.onload = () => { setTimeout(() => { try { f.contentWindow.focus(); f.contentWindow.print(); } catch(e){ window.open(url, '_blank'); } }, 300); };
+      f.src = url; document.body.appendChild(f);
+    }
+    setTimeout(() => URL.revokeObjectURL(url), 120000);
+  } catch(e){ if (tab) tab.close(); const msg = t('docErr'); if ($('genDlg').open) $('genErr').textContent = msg; else $('pvSum').textContent = msg; }
+  busyBtn(btn, false);
+}
+$('pvPrint').onclick = () => printForm($('pvPrint'));
+$('dlPrint').onclick = () => printForm($('dlPrint'));
 
 $('gen').onclick = openGen; $('gen2').onclick = () => { closePanel(); openGen(); };
 $('genClose').onclick = () => $('genDlg').close();
 async function download(format, btnIn){
-  const btn = btnIn || (format === 'pdf' ? $('dlPdf') : $('dlDocx')); const label = btn.textContent;
-  btn.disabled = true; btn.textContent = t('preparing'); $('genErr').textContent = '';
+  const btn = btnIn || (format === 'pdf' ? $('dlPdf') : $('dlDocx'));
+  busyBtn(btn, true); $('genErr').textContent = '';
   try {
     const r = await fetch('/api/document', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ form:S.form, abuse:S.abuse, format, demo:S.mode==='demo' }) });
     if (!r.ok) throw new Error(await r.text());
@@ -2159,7 +2187,7 @@ async function download(format, btnIn){
     const a = document.createElement('a'); a.href = url; a.download = format === 'pdf' ? (S.mode === 'demo' ? 'protection-order-draft.pdf' : 'protection-order-Form6-J480E.pdf') : 'protection-order-draft.docx';
     document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000);
   } catch(e){ const msg = t('docErr'); if ($('genDlg').open) $('genErr').textContent = msg; else $('pvSum').textContent = msg; }
-  btn.disabled = false; btn.textContent = label;
+  busyBtn(btn, false);
 }
 $('dlPdf').onclick = () => download('pdf'); $('dlDocx').onclick = () => download('docx');
 

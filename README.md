@@ -165,6 +165,10 @@ GRIT's evidence guide is inFORMed's sixth reference document. inFORMed asks abou
 - **Read aloud** (switch at the top of the chat, off by default) does only one thing: it reads every answer out loud by itself. When it is off, nothing plays unless someone taps Listen.
 - **Faster listening:** long answers are read in pieces. The first piece is short, so it starts quickly, and the next piece loads while the one before is playing. Each piece counts towards the listening limit, which is now 600 per hour per internet address.
 
+## Printing
+
+"Print" sits next to Download in Review your application, and in the Preview bar. It prints the official Form 6 (J480E) PDF, the same file as Download PDF, not the on-screen preview. On a computer the print window opens straight away. Phones can't print a PDF from inside a web page, so on a phone the form opens in a new tab, where the phone's Share or Print option prints it.
+
 ## Page languages
 
 Choosing isiZulu or Afrikaans switches all the page text: home page, buttons, chat messages, dialogs and help numbers. "Match my language" starts in the phone's language (if it is isiZulu or Afrikaans), and switches after the person's first message, in the language they wrote in. The form itself (form panel fields, preview, PDF and Word) stays in English, because it is filled in English for the court. This is enforced in code, not only asked of the AI: when the conversation is not in English, every form update goes through a separate translation step (`ensureEnglish` in `lib/engine.js`) before it reaches the form, and anything typed into the form panel in another language is translated when the PDF or Word draft is made. Words someone said are kept in English with the original words in brackets. The scripted demo and the fixed safety replies are also still in English.
